@@ -21,6 +21,38 @@ size_t write_data(void *ptr, size_t size, size_t nmemb, FILE *stream) {
     return written;
 }
 
+// Find epoch time from normal YYYY/MM/DD
+string get_time(char* date) {
+    string delimiter = "/";
+    string token;
+    struct tm t = {0};
+    string sdate(date);
+    size_t pos = 0;
+    while ((pos = sdate.find(delimiter)) != std::string::npos) {
+        token = sdate.substr(0, pos);
+        sdate.erase(0, pos + delimiter.length());
+        switch (pos) {
+            case 4:
+                t.tm_year = stoi(token);
+                break;
+            case 2:
+                t.tm_mon = stoi(token);
+                break;
+        }
+    }
+    t.tm_mday = stoi(sdate);
+    
+    // Get time since 1900 epoch
+    t.tm_year -= 1900;
+    t.tm_mon--;
+    t.tm_hour = 0;
+    t.tm_min = 0;
+    t.tm_sec = 0;
+    time_t timeSinceEpoch = mktime(&t);
+
+    return to_string(timeSinceEpoch);
+}
+
 // Retrieve cookies and crumb from yahoo finance site to download csv
 const char* get_crumb_and_cookies(char *symbol, char cookiefilename[FILENAME_MAX], char crumbfilename[FILENAME_MAX]) {
     
@@ -34,8 +66,8 @@ const char* get_crumb_and_cookies(char *symbol, char cookiefilename[FILENAME_MAX
     cookiecurl = curl_easy_init();
     
     // Create URL for the Yahoo Finance history for that stock
-    //string cookie_url = string("https://finance.yahoo.com/quote/") + string(symbol) + string("/history?p=") + string(symbol);
-    string cookie_url = string("https://finance.yahoo.com");
+    string cookie_url = string("https://finance.yahoo.com/quote/") + string(symbol) + string("/history?p=") + string(symbol);
+    //string cookie_url = string("https://finance.yahoo.com");
     cout << endl << cookie_url << endl;
     
     // Set URL to go to finance.yahoo.com and prepare cookies file
@@ -51,11 +83,11 @@ const char* get_crumb_and_cookies(char *symbol, char cookiefilename[FILENAME_MAX
              "PREF", "hello example, i like you very much!");
     
     // Set file as cookie jar
+    curl_easy_setopt(cookiecurl, CURLOPT_COOKIESESSION, true);
     curl_easy_setopt(cookiecurl, CURLOPT_COOKIEJAR, cookiefilename);
     curl_easy_setopt(cookiecurl, CURLOPT_COOKIELIST, nline);
-    
-    // Send all data to this function
-    curl_easy_setopt(cookiecurl, CURLOPT_WRITEFUNCTION, write_data);
+    curl_easy_setopt(cookiecurl, CURLOPT_FOLLOWLOCATION, 1);
+    curl_easy_setopt(cookiecurl, CURLOPT_HEADER, 0);
     
     // Open the file
     crumbfile = fopen(crumbfilename, "wb");
@@ -80,13 +112,13 @@ const char* get_crumb_and_cookies(char *symbol, char cookiefilename[FILENAME_MAX
     string str;
     while (getline(searchFile, str)) {
         if (str.find("{\"site\":\"fpctx\",\"crumb\":\"") != str.npos){
-            size_t pos = str.find("{\"site\":\"fpctx\",\"crumb\":\"") + 25;
+            size_t pos = str.find("CrumbStore\":{\"crumb\":\"") + 22;
             crumb = str.substr(pos, 11).c_str();
             break;
         }
     }
     
-    cout << endl << crumb << endl;
+    cout << "CRUMB: " << crumb << endl;
     return crumb;
 }
 
@@ -100,10 +132,9 @@ YahooFinanceCSVReader:: YahooFinanceCSVReader(char *symbol, char *startdate, cha
     FILE *fp;
     
     // Get crumb and use it to create the download url
-    const char *crumb = get_crumb_and_cookies(symbol, cookiefilename, crumbfilename);
-    string down_url = string("https://query1.finance.yahoo.com/v7/finance/download/") + string(symbol) + string("?period1=") + string(startdate) + string("&period2=") + string(enddate) + string("&interval=") + string(interval) + string("&events=history&crumb=") + string(crumb);
+    string down_url = string("https://query1.finance.yahoo.com/v7/finance/download/") + string(symbol) + string("?period1=") + get_time(startdate) + string("&period2=") + get_time(enddate) + string("&interval=") + string(interval) + string("&events=history&crumb=") + get_crumb_and_cookies(symbol, cookiefilename, crumbfilename);
     
-    cout << endl << down_url << endl;
+    cout << "URL: " << down_url << endl;
     
     // Init the curl session
     curl = curl_easy_init();

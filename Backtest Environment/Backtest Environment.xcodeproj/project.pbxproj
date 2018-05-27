@@ -29,9 +29,9 @@
 		840CF1DD20B9FCE200CFC546 /* csvdatastruct.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = csvdatastruct.h; sourceTree = "<group>"; };
 		8435F58A20BA471B00BA94F7 /* cookies.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = cookies.txt; sourceTree = "<group>"; };
 		8435F58B20BA5A2A00BA94F7 /* crumb.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = crumb.txt; sourceTree = "<group>"; };
-		845AD71920BA2295000AE3F9 /* test.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = test.txt; sourceTree = "<group>"; };
 		F462E25B20B912B4002D3A62 /* Backtest Environment */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = "Backtest Environment"; sourceTree = BUILT_PRODUCTS_DIR; };
 		F462E25E20B912B4002D3A62 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
+		F4CFAB4520BAFA0C0057E474 /* data.csv */ = {isa = PBXFileReference; lastKnownFileType = text; path = data.csv; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -51,9 +51,9 @@
 				840CF1DA20B9FC2000CFC546 /* YahooFinanceCSVReader.cpp */,
 				840CF1DB20B9FC2000CFC546 /* YahooFinanceCSVReader.hpp */,
 				840CF1DD20B9FCE200CFC546 /* csvdatastruct.h */,
-				845AD71920BA2295000AE3F9 /* test.txt */,
 				8435F58A20BA471B00BA94F7 /* cookies.txt */,
 				8435F58B20BA5A2A00BA94F7 /* crumb.txt */,
+				F4CFAB4520BAFA0C0057E474 /* data.csv */,
 			);
 			path = "Data Handling";
 			sourceTree = "<group>";
