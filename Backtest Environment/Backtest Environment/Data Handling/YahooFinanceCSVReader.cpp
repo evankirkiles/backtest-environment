@@ -2,16 +2,19 @@
 //  YahooFinanceCSVReader.cpp
 //  Backtest Environment
 //
-//  Created by Sam Kirkiles on 5/26/18.
+//  Created by Evan Kirkiles on 5/26/18.
 //  Copyright © 2018 Evan Kirkiles. All rights reserved.
 //
 
+#ifndef fstream
 #include <fstream>
+#endif /* <fstream> */
+#ifndef iostream
 #include <iostream>
+#endif /* <iostream> */
 #include <curl/curl.h>
 
 #include "YahooFinanceCSVReader.hpp"
-#include "csvdatastruct.h"
 
 using namespace std;
 
@@ -23,7 +26,7 @@ size_t write_data(void *ptr, size_t size, size_t nmemb, FILE *stream) {
 
 // Find epoch time from normal YYYY/MM/DD
 string get_time(char* date) {
-    string delimiter = "/";
+    string delimiter = "-";
     string token;
     struct tm t = {0};
     string sdate(date);
@@ -67,12 +70,9 @@ const char* get_crumb_and_cookies(char *symbol, char cookiefilename[FILENAME_MAX
     
     // Create URL for the Yahoo Finance history for that stock
     string cookie_url = string("https://finance.yahoo.com/quote/") + string(symbol) + string("/history?p=") + string(symbol);
-    //string cookie_url = string("https://finance.yahoo.com");
-    cout << endl << cookie_url << endl;
     
     // Set URL to go to finance.yahoo.com and prepare cookies file
     curl_easy_setopt(cookiecurl, CURLOPT_URL, cookie_url.c_str());
-    curl_easy_setopt(cookiecurl, CURLOPT_VERBOSE, 1L);
     curl_easy_setopt(cookiecurl, CURLOPT_COOKIEFILE, cookiefilename);
     curl_easy_setopt(cookiecurl, CURLOPT_COOKIELIST, "ALL");
     
@@ -111,20 +111,18 @@ const char* get_crumb_and_cookies(char *symbol, char cookiefilename[FILENAME_MAX
     ifstream searchFile(crumbfilename);
     string str;
     while (getline(searchFile, str)) {
-        if (str.find("{\"site\":\"fpctx\",\"crumb\":\"") != str.npos){
+        if (str.find("CrumbStore\":{\"crumb\":\"") != str.npos){
             size_t pos = str.find("CrumbStore\":{\"crumb\":\"") + 22;
             crumb = str.substr(pos, 11).c_str();
             break;
         }
     }
-    
-    cout << "CRUMB: " << crumb << endl;
+
     return crumb;
 }
 
-
 // Constructor for CVS Reader
-YahooFinanceCSVReader:: YahooFinanceCSVReader(char *symbol, char *startdate, char *enddate, char *interval, char outfilename[FILENAME_MAX], char cookiefilename[FILENAME_MAX], char crumbfilename[FILENAME_MAX]) {
+YahooFinanceCSVReader:: YahooFinanceCSVReader(char *symbol, char *startdate, char *enddate, char *interval, char outfilename[FILENAME_MAX], char cookiefilename[FILENAME_MAX], char crumbfilename[FILENAME_MAX]): marketmovements(outfilename, string(symbol)) {
     
     // Initialize variables
     CURL *curl;
@@ -133,8 +131,7 @@ YahooFinanceCSVReader:: YahooFinanceCSVReader(char *symbol, char *startdate, cha
     
     // Get crumb and use it to create the download url
     string down_url = string("https://query1.finance.yahoo.com/v7/finance/download/") + string(symbol) + string("?period1=") + get_time(startdate) + string("&period2=") + get_time(enddate) + string("&interval=") + string(interval) + string("&events=history&crumb=") + get_crumb_and_cookies(symbol, cookiefilename, crumbfilename);
-    
-    cout << "URL: " << down_url << endl;
+
     
     // Init the curl session
     curl = curl_easy_init();
@@ -163,6 +160,9 @@ YahooFinanceCSVReader:: YahooFinanceCSVReader(char *symbol, char *startdate, cha
         // Close header file
         fclose(fp);
     }
+    
+    // Get the data from the .csv file
+    marketmovements = MarketDataFrame(outfilename, string(symbol));
     
     // Cleanup curl
     curl_easy_cleanup(curl);

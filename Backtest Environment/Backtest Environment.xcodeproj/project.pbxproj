@@ -9,6 +9,9 @@
 /* Begin PBXBuildFile section */
 		840CF1DC20B9FC2000CFC546 /* YahooFinanceCSVReader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 840CF1DA20B9FC2000CFC546 /* YahooFinanceCSVReader.cpp */; };
 		F462E25F20B912B4002D3A62 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F462E25E20B912B4002D3A62 /* main.cpp */; };
+		F462E26920BB3BC3002D3A62 /* MarketDataFrame.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F462E26820BB3BC3002D3A62 /* MarketDataFrame.cpp */; };
+		F4B7553820BDA07A00B9FFCB /* data.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F4B7553620BDA07A00B9FFCB /* data.cpp */; };
+		F4B7553B20BDA97F00B9FFCB /* events.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F4B7553920BDA97F00B9FFCB /* events.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -31,7 +34,12 @@
 		8435F58B20BA5A2A00BA94F7 /* crumb.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = crumb.txt; sourceTree = "<group>"; };
 		F462E25B20B912B4002D3A62 /* Backtest Environment */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = "Backtest Environment"; sourceTree = BUILT_PRODUCTS_DIR; };
 		F462E25E20B912B4002D3A62 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
-		F4CFAB4520BAFA0C0057E474 /* data.csv */ = {isa = PBXFileReference; lastKnownFileType = text; path = data.csv; sourceTree = "<group>"; };
+		F462E26620BB2D47002D3A62 /* MarketDataFrame.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = MarketDataFrame.hpp; sourceTree = "<group>"; };
+		F462E26820BB3BC3002D3A62 /* MarketDataFrame.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = MarketDataFrame.cpp; sourceTree = "<group>"; };
+		F4B7553620BDA07A00B9FFCB /* data.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = data.cpp; sourceTree = "<group>"; };
+		F4B7553720BDA07A00B9FFCB /* data.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = data.hpp; sourceTree = "<group>"; };
+		F4B7553920BDA97F00B9FFCB /* events.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = events.cpp; sourceTree = "<group>"; };
+		F4B7553A20BDA97F00B9FFCB /* events.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = events.hpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -48,14 +56,23 @@
 		845AD71820BA16CD000AE3F9 /* Data Handling */ = {
 			isa = PBXGroup;
 			children = (
+				F431917620BCDAED001D28BA /* CSV directory */,
 				840CF1DA20B9FC2000CFC546 /* YahooFinanceCSVReader.cpp */,
 				840CF1DB20B9FC2000CFC546 /* YahooFinanceCSVReader.hpp */,
+				F462E26820BB3BC3002D3A62 /* MarketDataFrame.cpp */,
+				F462E26620BB2D47002D3A62 /* MarketDataFrame.hpp */,
 				840CF1DD20B9FCE200CFC546 /* csvdatastruct.h */,
 				8435F58A20BA471B00BA94F7 /* cookies.txt */,
 				8435F58B20BA5A2A00BA94F7 /* crumb.txt */,
-				F4CFAB4520BAFA0C0057E474 /* data.csv */,
 			);
 			path = "Data Handling";
+			sourceTree = "<group>";
+		};
+		F431917620BCDAED001D28BA /* CSV directory */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = "CSV directory";
 			sourceTree = "<group>";
 		};
 		F462E25220B912B4002D3A62 = {
@@ -78,6 +95,10 @@
 			isa = PBXGroup;
 			children = (
 				F462E25E20B912B4002D3A62 /* main.cpp */,
+				F4B7553620BDA07A00B9FFCB /* data.cpp */,
+				F4B7553920BDA97F00B9FFCB /* events.cpp */,
+				F4B7553A20BDA97F00B9FFCB /* events.hpp */,
+				F4B7553720BDA07A00B9FFCB /* data.hpp */,
 				845AD71820BA16CD000AE3F9 /* Data Handling */,
 			);
 			path = "Backtest Environment";
@@ -139,8 +160,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F4B7553B20BDA97F00B9FFCB /* events.cpp in Sources */,
 				F462E25F20B912B4002D3A62 /* main.cpp in Sources */,
+				F462E26920BB3BC3002D3A62 /* MarketDataFrame.cpp in Sources */,
 				840CF1DC20B9FC2000CFC546 /* YahooFinanceCSVReader.cpp in Sources */,
+				F4B7553820BDA07A00B9FFCB /* data.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

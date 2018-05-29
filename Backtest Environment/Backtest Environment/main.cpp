@@ -10,11 +10,40 @@
 #include "YahooFinanceCSVReader.hpp"
 
 int main(int argc, const char * argv[]) {
-    // insert code here...
-    std::cout << "Hello, World!\n";
-    
     //YahooFinanceCSVReader(char *symbol, char *startdate, char *enddate, char *interval, char outfilename[FILENAME_MAX], char cookiefilename[FILENAME_MAX])
     
-    YahooFinanceCSVReader("AAPL", "2017/01/25", "2017/02/25", "1d", "/Users/samkirkiles/Desktop/Backtest Environment/Backtest Environment/Backtest Environment/Data Handling/data.csv", "/Users/samkirkiles/Desktop/Backtest Environment/Backtest Environment/Backtest Environment/Data Handling/cookies.txt", "/Users/samkirkiles/Desktop/Backtest Environment/Backtest Environment/Backtest Environment/Data Handling/crumb.txt");
+    char *symbol = (char*)"AAPL";
+    char *startdate = (char*)"2000-01-01";
+    char *enddate = (char*)"2018-02-25";
+    char *interval = (char*)"1d";
+    
+    
+    MarketDataFrame moves = YahooFinanceCSVReader(
+                                                   symbol,
+                                                   startdate,
+                                                   enddate,
+                                                   interval,
+                                                   (char*)(string("/Users/samkirkiles/Desktop/Backtest Environment/Backtest Environment/Backtest Environment/Data Handling/CSV directory/") + string(symbol) + string(".csv")).c_str(),
+                                                   (char*)"/Users/samkirkiles/Desktop/Backtest Environment/Backtest Environment/Backtest Environment/Data Handling/cookies.txt",
+                                                   (char*)"/Users/samkirkiles/Desktop/Backtest Environment/Backtest Environment/Backtest Environment/Data Handling/crumb.txt").marketmovements;
+    
+    MarketDataFrame GOOGmoves = YahooFinanceCSVReader(
+                                                  (char*)"GOOG",
+                                                  startdate,
+                                                  enddate,
+                                                  interval,
+                                                  (char*)(string("/Users/samkirkiles/Desktop/Backtest Environment/Backtest Environment/Backtest Environment/Data Handling/CSV directory/") + string(symbol) + string(".csv")).c_str(),
+                                                  (char*)"/Users/samkirkiles/Desktop/Backtest Environment/Backtest Environment/Backtest Environment/Data Handling/cookies.txt",
+                                                  (char*)"/Users/samkirkiles/Desktop/Backtest Environment/Backtest Environment/Backtest Environment/Data Handling/crumb.txt").marketmovements;
+    
+    // Mimic pandas DataFrame for historical data: hold indices in a vector
+    // Allows for integer indexing and makes life a lot easier
+    string getdate = moves.indices[4];
+    
+    cout << "Data for stock " << symbol << " on date " << getdate << endl;
+    cout << "OPEN: " << moves.data["open"][getdate] << endl;
+    cout << "CLOSE: " << moves.data["close"][getdate] << endl;
+    cout << "HIGH: " << moves.data["high"][getdate] << endl;
+    cout << "LOW: " << moves.data["low"][getdate] << endl;
     return 0;
 }

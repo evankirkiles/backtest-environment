@@ -2,7 +2,7 @@
 //  csvdatastruct.h
 //  Backtest Environment
 //
-//  Created by Sam Kirkiles on 5/26/18.
+//  Created by Evan Kirkiles on 5/26/18.
 //  Copyright © 2018 Evan Kirkiles. All rights reserved.
 //
 
@@ -20,8 +20,8 @@ struct DataPacket {
     double low_;
     double high_;
     double close_;
-    double volume_;
     double adj_;
+    double volume_;
 };
 
 #endif /* csvdatastruct_h */
