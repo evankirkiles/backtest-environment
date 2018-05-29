@@ -8,6 +8,9 @@
 
 #ifndef data_hpp
 #define data_hpp
+#ifndef YahooFinanceCSVReader
+#include "YahooFinanceCSVReader.hpp"
+#endif
 
 #include <stdio.h>
 
@@ -41,6 +44,9 @@ public:
     
     // Format the symbol data
     void format_csv_data();
+    
+    // Creates input iterator for going through data
+    map<string, double> get_new_bar(string symbol);
     
     // Parent DataHandler functions
     MarketDataFrame get_latest_bars();

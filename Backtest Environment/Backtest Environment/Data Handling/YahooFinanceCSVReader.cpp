@@ -13,6 +13,7 @@
 #include <iostream>
 #endif /* <iostream> */
 #include <curl/curl.h>
+#include <chrono>
 
 #include "YahooFinanceCSVReader.hpp"
 
@@ -122,7 +123,11 @@ const char* get_crumb_and_cookies(char *symbol, char cookiefilename[FILENAME_MAX
 }
 
 // Constructor for CVS Reader
-YahooFinanceCSVReader:: YahooFinanceCSVReader(char *symbol, char *startdate, char *enddate, char *interval, char outfilename[FILENAME_MAX], char cookiefilename[FILENAME_MAX], char crumbfilename[FILENAME_MAX]): marketmovements(outfilename, string(symbol)) {
+YahooFinanceCSVReader:: YahooFinanceCSVReader(char *symbol, char outfilename[FILENAME_MAX], char cookiefilename[FILENAME_MAX], char crumbfilename[FILENAME_MAX]): marketmovements(outfilename, string(symbol)) {
+    
+    char *startdate = (char*)"2000-01-01";
+    string enddate = to_string(chrono::duration_cast<chrono::seconds>(chrono::system_clock::now().time_since_epoch()).count());
+    char *interval = (char*)"1d";
     
     // Initialize variables
     CURL *curl;
@@ -130,7 +135,7 @@ YahooFinanceCSVReader:: YahooFinanceCSVReader(char *symbol, char *startdate, cha
     FILE *fp;
     
     // Get crumb and use it to create the download url
-    string down_url = string("https://query1.finance.yahoo.com/v7/finance/download/") + string(symbol) + string("?period1=") + get_time(startdate) + string("&period2=") + get_time(enddate) + string("&interval=") + string(interval) + string("&events=history&crumb=") + get_crumb_and_cookies(symbol, cookiefilename, crumbfilename);
+    string down_url = string("https://query1.finance.yahoo.com/v7/finance/download/") + string(symbol) + string("?period1=") + get_time(startdate) + string("&period2=") + enddate + string("&interval=") + string(interval) + string("&events=history&crumb=") + get_crumb_and_cookies(symbol, cookiefilename, crumbfilename);
     
     // Init the curl session
     curl = curl_easy_init();
