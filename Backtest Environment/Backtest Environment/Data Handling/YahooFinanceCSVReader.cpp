@@ -131,7 +131,6 @@ YahooFinanceCSVReader:: YahooFinanceCSVReader(char *symbol, char *startdate, cha
     
     // Get crumb and use it to create the download url
     string down_url = string("https://query1.finance.yahoo.com/v7/finance/download/") + string(symbol) + string("?period1=") + get_time(startdate) + string("&period2=") + get_time(enddate) + string("&interval=") + string(interval) + string("&events=history&crumb=") + get_crumb_and_cookies(symbol, cookiefilename, crumbfilename);
-
     
     // Init the curl session
     curl = curl_easy_init();

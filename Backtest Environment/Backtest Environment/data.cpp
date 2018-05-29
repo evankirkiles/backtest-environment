@@ -12,7 +12,5 @@
 // An interface to allow for getting "latest"
 class HistoricCSVDataHandler:DataHandler {
     
-    HistoricCSVDataHandler(EventQueue events, char csv_dir[FILENAME_MAX], vector<string> symbol_list) {
-        
-    }
+    
 };
