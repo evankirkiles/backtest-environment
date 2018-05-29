@@ -11,6 +11,9 @@
 #ifndef string
 #include <string>
 #endif
+#ifndef iostream
+#include <iostream>
+#endif
 
 #include <stdio.h>
 
@@ -22,14 +25,14 @@ class Event {};
 // Market event for updating data with corresponding bars
 class MarketEvent:Event {
 public:
-    string type = "MARKET";
+    string type;
     MarketEvent();
 };
 
 // Signal event for sending a signal from an algo
 class SignalEvent:Event {
 public:
-    string type = "SIGNAL";
+    string type;
     string symbol;
     string datetime;
     string signal_type;
@@ -44,7 +47,7 @@ public:
 // Order event for sending an order to execution system
 class OrderEvent: Event {
 public:
-    string type = "ORDER";
+    string type;
     string symbol;
     string order_type;
     int quantity;
@@ -58,13 +61,15 @@ public:
     OrderEvent(string symbol, string order_type, int quantity, string direction);
     
     // Prints the values in the order
-    void print_order();
+    void print_order() {
+        cout << "Order: Symbol=" << symbol << " Type=" << order_type << " Quantity=" << quantity << " Direction=" << direction << endl;
+    }
 };
 
 // Gets the filled information about an order from the broker
 class FillEvent:Event {
 public:
-    string type = "FILL";
+    string type;
     string timeindex;
     string symbol;
     string exchange;
@@ -83,7 +88,11 @@ public:
     // commission: optional commission sent from IB
     
     FillEvent(string timeindex, string symbol, string exchange, int quantity, string direction,
-              double fill_cost, double commission=0);
+              double fill_cost, double commission=NULL);
+    
+    // Calculates the commission for an order given the size
+    // Based on Interactive Brokers' https://www.interactivebrokers.com/en/index.php?f=commission&p=stocks2
+    double calculate_IB_commission();
 };
 
 #endif /* events_hpp */

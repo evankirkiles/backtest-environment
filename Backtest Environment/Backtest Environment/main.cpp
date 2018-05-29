@@ -29,7 +29,7 @@ int main(int argc, const char * argv[]) {
     
     // Mimic pandas DataFrame for historical data: hold indices in a vector
     // Allows for integer indexing and makes life a lot easier
-    string getdate = moves.indices[4];
+    string getdate = moves.indices[2];
     
     cout << "Data for stock " << symbol << " on date " << getdate << endl;
     cout << "OPEN: " << moves.data["open"][getdate] << endl;
