@@ -11,6 +11,9 @@
 #ifndef YahooFinanceCSVReader
 #include "YahooFinanceCSVReader.hpp"
 #endif
+#ifndef boost
+#include <boost/coroutine/all.hpp>
+#endif
 
 #include <stdio.h>
 
@@ -22,15 +25,16 @@ class DataHandler {
 public:
     // Handles data both historical and live
     // Virtual functions to be used by subclasses
-    virtual map<string, MarketDataFrame> get_latest_bars(std::string symbol, int N=1);
-    virtual void update_bars();
+    virtual void /*MarketDataFrame*/ get_latest_bars(std::string symbol, int N=1)=0;
+    virtual void update_bars() = 0;
 };
 
 // Historical data handler that puts data onto an Event Queue
 class HistoricalCSVDataHandler:DataHandler {
 public:
-    map<string, MarketDataFrame> symbol_data;
-    map<string, MarketDataFrame> latest_data;
+    map<string, map<string, map<double, double>>> symbol_data;
+    map<string, map<string, map<double, double>>> latest_data;
+    vector<double> allDates;
     bool continue_backtest;
     vector<Event> events;
     string csv_dir;
@@ -46,11 +50,13 @@ public:
     void format_csv_data();
     
     // Creates input iterator for going through data
-    map<string, double> get_new_bar(string symbol);
+    //void get_new_bar(boost::coroutines::coroutine<tuple<double, double, double, double, double, double>>::push_type &sink, string symbol);
     
     // Parent DataHandler functions
-    MarketDataFrame get_latest_bars();
+    void /*MarketDataFrame*/ get_latest_bars(std::string symbol, int N);
     void update_bars();
+    
+    void append_to_dates(vector<double> new_dates);
 };
 
 #endif /* data_hpp */

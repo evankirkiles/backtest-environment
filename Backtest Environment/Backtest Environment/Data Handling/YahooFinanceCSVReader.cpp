@@ -14,6 +14,7 @@
 #endif /* <iostream> */
 #include <curl/curl.h>
 #include <chrono>
+#include <cmath>
 
 #include "YahooFinanceCSVReader.hpp"
 
@@ -23,38 +24,6 @@ using namespace std;
 size_t write_data(void *ptr, size_t size, size_t nmemb, FILE *stream) {
     size_t written = fwrite(ptr, size, nmemb, stream);
     return written;
-}
-
-// Find epoch time from normal YYYY/MM/DD
-string get_time(char* date) {
-    string delimiter = "-";
-    string token;
-    struct tm t = {0};
-    string sdate(date);
-    size_t pos = 0;
-    while ((pos = sdate.find(delimiter)) != std::string::npos) {
-        token = sdate.substr(0, pos);
-        sdate.erase(0, pos + delimiter.length());
-        switch (pos) {
-            case 4:
-                t.tm_year = stoi(token);
-                break;
-            case 2:
-                t.tm_mon = stoi(token);
-                break;
-        }
-    }
-    t.tm_mday = stoi(sdate);
-    
-    // Get time since 1900 epoch
-    t.tm_year -= 1900;
-    t.tm_mon--;
-    t.tm_hour = 0;
-    t.tm_min = 0;
-    t.tm_sec = 0;
-    time_t timeSinceEpoch = mktime(&t);
-
-    return to_string(timeSinceEpoch);
 }
 
 // Retrieve cookies and crumb from yahoo finance site to download csv
@@ -123,10 +92,10 @@ const char* get_crumb_and_cookies(char *symbol, char cookiefilename[FILENAME_MAX
 }
 
 // Constructor for CVS Reader
-YahooFinanceCSVReader:: YahooFinanceCSVReader(char *symbol, char outfilename[FILENAME_MAX], char cookiefilename[FILENAME_MAX], char crumbfilename[FILENAME_MAX]): marketmovements(outfilename, string(symbol)) {
+YahooFinanceCSVReader:: YahooFinanceCSVReader(char *symbol, char outfilename[FILENAME_MAX], char cookiefilename[FILENAME_MAX], char crumbfilename[FILENAME_MAX]) : marketmovements() {
     
-    char *startdate = (char*)"2000-01-01";
-    string enddate = to_string(chrono::duration_cast<chrono::seconds>(chrono::system_clock::now().time_since_epoch()).count());
+    double startdate = get_epoch_time((char*)"2000-01-01");
+    double enddate = (double)(chrono::duration_cast<chrono::seconds>(chrono::system_clock::now().time_since_epoch()).count());
     char *interval = (char*)"1d";
     
     // Initialize variables
@@ -135,7 +104,7 @@ YahooFinanceCSVReader:: YahooFinanceCSVReader(char *symbol, char outfilename[FIL
     FILE *fp;
     
     // Get crumb and use it to create the download url
-    string down_url = string("https://query1.finance.yahoo.com/v7/finance/download/") + string(symbol) + string("?period1=") + get_time(startdate) + string("&period2=") + enddate + string("&interval=") + string(interval) + string("&events=history&crumb=") + get_crumb_and_cookies(symbol, cookiefilename, crumbfilename);
+    string down_url = string("https://query1.finance.yahoo.com/v7/finance/download/") + string(symbol) + string("?period1=") + to_string((unsigned long)startdate) + string("&period2=") + to_string((unsigned long)enddate) + string("&interval=") + string(interval) + string("&events=history&crumb=") + get_crumb_and_cookies(symbol, cookiefilename, crumbfilename);
     
     // Init the curl session
     curl = curl_easy_init();

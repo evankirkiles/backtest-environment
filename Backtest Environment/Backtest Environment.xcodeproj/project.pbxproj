@@ -29,7 +29,6 @@
 /* Begin PBXFileReference section */
 		840CF1DA20B9FC2000CFC546 /* YahooFinanceCSVReader.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = YahooFinanceCSVReader.cpp; sourceTree = "<group>"; };
 		840CF1DB20B9FC2000CFC546 /* YahooFinanceCSVReader.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = YahooFinanceCSVReader.hpp; sourceTree = "<group>"; };
-		840CF1DD20B9FCE200CFC546 /* csvdatastruct.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = csvdatastruct.h; sourceTree = "<group>"; };
 		8435F58A20BA471B00BA94F7 /* cookies.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = cookies.txt; sourceTree = "<group>"; };
 		8435F58B20BA5A2A00BA94F7 /* crumb.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = crumb.txt; sourceTree = "<group>"; };
 		F462E25B20B912B4002D3A62 /* Backtest Environment */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = "Backtest Environment"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -61,7 +60,6 @@
 				840CF1DB20B9FC2000CFC546 /* YahooFinanceCSVReader.hpp */,
 				F462E26820BB3BC3002D3A62 /* MarketDataFrame.cpp */,
 				F462E26620BB2D47002D3A62 /* MarketDataFrame.hpp */,
-				840CF1DD20B9FCE200CFC546 /* csvdatastruct.h */,
 				8435F58A20BA471B00BA94F7 /* cookies.txt */,
 				8435F58B20BA5A2A00BA94F7 /* crumb.txt */,
 			);
@@ -285,7 +283,12 @@
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = Z38G8Z9XR4;
-				OTHER_LDFLAGS = "-lcurl";
+				HEADER_SEARCH_PATHS = /usr/local/Cellar/boost/1.67.0_1/include/;
+				LIBRARY_SEARCH_PATHS = /usr/local/Cellar/boost/1.67.0_1/lib;
+				OTHER_LDFLAGS = (
+					"-lcurl",
+					"-lboost_system",
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				USER_HEADER_SEARCH_PATHS = /usr/local/Cellar/curl/7.60.0/include/curl;
 			};
@@ -296,7 +299,12 @@
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = Z38G8Z9XR4;
-				OTHER_LDFLAGS = "-lcurl";
+				HEADER_SEARCH_PATHS = /usr/local/Cellar/boost/1.67.0_1/include/;
+				LIBRARY_SEARCH_PATHS = /usr/local/Cellar/boost/1.67.0_1/lib;
+				OTHER_LDFLAGS = (
+					"-lcurl",
+					"-lboost_system",
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				USER_HEADER_SEARCH_PATHS = /usr/local/Cellar/curl/7.60.0/include/curl;
 			};
