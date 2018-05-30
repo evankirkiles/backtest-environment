@@ -18,11 +18,11 @@
 #include <stdio.h>
 #include "MarketDataFrame.hpp"
 
-map<string, map<double, double>> data;
-vector<double> indices;
+map<string, map<long, double>> data;
+vector<long> indices;
 
 // Find epoch time from normal YYYY/MM/DD
-double get_epoch_time(char* date) {
+long get_epoch_time(char* date) {
     string delimiter = "-";
     string token;
     struct tm t = {0};
@@ -55,7 +55,7 @@ double get_epoch_time(char* date) {
     t.tm_sec = 0;
     time_t timeSinceEpoch = mktime(&t);
     
-    return double(timeSinceEpoch);
+    return long(timeSinceEpoch);
 }
 
 // Placeholder default constructor
@@ -65,12 +65,12 @@ MarketDataFrame::MarketDataFrame() {}
 MarketDataFrame::MarketDataFrame(char csv_file[FILENAME_MAX], string symbol) {
     ifstream csv(csv_file);
     string line;
-    map<double, double> open;
-    map<double, double> high;
-    map<double, double> low;
-    map<double, double> close;
-    map<double, double> adj;
-    map<double, double> volume;
+    map<long, double> open;
+    map<long, double> high;
+    map<long, double> low;
+    map<long, double> close;
+    map<long, double> adj;
+    map<long, double> volume;
     
     // Iterate through the csv file
     while(getline(csv, line)) {
@@ -83,7 +83,7 @@ MarketDataFrame::MarketDataFrame(char csv_file[FILENAME_MAX], string symbol) {
         // Get each datapoint
         map<string, double> dataRow;
         ss >> date;
-        double epochdate = get_epoch_time((char*)date.c_str());
+        long epochdate = get_epoch_time((char*)date.c_str());
         ss >> open[epochdate];
         ss >> high[epochdate];
         ss >> low[epochdate];

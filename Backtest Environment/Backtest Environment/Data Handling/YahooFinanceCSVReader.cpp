@@ -94,8 +94,8 @@ const char* get_crumb_and_cookies(char *symbol, char cookiefilename[FILENAME_MAX
 // Constructor for CVS Reader
 YahooFinanceCSVReader:: YahooFinanceCSVReader(char *symbol, char outfilename[FILENAME_MAX], char cookiefilename[FILENAME_MAX], char crumbfilename[FILENAME_MAX]) : marketmovements() {
     
-    double startdate = get_epoch_time((char*)"2000-01-01");
-    double enddate = (double)(chrono::duration_cast<chrono::seconds>(chrono::system_clock::now().time_since_epoch()).count());
+    long startdate = get_epoch_time((char*)"2000-01-01");
+    long enddate = (long)(chrono::duration_cast<chrono::seconds>(chrono::system_clock::now().time_since_epoch()).count());
     char *interval = (char*)"1d";
     
     // Initialize variables
@@ -104,7 +104,7 @@ YahooFinanceCSVReader:: YahooFinanceCSVReader(char *symbol, char outfilename[FIL
     FILE *fp;
     
     // Get crumb and use it to create the download url
-    string down_url = string("https://query1.finance.yahoo.com/v7/finance/download/") + string(symbol) + string("?period1=") + to_string((unsigned long)startdate) + string("&period2=") + to_string((unsigned long)enddate) + string("&interval=") + string(interval) + string("&events=history&crumb=") + get_crumb_and_cookies(symbol, cookiefilename, crumbfilename);
+    string down_url = string("https://query1.finance.yahoo.com/v7/finance/download/") + string(symbol) + string("?period1=") + to_string(startdate) + string("&period2=") + to_string(enddate) + string("&interval=") + string(interval) + string("&events=history&crumb=") + get_crumb_and_cookies(symbol, cookiefilename, crumbfilename);
     
     // Init the curl session
     curl = curl_easy_init();

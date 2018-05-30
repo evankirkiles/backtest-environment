@@ -32,9 +32,9 @@ public:
 // Historical data handler that puts data onto an Event Queue
 class HistoricalCSVDataHandler:DataHandler {
 public:
-    map<string, map<string, map<double, double>>> symbol_data;
-    map<string, map<string, map<double, double>>> latest_data;
-    vector<double> allDates;
+    map<string, map<string, map<long, double>>> symbol_data;
+    map<string, map<string, map<long, double>>> latest_data;
+    vector<long> allDates;
     bool continue_backtest;
     vector<Event> events;
     string csv_dir;
@@ -56,7 +56,7 @@ public:
     void /*MarketDataFrame*/ get_latest_bars(std::string symbol, int N);
     void update_bars();
     
-    void append_to_dates(vector<double> new_dates);
+    void append_to_dates(vector<long> new_dates);
 };
 
 #endif /* data_hpp */

@@ -20,12 +20,12 @@ using namespace std;
 
 class MarketDataFrame {
 public:
-    map<string, map<double, double>> data;
-    vector<double> indices;
+    map<string, map<long, double>> data;
+    vector<long> indices;
     MarketDataFrame(char csv_file[FILENAME_MAX], string symbol);
     MarketDataFrame();
 };
 
-double get_epoch_time(char* date);
+long get_epoch_time(char* date);
 
 #endif /* MarketDataFrame_hpp */
