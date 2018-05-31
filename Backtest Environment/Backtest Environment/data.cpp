@@ -24,6 +24,9 @@ HistoricalCSVDataHandler::HistoricalCSVDataHandler(vector<Event> i_events, strin
     
 };
 
+// Placeholder initializer
+HistoricalCSVDataHandler::HistoricalCSVDataHandler() {};
+
 // Appends unique dates to master dates list
 void HistoricalCSVDataHandler::append_to_dates(vector<long> new_dates) {
     if (allDates.empty()) {

@@ -12,6 +12,7 @@
 		F462E26920BB3BC3002D3A62 /* MarketDataFrame.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F462E26820BB3BC3002D3A62 /* MarketDataFrame.cpp */; };
 		F4B7553820BDA07A00B9FFCB /* data.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F4B7553620BDA07A00B9FFCB /* data.cpp */; };
 		F4B7553B20BDA97F00B9FFCB /* events.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F4B7553920BDA97F00B9FFCB /* events.cpp */; };
+		F4F9EF6120C08CBB0057CF6C /* strat_buyandhold.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F4F9EF5F20C08CBB0057CF6C /* strat_buyandhold.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -39,6 +40,8 @@
 		F4B7553720BDA07A00B9FFCB /* data.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = data.hpp; sourceTree = "<group>"; };
 		F4B7553920BDA97F00B9FFCB /* events.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = events.cpp; sourceTree = "<group>"; };
 		F4B7553A20BDA97F00B9FFCB /* events.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = events.hpp; sourceTree = "<group>"; };
+		F4F9EF5F20C08CBB0057CF6C /* strat_buyandhold.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = strat_buyandhold.cpp; sourceTree = "<group>"; };
+		F4F9EF6020C08CBB0057CF6C /* strategiesheader.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = strategiesheader.hpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -97,9 +100,19 @@
 				F4B7553A20BDA97F00B9FFCB /* events.hpp */,
 				F4B7553620BDA07A00B9FFCB /* data.cpp */,
 				F4B7553720BDA07A00B9FFCB /* data.hpp */,
+				F4F9EF6020C08CBB0057CF6C /* strategiesheader.hpp */,
+				F4F9EF5E20C08C820057CF6C /* Strategies */,
 				845AD71820BA16CD000AE3F9 /* Data Handling */,
 			);
 			path = "Backtest Environment";
+			sourceTree = "<group>";
+		};
+		F4F9EF5E20C08C820057CF6C /* Strategies */ = {
+			isa = PBXGroup;
+			children = (
+				F4F9EF5F20C08CBB0057CF6C /* strat_buyandhold.cpp */,
+			);
+			path = Strategies;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -160,6 +173,7 @@
 			files = (
 				F4B7553B20BDA97F00B9FFCB /* events.cpp in Sources */,
 				F462E25F20B912B4002D3A62 /* main.cpp in Sources */,
+				F4F9EF6120C08CBB0057CF6C /* strat_buyandhold.cpp in Sources */,
 				F462E26920BB3BC3002D3A62 /* MarketDataFrame.cpp in Sources */,
 				840CF1DC20B9FC2000CFC546 /* YahooFinanceCSVReader.cpp in Sources */,
 				F4B7553820BDA07A00B9FFCB /* data.cpp in Sources */,

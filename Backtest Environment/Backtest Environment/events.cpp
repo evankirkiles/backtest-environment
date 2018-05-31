@@ -19,7 +19,7 @@ MarketEvent::MarketEvent() {
 }
 
 // Signal event initialization
-SignalEvent::SignalEvent(string i_symbol, string i_datetime, string i_signal_type) {
+SignalEvent::SignalEvent(string i_symbol, long i_datetime, string i_signal_type) {
     type = "SIGNAL";
     symbol = i_symbol;
     datetime = i_datetime;

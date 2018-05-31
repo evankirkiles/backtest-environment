@@ -47,6 +47,9 @@ public:
     // symbol_list: list of all the symbols being traded
     HistoricalCSVDataHandler(vector<Event> events, string csv_dir, vector<string> symbol_list);
     
+    // Placeholder initializer
+    HistoricalCSVDataHandler();
+    
     // Format the symbol data
     void format_csv_data();
     
