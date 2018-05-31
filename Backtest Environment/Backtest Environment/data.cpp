@@ -130,6 +130,9 @@ void HistoricalCSVDataHandler::update_bars() {
             cout << e.what() << endl;
             continue_backtest = false;
         }
+        
+        // Add bar as a MarketEvent
+        events.push_back(MarketEvent());
     }
 }
 

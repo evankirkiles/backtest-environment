@@ -20,17 +20,17 @@
 using namespace std;
 
 // Base event class to which we can add features
-class Event {};
+class Event { };
 
 // Market event for updating data with corresponding bars
-class MarketEvent:Event {
+class MarketEvent: public Event {
 public:
     string type;
     MarketEvent();
 };
 
 // Signal event for sending a signal from an algo
-class SignalEvent:Event {
+class SignalEvent: public Event {
 public:
     string type;
     string symbol;
@@ -45,7 +45,7 @@ public:
 };
 
 // Order event for sending an order to execution system
-class OrderEvent: Event {
+class OrderEvent: public Event {
 public:
     string type;
     string symbol;
@@ -67,7 +67,7 @@ public:
 };
 
 // Gets the filled information about an order from the broker
-class FillEvent:Event {
+class FillEvent: public Event {
 public:
     string type;
     string timeindex;
