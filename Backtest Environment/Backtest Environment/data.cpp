@@ -110,11 +110,9 @@ void HistoricalCSVDataHandler::update_bars() {
     
     for (int i=0; i < symbol_list.size(); i++)  {
         string symbol = symbol_list[i];
-        
-        // TODO: FIND OUT WHY COROUTINE DOES NOT WANT TO WORK DgoHBEFOOEBFSF
-        
+
         // There will always be a first bar to get
-        boost::coroutines2::coroutine<tuple<string, long, double, double, double, double, double>>::pull_type source{bind(&HistoricalCSVDataHandler::get_new_bar, std::placeholders::_1, symbol)};
+        boost::coroutines2::coroutine<tuple<string, long, double, double, double, double, double>>::pull_type source{std::bind(&HistoricalCSVDataHandler::get_new_bar, this, std::placeholders::_1, symbol)};
         tuple<string, long, double, double, double, double, double>updateData = source.get();
         latest_data[get<0>(updateData)]["open"][get<1>(updateData)] = get<2>(updateData);
         latest_data[get<0>(updateData)]["low"][get<1>(updateData)] = get<3>(updateData);
