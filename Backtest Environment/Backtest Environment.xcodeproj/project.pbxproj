@@ -281,12 +281,15 @@
 		F462E26320B912B4002D3A62 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_WARN_DOCUMENTATION_COMMENTS = NO;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = Z38G8Z9XR4;
 				HEADER_SEARCH_PATHS = /usr/local/Cellar/boost/1.67.0_1/include/;
 				LIBRARY_SEARCH_PATHS = /usr/local/Cellar/boost/1.67.0_1/lib;
 				OTHER_LDFLAGS = (
 					"-lcurl",
+					"-lboost_context-mt",
+					"-lboost_coroutine",
 					"-lboost_system",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -297,12 +300,15 @@
 		F462E26420B912B4002D3A62 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_WARN_DOCUMENTATION_COMMENTS = NO;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = Z38G8Z9XR4;
 				HEADER_SEARCH_PATHS = /usr/local/Cellar/boost/1.67.0_1/include/;
 				LIBRARY_SEARCH_PATHS = /usr/local/Cellar/boost/1.67.0_1/lib;
 				OTHER_LDFLAGS = (
 					"-lcurl",
+					"-lboost_context-mt",
+					"-lboost_coroutine",
 					"-lboost_system",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";

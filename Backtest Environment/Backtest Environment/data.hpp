@@ -12,7 +12,7 @@
 #include "YahooFinanceCSVReader.hpp"
 #endif
 #ifndef boost
-#include <boost/coroutine/all.hpp>
+#include <boost/coroutine2/all.hpp>
 #endif
 
 #include <stdio.h>
@@ -25,7 +25,7 @@ class DataHandler {
 public:
     // Handles data both historical and live
     // Virtual functions to be used by subclasses
-    virtual void /*MarketDataFrame*/ get_latest_bars(std::string symbol, int N=1)=0;
+    virtual map<string, map<long, double>> get_latest_bars(std::string symbol, int N=1)=0;
     virtual void update_bars() = 0;
 };
 
@@ -35,6 +35,7 @@ public:
     map<string, map<string, map<long, double>>> symbol_data;
     map<string, map<string, map<long, double>>> latest_data;
     vector<long> allDates;
+    map<string, vector<long>> latestDates;
     bool continue_backtest;
     vector<Event> events;
     string csv_dir;
@@ -50,10 +51,10 @@ public:
     void format_csv_data();
     
     // Creates input iterator for going through data
-    //void get_new_bar(boost::coroutines::coroutine<tuple<double, double, double, double, double, double>>::push_type &sink, string symbol);
+    void get_new_bar(boost::coroutines2::coroutine<tuple<string, long, double, double, double, double, double>>::push_type &sink, string symbol);
     
     // Parent DataHandler functions
-    void /*MarketDataFrame*/ get_latest_bars(std::string symbol, int N);
+    map<string, map<long, double>> get_latest_bars(std::string symbol, int N);
     void update_bars();
     
     void append_to_dates(vector<long> new_dates);
