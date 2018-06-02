@@ -38,14 +38,13 @@ public:
     map<string, vector<long>> latestDates;
     bool continue_backtest;
     vector<Event> events;
-    string csv_dir;
     vector<string> symbol_list;
     
     // PARAMS:
     // events: Event Queue on which to push new events
     // csv_dir: the path to the folder containing all the symbol csvs
     // symbol_list: list of all the symbols being traded
-    HistoricalCSVDataHandler(vector<Event> events, string csv_dir, vector<string> symbol_list);
+    HistoricalCSVDataHandler(vector<Event> events, vector<string> symbol_list);
     
     // Placeholder initializer
     HistoricalCSVDataHandler();
@@ -54,7 +53,7 @@ public:
     void format_csv_data();
     
     // Creates input iterator for going through data
-    void get_new_bar(boost::coroutines2::coroutine<tuple<string, long, double, double, double, double, double>>::push_type &sink, string symbol);
+    void get_new_bar(boost::coroutines2::coroutine<tuple<string, long, double, double, double, double, double, double>>::push_type &sink, string symbol);
     
     // Parent DataHandler functions
     map<string, map<long, double>> get_latest_bars(std::string symbol, int N);

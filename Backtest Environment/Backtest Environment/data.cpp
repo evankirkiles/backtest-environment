@@ -15,10 +15,9 @@ using namespace std;
 
 // Gets data from Yahoo Finance CSV's and returns them in format
 // An interface to allow for getting "latest"
-HistoricalCSVDataHandler::HistoricalCSVDataHandler(vector<Event> i_events, string i_csv_dir, vector<string> i_symbol_list) {
+HistoricalCSVDataHandler::HistoricalCSVDataHandler(vector<Event> i_events, vector<string> i_symbol_list) {
     
     events = i_events;
-    csv_dir = i_csv_dir;
     symbol_list = i_symbol_list;
     continue_backtest = true;
     
@@ -61,14 +60,15 @@ void HistoricalCSVDataHandler::format_csv_data() {
 
 // Gets input iterator for going through data with forward merge implemented within
 // Coroutine will return SDOLHCV data
-void HistoricalCSVDataHandler::get_new_bar(boost::coroutines2::coroutine<tuple<string, long, double, double, double, double, double>>::push_type &sink, string symbol) {
+void HistoricalCSVDataHandler::get_new_bar(boost::coroutines2::coroutine<tuple<string, long, double, double, double, double, double, double>>::push_type &sink, string symbol) {
     // Spits out a bar until there are no more bars to yield
-    tuple<string, long, double, double, double, double, double>lastbar;
+    tuple<string, long, double, double, double, double, double, double>lastbar;
     for (int i=1; i<+allDates.size();i++) {
         long date = allDates.end()[-i];
         // Formatted in symbol - date - open - low - high - close - volume
         if (symbol_data[symbol]["open"][date] != 0) {
-            lastbar = make_tuple(symbol, date, symbol_data[symbol]["open"][date],symbol_data[symbol]["low"][date],symbol_data[symbol]["high"][date],symbol_data[symbol]["close"][date],symbol_data[symbol]["volume"][date]);
+            lastbar = make_tuple(symbol, date, symbol_data[symbol]["open"][date],symbol_data[symbol]["low"][date],symbol_data[symbol]["high"][date],
+                                 symbol_data[symbol]["close"][date],symbol_data[symbol]["adj"][date],symbol_data[symbol]["volume"][date]);
         } else {
             // If data is not found, use data from last get_new_bar call
             cout << "Data not found on day " << to_string(date) << " for symbol " << symbol << endl;
@@ -115,13 +115,14 @@ void HistoricalCSVDataHandler::update_bars() {
         string symbol = symbol_list[i];
 
         // There will always be a first bar to get
-        boost::coroutines2::coroutine<tuple<string, long, double, double, double, double, double>>::pull_type source{std::bind(&HistoricalCSVDataHandler::get_new_bar, this, std::placeholders::_1, symbol)};
-        tuple<string, long, double, double, double, double, double>updateData = source.get();
+        boost::coroutines2::coroutine<tuple<string, long, double, double, double, double, double, double>>::pull_type source{std::bind(&HistoricalCSVDataHandler::get_new_bar, this, std::placeholders::_1, symbol)};
+        tuple<string, long, double, double, double, double, double, double>updateData = source.get();
         latest_data[get<0>(updateData)]["open"][get<1>(updateData)] = get<2>(updateData);
         latest_data[get<0>(updateData)]["low"][get<1>(updateData)] = get<3>(updateData);
         latest_data[get<0>(updateData)]["high"][get<1>(updateData)] = get<4>(updateData);
         latest_data[get<0>(updateData)]["close"][get<1>(updateData)] = get<5>(updateData);
-        latest_data[get<0>(updateData)]["volume"][get<1>(updateData)] = get<6>(updateData);
+        latest_data[get<0>(updateData)]["adj"][get<1>(updateData)] = get<6>(updateData);
+        latest_data[get<0>(updateData)]["volume"][get<1>(updateData)] = get<7>(updateData);
         
         // Add new date to the dates available
         latestDates[get<0>(updateData)].push_back(get<1>(updateData));
