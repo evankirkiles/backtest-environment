@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		840CF1DC20B9FC2000CFC546 /* YahooFinanceCSVReader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 840CF1DA20B9FC2000CFC546 /* YahooFinanceCSVReader.cpp */; };
+		F44F8D7D20C2F82000511DF8 /* portfolio.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F44F8D7B20C2F82000511DF8 /* portfolio.cpp */; };
 		F462E25F20B912B4002D3A62 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F462E25E20B912B4002D3A62 /* main.cpp */; };
 		F462E26920BB3BC3002D3A62 /* MarketDataFrame.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F462E26820BB3BC3002D3A62 /* MarketDataFrame.cpp */; };
 		F4B7553820BDA07A00B9FFCB /* data.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F4B7553620BDA07A00B9FFCB /* data.cpp */; };
@@ -32,6 +33,8 @@
 		840CF1DB20B9FC2000CFC546 /* YahooFinanceCSVReader.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = YahooFinanceCSVReader.hpp; sourceTree = "<group>"; };
 		8435F58A20BA471B00BA94F7 /* cookies.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = cookies.txt; sourceTree = "<group>"; };
 		8435F58B20BA5A2A00BA94F7 /* crumb.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = crumb.txt; sourceTree = "<group>"; };
+		F44F8D7B20C2F82000511DF8 /* portfolio.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = portfolio.cpp; sourceTree = "<group>"; };
+		F44F8D7C20C2F82000511DF8 /* portfolio.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = portfolio.hpp; sourceTree = "<group>"; };
 		F462E25B20B912B4002D3A62 /* Backtest Environment */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = "Backtest Environment"; sourceTree = BUILT_PRODUCTS_DIR; };
 		F462E25E20B912B4002D3A62 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
 		F462E26620BB2D47002D3A62 /* MarketDataFrame.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = MarketDataFrame.hpp; sourceTree = "<group>"; };
@@ -101,6 +104,8 @@
 				F4B7553620BDA07A00B9FFCB /* data.cpp */,
 				F4B7553720BDA07A00B9FFCB /* data.hpp */,
 				F4F9EF6020C08CBB0057CF6C /* strategiesheader.hpp */,
+				F44F8D7B20C2F82000511DF8 /* portfolio.cpp */,
+				F44F8D7C20C2F82000511DF8 /* portfolio.hpp */,
 				F4F9EF5E20C08C820057CF6C /* Strategies */,
 				845AD71820BA16CD000AE3F9 /* Data Handling */,
 			);
@@ -173,6 +178,7 @@
 			files = (
 				F4B7553B20BDA97F00B9FFCB /* events.cpp in Sources */,
 				F462E25F20B912B4002D3A62 /* main.cpp in Sources */,
+				F44F8D7D20C2F82000511DF8 /* portfolio.cpp in Sources */,
 				F4F9EF6120C08CBB0057CF6C /* strat_buyandhold.cpp in Sources */,
 				F462E26920BB3BC3002D3A62 /* MarketDataFrame.cpp in Sources */,
 				840CF1DC20B9FC2000CFC546 /* YahooFinanceCSVReader.cpp in Sources */,
