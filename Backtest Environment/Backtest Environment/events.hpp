@@ -23,6 +23,7 @@ using namespace std;
 class Event {
 public:
     string type;
+    virtual ~Event() = default;
 };
 
 // Market event for updating data with corresponding bars

@@ -13,7 +13,7 @@ using namespace std;
 // MARK: Naive Portfolio
 
 // Constructor
-NaivePortfolio::NaivePortfolio(map<string, map<string, map<long, double>>> i_bars, vector<string> i_symbol_list, vector<Event> i_events, long i_start_date, double i_initial_capital=100000.0) {
+NaivePortfolio::NaivePortfolio(HistoricalCSVDataHandler i_bars, vector<string> i_symbol_list, vector<Event> i_events, long i_start_date, double i_initial_capital=100000.0) {
     
     // Initialize all instance variables
     bars = i_bars;
@@ -67,4 +67,71 @@ map<string, double> NaivePortfolio::construct_current_holdings() {
     temp["commission"] = 0.0;
     temp["totalholdings"] = initial_capital;
     return temp;
+}
+
+// Update holdings evaluations with most recently completed bar (previous day)
+void NaivePortfolio::update_timeindex(Event event) {
+    map<string, map<string, map<long, double>>> lastbar;
+    long date;
+    double sumvalues = 0;
+    
+    for (int i=0; i<symbol_list.size();i++) {
+        
+        // Update positions
+        lastbar[symbol_list[i]] = bars.get_latest_bars(symbol_list[i],1);
+        
+        date = lastbar[symbol_list[i]]["open"].end()->first;
+        all_positions[date][symbol_list[i]] = current_positions[symbol_list[i]];
+        
+        // Update holdings
+        // Estimates market value of a stock by using the quantity * its closing price (most likely inaccurate)
+        double market_value = current_positions[symbol_list[i]] * lastbar[symbol_list[i]]["close"][date];
+        all_holdings[date][symbol_list[i]] = market_value;
+        sumvalues += market_value;
+    }
+    
+    all_holdings[date]["totalholdings"] = current_holdings["heldcash"] + sumvalues;
+    all_holdings[date]["heldcash"] = current_holdings["heldcash"];
+    all_holdings[date]["commission"] = current_holdings["commission"];
+}
+
+// Update positions from a FillEvent
+void NaivePortfolio::update_positions_from_fill(FillEvent fill) {
+    int fill_dir = 0;
+    if (fill.direction == "BUY") {
+        fill_dir = 1;
+    } else if (fill.direction == "SELL") {
+        fill_dir = -1;
+    }
+    
+    // Update the positions with retrieved fill information
+    current_positions[fill.symbol] += fill_dir*fill.quantity;
+}
+
+// Updates holdings from a FillEvent
+// To estimate the cost of a fill, uses the closing price of the last bar
+void NaivePortfolio::update_holdings_from_fill(FillEvent fill) {
+    int fill_dir = 0;
+    if (fill.direction == "BUY") {
+        fill_dir = 1;
+    } else if (fill.direction == "SELL") {
+        fill_dir = -1;
+    }
+    
+    // Update holdings list with calculated fill information
+    double fill_cost = bars.get_latest_bars(fill.symbol, 1)["close"].end()->second;
+    double cost = fill_dir * fill_cost * fill.quantity;
+    current_holdings[fill.symbol] += cost;
+    current_holdings["commission"] += fill.commission;
+    current_holdings["heldcash"] -= (cost + fill.commission);
+    current_holdings["totalholdings"] -= (cost + fill.commission);
+}
+
+// Updates positions and holdings in case of fill event
+void NaivePortfolio::update_fill(Event* event) {
+    if (event->type == "FILL") {
+        FillEvent* fill = dynamic_cast<FillEvent*>(event);
+        update_positions_from_fill(*fill);
+        update_holdings_from_fill(*fill);
+    }
 }
