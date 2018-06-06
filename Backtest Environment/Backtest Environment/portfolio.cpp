@@ -135,3 +135,34 @@ void NaivePortfolio::update_fill(Event* event) {
         update_holdings_from_fill(*fill);
     }
 }
+void NaivePortfolio::update_signal(Event* event) {
+    if (event->type == "SIGNAL") {
+        SignalEvent* signal = dynamic_cast<SignalEvent*>(event);
+        OrderEvent orderevent = generate_naive_order(*signal);
+        events.push_back(orderevent);
+    }
+}
+
+// Generates order signal for 100 or so shares of each asset
+// No risk management or position sizing; to be implemented later
+OrderEvent NaivePortfolio::generate_naive_order(SignalEvent signal) {
+    
+    OrderEvent order = OrderEvent();
+    
+    string symbol = signal.symbol;
+    string direction = signal.signal_type;
+    double strength = signal.strength;
+    
+    int mkt_quantity = floor(100 * strength);
+    int cur_quantity = current_positions[symbol];
+    string order_type = "MKT";
+    
+    // Order logic
+    if (direction == "LONG" && cur_quantity == 0) { order = OrderEvent(symbol, order_type, mkt_quantity, "BUY"); }
+    if (direction == "SHORT" && cur_quantity == 0) { order = OrderEvent(symbol, order_type, mkt_quantity, "SELL"); }
+    
+    if (direction == "EXIT" && cur_quantity > 0) { order = OrderEvent(symbol, order_type, abs(cur_quantity), "SELL"); }
+    if (direction == "EXIT" && cur_quantity < 0) { order = OrderEvent(symbol, order_type, abs(cur_quantity), "BUY"); }
+    
+    return order;
+}

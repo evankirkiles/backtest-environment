@@ -38,6 +38,7 @@ public:
     string symbol;
     long datetime;
     string signal_type;
+    double strength;
     
     // PARAMS:
     // symbol: ticker symbol
@@ -60,6 +61,9 @@ public:
     // quantity: non-negative integer for quantity
     // direction: "BUY" or "SELL" for long or short
     OrderEvent(string symbol, string order_type, int quantity, string direction);
+    
+    // Default constructor does nothing
+    OrderEvent();
     
     // Prints the values in the order
     void print_order() {

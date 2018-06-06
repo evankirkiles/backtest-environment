@@ -63,6 +63,9 @@ public:
     // Parent portfolio functions
     void update_signal(Event* event);
     void update_fill(Event* event);
+    
+    // Send order for 100 shares of each asset
+    OrderEvent generate_naive_order(SignalEvent signal);
 };
 
 #endif /* portfolio_hpp */
