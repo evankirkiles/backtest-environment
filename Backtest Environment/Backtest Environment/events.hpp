@@ -44,7 +44,7 @@ public:
     // symbol: ticker symbol
     // datetime: the timestamp at which signal was generated
     // signal_type: "LONG" or "SHORT"
-    SignalEvent(string symbol, long datetime, string signal_type);
+    SignalEvent(string symbol, long datetime, string signal_type, double i_strength);
 };
 
 // Order event for sending an order to execution system

@@ -19,10 +19,11 @@ MarketEvent::MarketEvent() {
 }
 
 // Signal event initialization
-SignalEvent::SignalEvent(string i_symbol, long i_datetime, string i_signal_type) {
+SignalEvent::SignalEvent(string i_symbol, long i_datetime, string i_signal_type, double i_strength) {
     type = "SIGNAL";
     symbol = i_symbol;
     datetime = i_datetime;
+    strength = i_strength;
     signal_type = i_signal_type;
 }
 
@@ -34,6 +35,9 @@ OrderEvent::OrderEvent(string i_symbol, string i_order_type, int i_quantity, str
     quantity = i_quantity;
     direction = i_direction;
 }
+
+// Default order event initializer
+OrderEvent::OrderEvent() { }
 
 // Fill event initialization
 FillEvent::FillEvent(string i_timeindex, string i_symbol, string i_exchange, int i_quantity, string i_direction,
