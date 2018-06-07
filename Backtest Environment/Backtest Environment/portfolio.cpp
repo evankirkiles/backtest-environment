@@ -166,3 +166,21 @@ OrderEvent NaivePortfolio::generate_naive_order(SignalEvent signal) {
     
     return order;
 }
+
+// Create returns stream for performance calculations
+void NaivePortfolio::create_equity_curve() {
+    equity_curve = all_holdings;
+    double previoustotal = -1000000000.0;
+    double previouscurve = 1.0;
+    for (std::map<long, map<string, double>>::iterator it=equity_curve.begin(); it!=equity_curve.end(); ++it) {
+        if (previoustotal == -1000000000.0) {
+            equity_curve[it->first]["equitycurve"] = 1.0;
+            continue;
+        }
+        double returns = ((it->second["totalholdings"])/previoustotal) - 1;
+        equity_curve[it->first]["returns"] = returns;
+        previouscurve *= returns;
+        equity_curve[it->first]["equitycurve"] = previouscurve;
+        previoustotal = it->second["totalholdings"];
+    }
+}
