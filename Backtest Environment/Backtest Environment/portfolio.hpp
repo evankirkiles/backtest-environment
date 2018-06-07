@@ -44,6 +44,8 @@ public:
     map<long, map<string, double>> all_holdings;
     map<string, double> current_holdings;
     
+    map<long, map<string, double>> equity_curve;
+    
     // Initialization function
     NaivePortfolio(HistoricalCSVDataHandler i_bars, vector<string> i_symbol_list, vector<Event> i_events, long i_start_date, double i_initial_capital);
     
@@ -66,6 +68,9 @@ public:
     
     // Send order for 100 shares of each asset
     OrderEvent generate_naive_order(SignalEvent signal);
+    
+    // Create a percentage based returns stream for performance calculations
+    void create_equity_curve();
 };
 
 #endif /* portfolio_hpp */
