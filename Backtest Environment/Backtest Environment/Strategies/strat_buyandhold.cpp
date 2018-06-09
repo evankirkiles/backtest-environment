@@ -39,7 +39,7 @@ void BuyAndHoldStrategy::calculate_signals(MarketEvent i_event) {
             if (newbars.empty()) {
                 if (bought[symbol] == false) {
                     // (symbol, time, type=LONG, SHORT or EXIT)
-                    SignalEvent signal = SignalEvent(symbol, bars.latestDates[symbol][0], string("LONG"));
+                    SignalEvent signal = SignalEvent(symbol, bars.latestDates[symbol][0], string("LONG"), 100.0);
                     events.push_back(signal);
                     bought[symbol_list[i]] = true;
                 }

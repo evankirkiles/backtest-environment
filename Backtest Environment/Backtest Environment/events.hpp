@@ -74,7 +74,7 @@ public:
 // Gets the filled information about an order from the broker
 class FillEvent: public Event {
 public:
-    string timeindex;
+    long timeindex;
     string symbol;
     string exchange;
     int quantity;
@@ -91,7 +91,7 @@ public:
     // fill_cost: the holdings value in dollars
     // commission: optional commission sent from IB
     
-    FillEvent(string timeindex, string symbol, string exchange, int quantity, string direction,
+    FillEvent(long timeindex, string symbol, string exchange, int quantity, string direction,
               double fill_cost, double commission=NULL);
     
     // Calculates the commission for an order given the size

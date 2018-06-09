@@ -40,8 +40,7 @@ OrderEvent::OrderEvent(string i_symbol, string i_order_type, int i_quantity, str
 OrderEvent::OrderEvent() { }
 
 // Fill event initialization
-FillEvent::FillEvent(string i_timeindex, string i_symbol, string i_exchange, int i_quantity, string i_direction,
-                     double i_fill_cost, double i_commission) {
+FillEvent::FillEvent(long i_timeindex, string i_symbol, string i_exchange, int i_quantity, string i_direction, double i_fill_cost, double i_commission) {
     type = "FILL";
     timeindex = i_timeindex;
     symbol = i_symbol;
