@@ -174,7 +174,7 @@ void NaivePortfolio::create_equity_curve() {
     double previouscurve = 1.0;
     for (std::map<long, map<string, double>>::iterator it=equity_curve.begin(); it!=equity_curve.end(); ++it) {
         if (previoustotal == -1000000000.0) {
-            equity_curve[it->first]["equitycurve"] = 1.0;
+            equity_curve[it->first]["equitycurve"] = previouscurve;
             continue;
         }
         double returns = ((it->second["totalholdings"])/previoustotal) - 1;

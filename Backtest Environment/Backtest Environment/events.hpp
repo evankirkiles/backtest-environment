@@ -44,6 +44,7 @@ public:
     // symbol: ticker symbol
     // datetime: the timestamp at which signal was generated
     // signal_type: "LONG" or "SHORT"
+    // strength: tells how strong to make the symbol (will be removed for a percentage-based)
     SignalEvent(string symbol, long datetime, string signal_type, double i_strength);
 };
 
