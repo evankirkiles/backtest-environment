@@ -7,3 +7,65 @@
 //
 
 #include "interface.hpp"
+
+// Constructor that initializes the executor and replaces the empty portfolio and pipeline with functioning ones
+TradingInterface::TradingInterface(vector<string>i_symbol_list, double i_initial_cap, long i_start_date) : executor(&events) {
+    
+    // Initialize variables inputted in constructor
+    symbol_list = i_symbol_list;
+    initial_capital = i_initial_cap;
+    startdate = i_start_date;
+    continue_backtest = false;
+    
+    // Create data handler and portfolio management
+    pipeline = HistoricalCSVDataHandler(&events, &symbol_list);
+    portfolio = NaivePortfolio(pipeline, symbol_list, &events, startdate, initial_capital);
+}
+
+// Begins the backtest!
+void TradingInterface::runbacktest(BuyAndHoldStrategy strategy) {
+    continue_backtest = true;
+    pipeline.format_csv_data();
+    pipeline.update_bars();
+    
+    // Event-driven loop that continues to check for events
+    while(continue_backtest) {
+        
+        // Handles each event in the list and removes it from the stack
+        if (events.size() != 0) {
+            if (events[0].type == "MARKET") {
+                cout << "MARKET" << endl;
+                cout << pipeline.latestDates["QQQ"][0] << endl;
+                MarketEvent* marketevent = dynamic_cast<MarketEvent*>(&events[0]);
+                
+                // In case of a MarketEvent, use updated data to calculate next strategy's next move and send a signal
+                strategy.calculate_signals(*marketevent);
+                
+            } else if (events[0].type == "SIGNAL") {
+                cout << "SIGNAL" << endl;
+                SignalEvent* signalevent = dynamic_cast<SignalEvent*>(&events[0]);
+                
+                // In case of a SignalEvent, portfolio sends necessary orders based on signal send by strategy
+                portfolio.update_signal(*signalevent);
+                
+            } else if (events[0].type == "ORDER") {
+                cout << "ORDER" << endl;
+                OrderEvent* orderevent = dynamic_cast<OrderEvent*>(&events[0]);
+                
+                // In case of an OrderEvent, the execution handler fills the received order (like a brokerage)
+                executor.execute_order(*orderevent);
+                
+            } else if (events[0].type == "FILL") {
+                cout << "FILL" << endl;
+                FillEvent* fillevent = dynamic_cast<FillEvent*>(&events[0]);
+                
+                // In case of a FillEvent, the portfolio updates its information based on the fill information
+                portfolio.update_fill(*fillevent);
+            }
+            events.erase(events.begin());
+        } else {
+            portfolio.update_timeindex();
+            pipeline.update_bars();
+        }
+    }
+}

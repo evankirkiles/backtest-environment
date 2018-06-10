@@ -12,8 +12,11 @@ using namespace std;
 
 // MARK: Naive Portfolio
 
+// Fake constructor
+NaivePortfolio::NaivePortfolio() { };
+
 // Constructor
-NaivePortfolio::NaivePortfolio(HistoricalCSVDataHandler i_bars, vector<string> i_symbol_list, vector<Event> i_events, long i_start_date, double i_initial_capital=100000.0) {
+NaivePortfolio::NaivePortfolio(HistoricalCSVDataHandler i_bars, vector<string> i_symbol_list, boost::ptr_vector<Event>* i_events, long i_start_date, double i_initial_capital=100000.0) {
     
     // Initialize all instance variables
     bars = i_bars;
@@ -70,7 +73,7 @@ map<string, double> NaivePortfolio::construct_current_holdings() {
 }
 
 // Update holdings evaluations with most recently completed bar (previous day)
-void NaivePortfolio::update_timeindex(Event event) {
+void NaivePortfolio::update_timeindex() {
     map<string, map<string, map<long, double>>> lastbar;
     long date;
     double sumvalues = 0;
@@ -128,19 +131,13 @@ void NaivePortfolio::update_holdings_from_fill(FillEvent fill) {
 }
 
 // Updates positions and holdings in case of fill event
-void NaivePortfolio::update_fill(Event* event) {
-    if (event->type == "FILL") {
-        FillEvent* fill = dynamic_cast<FillEvent*>(event);
-        update_positions_from_fill(*fill);
-        update_holdings_from_fill(*fill);
-    }
+void NaivePortfolio::update_fill(FillEvent event) {
+    update_positions_from_fill(event);
+    update_holdings_from_fill(event);
 }
-void NaivePortfolio::update_signal(Event* event) {
-    if (event->type == "SIGNAL") {
-        SignalEvent* signal = dynamic_cast<SignalEvent*>(event);
-        OrderEvent orderevent = generate_naive_order(*signal);
-        events.push_back(orderevent);
-    }
+void NaivePortfolio::update_signal(SignalEvent event) {
+    OrderEvent orderevent = generate_naive_order(event);
+    events->push_back(&orderevent);
 }
 
 // Generates order signal for 100 or so shares of each asset

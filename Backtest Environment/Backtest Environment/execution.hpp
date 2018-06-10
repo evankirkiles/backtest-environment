@@ -11,6 +11,9 @@
 #ifndef vector
 #include <vector>
 #endif
+#ifndef ptr_vector
+#include <boost/ptr_container/ptr_vector.hpp>
+#endif
 
 #include <stdio.h>
 #include "events.hpp"
@@ -18,18 +21,19 @@
 // Base execution handler to which we can add features
 class ExecutionHandler {
 public:
-    vector<Event>eventlist;
-    virtual void execute_order(Event* event) = 0;
+    boost::ptr_vector<Event>* eventlist;
+    virtual void execute_order(OrderEvent event) = 0;
 };
 
 // Simulated execution handler that assumes all orders are filled at the current market price
 // for all quantities; need more sophisticated slippage and market impact
 class SimulatedExecutionHandler: ExecutionHandler {
+public:
     // Constructor
-    SimulatedExecutionHandler(vector<Event> events);
+    SimulatedExecutionHandler(boost::ptr_vector<Event>* events);
     
     // Inherited order execution system
-    void execute_order(Event* event);
+    void execute_order(OrderEvent event);
 };
 
 #endif /* execution_hpp */

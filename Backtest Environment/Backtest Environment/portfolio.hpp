@@ -23,9 +23,9 @@ using namespace std;
 class Portfolio {
 public:
     // Generate new signal based on portfolio logic
-    virtual void update_signal(Event* event)=0;
+    virtual void update_signal(SignalEvent event)=0;
     // Update portfolio current position and holdings
-    virtual void update_fill(Event* event)=0;
+    virtual void update_fill(FillEvent event)=0;
 };
 
 // Placeholder 'naive' portfolio that has minimal logic behind its ordering
@@ -33,7 +33,7 @@ public:
 class NaivePortfolio:Portfolio {
 public:
     HistoricalCSVDataHandler bars;
-    vector<Event> events;
+    boost::ptr_vector<Event>* events;
     vector<string> symbol_list;
     long start_date;
     double initial_capital;
@@ -47,7 +47,10 @@ public:
     map<long, map<string, double>> equity_curve;
     
     // Initialization function
-    NaivePortfolio(HistoricalCSVDataHandler i_bars, vector<string> i_symbol_list, vector<Event> i_events, long i_start_date, double i_initial_capital);
+    NaivePortfolio(HistoricalCSVDataHandler i_bars, vector<string> i_symbol_list, boost::ptr_vector<Event>* i_events, long i_start_date, double i_initial_capital);
+    
+    // Placeholder initialization function
+    NaivePortfolio();
     
     // Functions to construct positions and holdings
     map<long, map<string, double>> construct_all_positions();
@@ -56,15 +59,15 @@ public:
     map<string, double> construct_current_holdings();
     
     // Updates the holdings tracking
-    void update_timeindex(Event event);
+    void update_timeindex();
     
     // Receives a FillEvent and changes the positions and holdings to correctly reflect the event
     void update_positions_from_fill(FillEvent event);
     void update_holdings_from_fill(FillEvent event);
     
     // Parent portfolio functions
-    void update_signal(Event* event);
-    void update_fill(Event* event);
+    void update_signal(SignalEvent event);
+    void update_fill(FillEvent event);
     
     // Send order for 100 shares of each asset
     OrderEvent generate_naive_order(SignalEvent signal);

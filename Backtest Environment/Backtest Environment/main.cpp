@@ -8,10 +8,12 @@
 
 #include <iostream>
 #include "YahooFinanceCSVReader.hpp"
+#include "interface.hpp"
 
 int main(int argc, const char * argv[]) {
     //YahooFinanceCSVReader(char *symbol, char *startdate, char *enddate, char *interval, char outfilename[FILENAME_MAX], char cookiefilename[FILENAME_MAX])
     
+    /*
     char *symbol = (char*)"QQQ";
     
     
@@ -30,5 +32,14 @@ int main(int argc, const char * argv[]) {
     cout << "CLOSE: " << moves.data["close"][getdate] << endl;
     cout << "HIGH: " << moves.data["high"][getdate] << endl;
     cout << "LOW: " << moves.data["low"][getdate] << endl;
+    */
+    
+    vector<string> symbol_list = {string("QQQ"), string("AAPL")};
+    
+    TradingInterface interface = TradingInterface(symbol_list, 10000000, 0);
+    BuyAndHoldStrategy strat = BuyAndHoldStrategy(interface.pipeline, &interface.events);
+    
+    interface.runbacktest(strat);
+     
     return 0;
 }

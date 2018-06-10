@@ -10,12 +10,15 @@
 #ifndef boost
 #include <boost/coroutine2/all.hpp>
 #endif
+#ifndef ptr_vector
+#include <boost/ptr_container/ptr_vector.hpp>
+#endif
 
 using namespace std;
 
 // Gets data from Yahoo Finance CSV's and returns them in format
 // An interface to allow for getting "latest"
-HistoricalCSVDataHandler::HistoricalCSVDataHandler(vector<Event> i_events, vector<string> i_symbol_list) {
+HistoricalCSVDataHandler::HistoricalCSVDataHandler(boost::ptr_vector<Event>* i_events, vector<string>* i_symbol_list) {
     
     events = i_events;
     symbol_list = i_symbol_list;
@@ -41,8 +44,8 @@ void HistoricalCSVDataHandler::append_to_dates(vector<long> new_dates) {
 // Format symbol data
 void HistoricalCSVDataHandler::format_csv_data() {
     // Loop through symbols and load their data into a single frame
-    for(int i=0;i<symbol_list.size();i++) {
-        string symbol = symbol_list[i];
+    for(int i=0;i<symbol_list->size();i++) {
+        string symbol = (*symbol_list)[i];
         
         // Get the data from Yahoo Finance
         // Access formula is symbol_data[SYMBOL].data[TYPE][DATE]
@@ -65,6 +68,8 @@ void HistoricalCSVDataHandler::get_new_bar(boost::coroutines2::coroutine<tuple<s
     tuple<string, long, double, double, double, double, double, double>lastbar;
     for (int i=1; i<+allDates.size();i++) {
         long date = allDates.end()[-i];
+        
+        cout << date  << endl;
         // Formatted in symbol - date - open - low - high - close - volume
         if (symbol_data[symbol]["open"][date] != 0) {
             lastbar = make_tuple(symbol, date, symbol_data[symbol]["open"][date],symbol_data[symbol]["low"][date],symbol_data[symbol]["high"][date],
@@ -75,7 +80,7 @@ void HistoricalCSVDataHandler::get_new_bar(boost::coroutines2::coroutine<tuple<s
         }
         sink(lastbar);
     }
-    
+
     // When done, throw an error so get_new_bar will exit
     throw std::runtime_error("No more bars to retrieve after this one.");
 }
@@ -89,6 +94,7 @@ map<string, map<long, double>> HistoricalCSVDataHandler::get_latest_bars(string 
         // Iterate through the bars and erase ones before the date specified by N
         std::map<long, double>::iterator iter = bars_list["open"].begin();
         for (; iter != bars_list["open"].end();) {
+            cout << "ASF" << endl;
             if (iter->first < latestDates[symbol].end()[-N]) {
                 long date = iter->first;
                 iter++;
@@ -111,8 +117,8 @@ map<string, map<long, double>> HistoricalCSVDataHandler::get_latest_bars(string 
 // Push the latest bar to latest_data for all symbols in list
 void HistoricalCSVDataHandler::update_bars() {
     
-    for (int i=0; i < symbol_list.size(); i++)  {
-        string symbol = symbol_list[i];
+    for (int i=0; i < symbol_list->size(); i++)  {
+        string symbol = (*symbol_list)[i];
 
         // There will always be a first bar to get
         boost::coroutines2::coroutine<tuple<string, long, double, double, double, double, double, double>>::pull_type source{std::bind(&HistoricalCSVDataHandler::get_new_bar, this, std::placeholders::_1, symbol)};
@@ -136,7 +142,7 @@ void HistoricalCSVDataHandler::update_bars() {
         }
         
         // Add bar as a MarketEvent
-        events.push_back(MarketEvent());
+        events->push_back(new MarketEvent());
     }
 }
 

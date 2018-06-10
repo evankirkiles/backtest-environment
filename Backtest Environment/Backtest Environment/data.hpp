@@ -14,6 +14,9 @@
 #ifndef boost
 #include <boost/coroutine2/all.hpp>
 #endif
+#ifndef ptr_vector
+#include <boost/ptr_container/ptr_vector.hpp>
+#endif
 
 #include <stdio.h>
 
@@ -37,14 +40,14 @@ public:
     vector<long> allDates;
     map<string, vector<long>> latestDates;
     bool continue_backtest;
-    vector<Event> events;
-    vector<string> symbol_list;
+    boost::ptr_vector<Event>* events;
+    vector<string>* symbol_list;
     
     // PARAMS:
     // events: Event Queue on which to push new events
     // csv_dir: the path to the folder containing all the symbol csvs
     // symbol_list: list of all the symbols being traded
-    HistoricalCSVDataHandler(vector<Event> events, vector<string> symbol_list);
+    HistoricalCSVDataHandler(boost::ptr_vector<Event>* events, vector<string>* symbol_list);
     
     // Placeholder initializer
     HistoricalCSVDataHandler();
