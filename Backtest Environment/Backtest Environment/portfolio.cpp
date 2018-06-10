@@ -16,7 +16,7 @@ using namespace std;
 NaivePortfolio::NaivePortfolio() { };
 
 // Constructor
-NaivePortfolio::NaivePortfolio(HistoricalCSVDataHandler i_bars, vector<string> i_symbol_list, boost::ptr_vector<Event>* i_events, long i_start_date, double i_initial_capital=100000.0) {
+NaivePortfolio::NaivePortfolio(HistoricalCSVDataHandler* i_bars, vector<string> i_symbol_list, boost::ptr_vector<Event>* i_events, long i_start_date, double i_initial_capital=100000.0) {
     
     // Initialize all instance variables
     bars = i_bars;
@@ -81,7 +81,7 @@ void NaivePortfolio::update_timeindex() {
     for (int i=0; i<symbol_list.size();i++) {
         
         // Update positions
-        lastbar[symbol_list[i]] = bars.get_latest_bars(symbol_list[i],1);
+        lastbar[symbol_list[i]] = bars->get_latest_bars(symbol_list[i],1);
         
         date = lastbar[symbol_list[i]]["open"].end()->first;
         all_positions[date][symbol_list[i]] = current_positions[symbol_list[i]];
@@ -122,7 +122,7 @@ void NaivePortfolio::update_holdings_from_fill(FillEvent fill) {
     }
     
     // Update holdings list with calculated fill information
-    double fill_cost = bars.get_latest_bars(fill.symbol, 1)["close"].end()->second;
+    double fill_cost = bars->get_latest_bars(fill.symbol, 1)["close"].rbegin()->second;
     double cost = fill_dir * fill_cost * fill.quantity;
     current_holdings[fill.symbol] += cost;
     current_holdings["commission"] += fill.commission;

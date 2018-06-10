@@ -32,7 +32,7 @@ public:
 // Used to test simple strategies
 class NaivePortfolio:Portfolio {
 public:
-    HistoricalCSVDataHandler bars;
+    HistoricalCSVDataHandler* bars;
     boost::ptr_vector<Event>* events;
     vector<string> symbol_list;
     long start_date;
@@ -47,7 +47,7 @@ public:
     map<long, map<string, double>> equity_curve;
     
     // Initialization function
-    NaivePortfolio(HistoricalCSVDataHandler i_bars, vector<string> i_symbol_list, boost::ptr_vector<Event>* i_events, long i_start_date, double i_initial_capital);
+    NaivePortfolio(HistoricalCSVDataHandler* i_bars, vector<string> i_symbol_list, boost::ptr_vector<Event>* i_events, long i_start_date, double i_initial_capital);
     
     // Placeholder initialization function
     NaivePortfolio();

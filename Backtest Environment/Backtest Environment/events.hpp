@@ -93,7 +93,7 @@ public:
     // commission: optional commission sent from IB
     
     FillEvent(long timeindex, string symbol, string exchange, int quantity, string direction,
-              double fill_cost, double commission=NULL);
+              double fill_cost, double commission=-1);
     
     // Calculates the commission for an order given the size
     // Based on Interactive Brokers' https://www.interactivebrokers.com/en/index.php?f=commission&p=stocks2

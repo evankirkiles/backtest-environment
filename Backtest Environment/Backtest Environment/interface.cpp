@@ -19,7 +19,7 @@ TradingInterface::TradingInterface(vector<string>i_symbol_list, double i_initial
     
     // Create data handler and portfolio management
     pipeline = HistoricalCSVDataHandler(&events, &symbol_list);
-    portfolio = NaivePortfolio(pipeline, symbol_list, &events, startdate, initial_capital);
+    portfolio = NaivePortfolio(&pipeline, symbol_list, &events, startdate, initial_capital);
 }
 
 // Begins the backtest!
@@ -36,29 +36,24 @@ void TradingInterface::runbacktest(BuyAndHoldStrategy strategy) {
         // Handles each event in the list and removes it from the stack
         if (events.size() != 0) {
             if (events[0].type == "MARKET") {
-                cout << "MARKET" << endl;
-                cout << pipeline.latestDates["QQQ"][0] << endl;
                 MarketEvent* marketevent = dynamic_cast<MarketEvent*>(&events[0]);
                 
                 // In case of a MarketEvent, use updated data to calculate next strategy's next move and send a signal
                 strat.calculate_signals(*marketevent);
                 
             } else if (events[0].type == "SIGNAL") {
-                cout << "SIGNAL" << endl;
                 SignalEvent* signalevent = dynamic_cast<SignalEvent*>(&events[0]);
                 
                 // In case of a SignalEvent, portfolio sends necessary orders based on signal send by strategy
                 portfolio.update_signal(*signalevent);
                 
             } else if (events[0].type == "ORDER") {
-                cout << "ORDER" << endl;
                 OrderEvent* orderevent = dynamic_cast<OrderEvent*>(&events[0]);
                 
                 // In case of an OrderEvent, the execution handler fills the received order (like a brokerage)
                 executor.execute_order(*orderevent);
                 
             } else if (events[0].type == "FILL") {
-                cout << "FILL" << endl;
                 FillEvent* fillevent = dynamic_cast<FillEvent*>(&events[0]);
                 
                 // In case of a FillEvent, the portfolio updates its information based on the fill information

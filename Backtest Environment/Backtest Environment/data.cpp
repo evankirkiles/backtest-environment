@@ -68,7 +68,6 @@ tuple<string, long, double, double, double, double, double, double> HistoricalCS
     tuple<string, long, double, double, double, double, double, double>lastbar;
     long date = allDates[currentDatesIndex[symbol]];
     
-    cout << date  << endl;
     // Formatted in symbol - date - open - low - high - close - volume
     if (symbol_data[symbol]["open"][date] != 0) {
         lastbar = make_tuple(symbol, date, symbol_data[symbol]["open"][date],symbol_data[symbol]["low"][date],symbol_data[symbol]["high"][date],
