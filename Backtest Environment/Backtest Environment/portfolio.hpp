@@ -44,6 +44,7 @@ public:
     map<long, map<string, double>> all_holdings;
     map<string, double> current_holdings;
     
+    // Returns stream for performance calculation
     map<long, map<string, double>> equity_curve;
     
     // Initialization function
@@ -73,6 +74,7 @@ public:
     void generate_naive_order(SignalEvent signal);
     
     // Create a percentage based returns stream for performance calculations
+    // WILL BE REPLACED BY update_equity_curve()
     void create_equity_curve();
 };
 

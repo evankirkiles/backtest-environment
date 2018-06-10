@@ -57,6 +57,11 @@ map<long, map<string, double>> NaivePortfolio::construct_all_holdings() {
     temp["heldcash"] = initial_capital;
     temp["commission"] = 0.0;
     temp["totalholdings"] = initial_capital;
+    
+    // Equity curve data
+    temp["returns"] = 0.0;
+    temp["equitycurve"] = 0.0;
+    
     map<long, map<string, double>> c;
     c[start_date] = temp;
     return c;
@@ -77,13 +82,15 @@ void NaivePortfolio::update_timeindex() {
     map<string, map<string, map<long, double>>> lastbar;
     long date;
     double sumvalues = 0;
+    double previoustotal = all_holdings.rbegin()->second["totalholdings"];
+    double previouscurve = all_holdings.rbegin()->second["equitycurve"];
     
     for (int i=0; i<symbol_list.size();i++) {
         
         // Update positions
         lastbar[symbol_list[i]] = bars->get_latest_bars(symbol_list[i],1);
         
-        date = lastbar[symbol_list[i]]["open"].end()->first;
+        date = lastbar[symbol_list[i]]["open"].rbegin()->first;
         all_positions[date][symbol_list[i]] = current_positions[symbol_list[i]];
         
         // Update holdings
@@ -96,6 +103,13 @@ void NaivePortfolio::update_timeindex() {
     all_holdings[date]["totalholdings"] = current_holdings["heldcash"] + sumvalues;
     all_holdings[date]["heldcash"] = current_holdings["heldcash"];
     all_holdings[date]["commission"] = current_holdings["commission"];
+    
+    // Equity curve handling
+    if (all_holdings.size() > 1) {
+        double returns = (all_holdings[date]["totalholdings"]/previoustotal) - 1;
+        all_holdings[date]["returns"] = returns;
+        all_holdings[date]["equitycurve"] = (previouscurve + 1) * (returns + 1) - 1;
+    }
 }
 
 // Update positions from a FillEvent
