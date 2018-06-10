@@ -37,8 +37,10 @@ class HistoricalCSVDataHandler:DataHandler {
 public:
     map<string, map<string, map<long, double>>> symbol_data;
     map<string, map<string, map<long, double>>> latest_data;
+    map<string, tuple<string, long, double, double, double, double, double, double>> previousbar;
     vector<long> allDates;
     map<string, vector<long>> latestDates;
+    map<string, int> currentDatesIndex;
     bool continue_backtest;
     boost::ptr_vector<Event>* events;
     vector<string>* symbol_list;
@@ -56,7 +58,7 @@ public:
     void format_csv_data();
     
     // Creates input iterator for going through data
-    void get_new_bar(boost::coroutines2::coroutine<tuple<string, long, double, double, double, double, double, double>>::push_type &sink, string symbol);
+    tuple<string, long, double, double, double, double, double, double> get_new_bar(string symbol);
     
     // Parent DataHandler functions
     map<string, map<long, double>> get_latest_bars(std::string symbol, int N);

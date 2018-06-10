@@ -36,13 +36,14 @@ public:
 // Does not exit positions ever, test strategy class with this
 class BuyAndHoldStrategy: Strategy {
 public:
-    HistoricalCSVDataHandler bars;
+    HistoricalCSVDataHandler* bars;
     boost::ptr_vector<Event>* events;
     vector<string>* symbol_list;
     map<string, bool> bought;
     
+    BuyAndHoldStrategy();
     // Initialize instance of Buy and Hold strategy
-    BuyAndHoldStrategy(HistoricalCSVDataHandler i_bars, boost::ptr_vector<Event>* i_events);
+    BuyAndHoldStrategy(HistoricalCSVDataHandler* i_bars, boost::ptr_vector<Event>* i_events);
     // Add keys for all symbols in symbol_list to bought and sets them to false
     map<string, bool> calculate_initial_bought();
     // Trading logic in this function for new event

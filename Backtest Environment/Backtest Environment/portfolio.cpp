@@ -136,15 +136,12 @@ void NaivePortfolio::update_fill(FillEvent event) {
     update_holdings_from_fill(event);
 }
 void NaivePortfolio::update_signal(SignalEvent event) {
-    OrderEvent orderevent = generate_naive_order(event);
-    events->push_back(&orderevent);
+    generate_naive_order(event);
 }
 
 // Generates order signal for 100 or so shares of each asset
 // No risk management or position sizing; to be implemented later
-OrderEvent NaivePortfolio::generate_naive_order(SignalEvent signal) {
-    
-    OrderEvent order = OrderEvent();
+void NaivePortfolio::generate_naive_order(SignalEvent signal) {
     
     string symbol = signal.symbol;
     string direction = signal.signal_type;
@@ -155,13 +152,15 @@ OrderEvent NaivePortfolio::generate_naive_order(SignalEvent signal) {
     string order_type = "MKT";
     
     // Order logic
-    if (direction == "LONG" && cur_quantity == 0) { order = OrderEvent(symbol, order_type, mkt_quantity, "BUY"); }
-    if (direction == "SHORT" && cur_quantity == 0) { order = OrderEvent(symbol, order_type, mkt_quantity, "SELL"); }
-    
-    if (direction == "EXIT" && cur_quantity > 0) { order = OrderEvent(symbol, order_type, abs(cur_quantity), "SELL"); }
-    if (direction == "EXIT" && cur_quantity < 0) { order = OrderEvent(symbol, order_type, abs(cur_quantity), "BUY"); }
-    
-    return order;
+    if (direction == "LONG" && cur_quantity == 0) {
+        events->push_back(new OrderEvent(symbol, order_type, mkt_quantity, "BUY"));
+    } else if (direction == "SHORT" && cur_quantity == 0) {
+        events->push_back(new OrderEvent(symbol, order_type, mkt_quantity, "SELL"));
+    } else if (direction == "EXIT" && cur_quantity > 0) {
+        events->push_back(new OrderEvent(symbol, order_type, abs(cur_quantity), "SELL"));
+    } else if (direction == "EXIT" && cur_quantity < 0) {
+        events->push_back(new OrderEvent(symbol, order_type, abs(cur_quantity), "BUY"));
+    }
 }
 
 // Create returns stream for performance calculations

@@ -70,7 +70,7 @@ public:
     void update_fill(FillEvent event);
     
     // Send order for 100 shares of each asset
-    OrderEvent generate_naive_order(SignalEvent signal);
+    void generate_naive_order(SignalEvent signal);
     
     // Create a percentage based returns stream for performance calculations
     void create_equity_curve();

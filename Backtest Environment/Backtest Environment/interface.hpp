@@ -44,6 +44,7 @@ public:
     SimulatedExecutionHandler executor;
     NaivePortfolio portfolio;
     HistoricalCSVDataHandler pipeline;
+    BuyAndHoldStrategy strat;
     
     // PARAMS
     // symbol_list: list of symbols to be traded

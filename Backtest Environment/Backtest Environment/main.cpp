@@ -37,7 +37,7 @@ int main(int argc, const char * argv[]) {
     vector<string> symbol_list = {string("QQQ"), string("AAPL")};
     
     TradingInterface interface = TradingInterface(symbol_list, 10000000, 0);
-    BuyAndHoldStrategy strat = BuyAndHoldStrategy(interface.pipeline, &interface.events);
+    BuyAndHoldStrategy strat = BuyAndHoldStrategy(&interface.pipeline, &interface.events);
     
     interface.runbacktest(strat);
      

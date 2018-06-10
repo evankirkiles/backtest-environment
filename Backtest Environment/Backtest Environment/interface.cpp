@@ -28,6 +28,8 @@ void TradingInterface::runbacktest(BuyAndHoldStrategy strategy) {
     pipeline.format_csv_data();
     pipeline.update_bars();
     
+    strat = strategy;
+    
     // Event-driven loop that continues to check for events
     while(continue_backtest) {
         
@@ -39,7 +41,7 @@ void TradingInterface::runbacktest(BuyAndHoldStrategy strategy) {
                 MarketEvent* marketevent = dynamic_cast<MarketEvent*>(&events[0]);
                 
                 // In case of a MarketEvent, use updated data to calculate next strategy's next move and send a signal
-                strategy.calculate_signals(*marketevent);
+                strat.calculate_signals(*marketevent);
                 
             } else if (events[0].type == "SIGNAL") {
                 cout << "SIGNAL" << endl;

@@ -25,7 +25,6 @@ SimulatedExecutionHandler::SimulatedExecutionHandler(boost::ptr_vector<Event>* e
 // ONLY EXECUTES ON NYSE; NEED TO IMPLEMENT PARAMETER FOR OTHER EXCHANGES
 // Also no latency, slippage, or fill ratio problems
 void SimulatedExecutionHandler::execute_order(OrderEvent event) {
-    FillEvent filledorder = FillEvent(long(chrono::duration_cast<std::chrono::seconds>(chrono::system_clock::now().time_since_epoch()).count()), event.symbol, "NYSE", event.quantity, event.direction, 0);
-    eventlist->push_back(&filledorder);
+    eventlist->push_back(new FillEvent(long(chrono::duration_cast<std::chrono::seconds>(chrono::system_clock::now().time_since_epoch()).count()), event.symbol, "NYSE", event.quantity, event.direction, 0));
 }
 
