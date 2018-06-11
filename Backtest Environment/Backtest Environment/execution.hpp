@@ -14,6 +14,9 @@
 #ifndef ptr_vector
 #include <boost/ptr_container/ptr_vector.hpp>
 #endif
+#ifndef chrono
+#include <chrono>
+#endif
 
 #include <stdio.h>
 #include "events.hpp"

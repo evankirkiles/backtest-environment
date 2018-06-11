@@ -7,9 +7,6 @@
 //
 
 #include "execution.hpp"
-#ifndef chrono
-#include <chrono>
-#endif
 
 using namespace std;
 

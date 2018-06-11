@@ -13,6 +13,7 @@
 		F44F8D7D20C2F82000511DF8 /* portfolio.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F44F8D7B20C2F82000511DF8 /* portfolio.cpp */; };
 		F462E25F20B912B4002D3A62 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F462E25E20B912B4002D3A62 /* main.cpp */; };
 		F462E26920BB3BC3002D3A62 /* MarketDataFrame.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F462E26820BB3BC3002D3A62 /* MarketDataFrame.cpp */; };
+		F4B612DB20CF38BF009EA01E /* gnuplotter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F4B612D920CF38BF009EA01E /* gnuplotter.cpp */; };
 		F4B7553820BDA07A00B9FFCB /* data.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F4B7553620BDA07A00B9FFCB /* data.cpp */; };
 		F4B7553B20BDA97F00B9FFCB /* events.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F4B7553920BDA97F00B9FFCB /* events.cpp */; };
 		F4F9EF6120C08CBB0057CF6C /* strat_buyandhold.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F4F9EF5F20C08CBB0057CF6C /* strat_buyandhold.cpp */; };
@@ -45,6 +46,8 @@
 		F462E25E20B912B4002D3A62 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
 		F462E26620BB2D47002D3A62 /* MarketDataFrame.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = MarketDataFrame.hpp; sourceTree = "<group>"; };
 		F462E26820BB3BC3002D3A62 /* MarketDataFrame.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = MarketDataFrame.cpp; sourceTree = "<group>"; };
+		F4B612D920CF38BF009EA01E /* gnuplotter.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = gnuplotter.cpp; sourceTree = "<group>"; };
+		F4B612DA20CF38BF009EA01E /* gnuplotter.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = gnuplotter.hpp; sourceTree = "<group>"; };
 		F4B7553620BDA07A00B9FFCB /* data.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = data.cpp; sourceTree = "<group>"; };
 		F4B7553720BDA07A00B9FFCB /* data.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = data.hpp; sourceTree = "<group>"; };
 		F4B7553920BDA97F00B9FFCB /* events.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = events.cpp; sourceTree = "<group>"; };
@@ -116,10 +119,20 @@
 				F4F9EF6020C08CBB0057CF6C /* strategiesheader.hpp */,
 				F44F8D7B20C2F82000511DF8 /* portfolio.cpp */,
 				F44F8D7C20C2F82000511DF8 /* portfolio.hpp */,
+				F4B612D820CF37CF009EA01E /* Graphics */,
 				F4F9EF5E20C08C820057CF6C /* Strategies */,
 				845AD71820BA16CD000AE3F9 /* Data Handling */,
 			);
 			path = "Backtest Environment";
+			sourceTree = "<group>";
+		};
+		F4B612D820CF37CF009EA01E /* Graphics */ = {
+			isa = PBXGroup;
+			children = (
+				F4B612D920CF38BF009EA01E /* gnuplotter.cpp */,
+				F4B612DA20CF38BF009EA01E /* gnuplotter.hpp */,
+			);
+			path = Graphics;
 			sourceTree = "<group>";
 		};
 		F4F9EF5E20C08C820057CF6C /* Strategies */ = {
@@ -187,6 +200,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				F4B7553B20BDA97F00B9FFCB /* events.cpp in Sources */,
+				F4B612DB20CF38BF009EA01E /* gnuplotter.cpp in Sources */,
 				F462E25F20B912B4002D3A62 /* main.cpp in Sources */,
 				F44CCAAE20CB5B9300B50B9D /* execution.cpp in Sources */,
 				F44F8D7D20C2F82000511DF8 /* portfolio.cpp in Sources */,
@@ -317,10 +331,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = Z38G8Z9XR4;
 				HEADER_SEARCH_PATHS = /usr/local/Cellar/boost/1.67.0_1/include/;
-				LIBRARY_SEARCH_PATHS = (
-					/usr/local/Cellar/boost/1.67.0_1/lib,
-					/usr/local/Cellar/qwt/6.1.3_4/lib,
-				);
+				LIBRARY_SEARCH_PATHS = /usr/local/Cellar/boost/1.67.0_1/lib;
 				OTHER_LDFLAGS = (
 					"-lcurl",
 					"-lboost_context-mt",
@@ -339,10 +350,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = Z38G8Z9XR4;
 				HEADER_SEARCH_PATHS = /usr/local/Cellar/boost/1.67.0_1/include/;
-				LIBRARY_SEARCH_PATHS = (
-					/usr/local/Cellar/boost/1.67.0_1/lib,
-					/usr/local/Cellar/qwt/6.1.3_4/lib,
-				);
+				LIBRARY_SEARCH_PATHS = /usr/local/Cellar/boost/1.67.0_1/lib;
 				OTHER_LDFLAGS = (
 					"-lcurl",
 					"-lboost_context-mt",

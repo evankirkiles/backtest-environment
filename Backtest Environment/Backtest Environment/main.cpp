@@ -9,37 +9,73 @@
 #include <iostream>
 #include "YahooFinanceCSVReader.hpp"
 #include "interface.hpp"
+#include "gnuplotter.hpp"
+
 
 int main(int argc, const char * argv[]) {
-    //YahooFinanceCSVReader(char *symbol, char *startdate, char *enddate, char *interval, char outfilename[FILENAME_MAX], char cookiefilename[FILENAME_MAX])
-    
-    /*
-    char *symbol = (char*)"QQQ";
-    
-    
-    MarketDataFrame moves = YahooFinanceCSVReader(
-                                                   symbol,
-                                                   (char*)(string("/Users/samkirkiles/Desktop/Backtest Environment/Backtest Environment/Backtest Environment/Data Handling/CSV directory/") + string(symbol) + string(".csv")).c_str(),
-                                                   (char*)"/Users/samkirkiles/Desktop/Backtest Environment/Backtest Environment/Backtest Environment/Data Handling/cookies.txt",
-                                                   (char*)"/Users/samkirkiles/Desktop/Backtest Environment/Backtest Environment/Backtest Environment/Data Handling/crumb.txt").marketmovements;
-    
-    // Mimic pandas DataFrame for historical data: hold indices in a vector
-    // Allows for integer indexing and makes life a lot easier
-    double getdate = moves.indices[2];
-    
-    cout << "Data for stock " << symbol << " on date " << getdate << endl;
-    cout << "OPEN: " << moves.data["open"][getdate] << endl;
-    cout << "CLOSE: " << moves.data["close"][getdate] << endl;
-    cout << "HIGH: " << moves.data["high"][getdate] << endl;
-    cout << "LOW: " << moves.data["low"][getdate] << endl;
-    */
+
     
     vector<string> symbol_list = {string("QQQ"), string("AAPL"), string("SPY")};
     
     TradingInterface interface = TradingInterface(symbol_list, 10000000, 0);
     BuyAndHoldStrategy strat = BuyAndHoldStrategy(&interface.pipeline, &interface.events);
     
-    interface.runbacktest(strat);
-     
+    GNUPlotter gnuplot(&interface.pipeline);
+    gnuplot.initPlot();
+    
+    
+    //interface.runbacktest(strat);
+    
+    
     return 0;
 }
+
+
+/*
+void plotResults(double* xData, double* yData, int dataSize);
+int main() {
+    int i = 0;
+    int nIntervals = 100;
+    double intervalSize = 1.0;
+    double stepSize = intervalSize/nIntervals;
+    double* xData = (double*) malloc((nIntervals+1)*sizeof(double));
+    double* yData = (double*) malloc((nIntervals+1)*sizeof(double));
+    xData[0] = 0.0;
+    double x0 = 0.0;
+    for (i = 0; i < nIntervals; i++) {
+        x0 = xData[i];
+        xData[i+1] = x0 + stepSize;
+    }
+    for (i = 0; i <= nIntervals; i++) {
+        x0 = xData[i];
+        yData[i] = sin(x0)*cos(10*x0);
+    }
+    plotResults(xData,yData,nIntervals);
+    return 0;
+}
+void plotResults(double* xData, double* yData, int dataSize) {
+    FILE *gnuplotPipe,*tempDataFile;
+    char *tempDataFileName;
+    double x,y;
+    int i;
+    tempDataFileName = (char*)"tempData";
+    gnuplotPipe = popen("/usr/local/bin/gnuplot","w");
+    if (gnuplotPipe) {
+        fprintf(gnuplotPipe,"plot \"%s\" with lines\n",tempDataFileName);
+        fflush(gnuplotPipe);
+        tempDataFile = fopen(tempDataFileName,"w");
+        for (i=0; i <= dataSize; i++) {
+            x = xData[i];
+            y = yData[i];
+            fprintf(tempDataFile,"%lf %lf\n",x,y);
+        }
+        fclose(tempDataFile);
+        printf("press enter to continue...");
+        getchar();
+        remove(tempDataFileName);
+        fprintf(gnuplotPipe,"exit \n");
+    } else {
+        printf("gnuplot not found...");
+    }
+}
+*/

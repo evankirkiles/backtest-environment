@@ -7,9 +7,6 @@
 //
 
 #include "events.hpp"
-#ifndef iostream
-#include <iostream>
-#endif
 
 using namespace std;
 
