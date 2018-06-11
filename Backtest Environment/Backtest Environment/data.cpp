@@ -49,9 +49,9 @@ void HistoricalCSVDataHandler::format_csv_data() {
         // Get the data from Yahoo Finance
         // Access formula is symbol_data[SYMBOL].data[TYPE][DATE]
         MarketDataFrame moves = YahooFinanceCSVReader((char*)symbol.c_str(),
-                                                      (char*)(string("/Users/samkirkiles/Desktop/Backtest Environment/Backtest Environment/Backtest Environment/Data Handling/CSV directory/") + symbol + string(".csv")).c_str(),
-                                                      (char*)"/Users/samkirkiles/Desktop/Backtest Environment/Backtest Environment/Backtest Environment/Data Handling/cookies.txt",
-                                                      (char*)"/Users/samkirkiles/Desktop/Backtest Environment/Backtest Environment/Backtest Environment/Data Handling/crumb.txt").marketmovements;
+                                                      (char*)(string("./Backtest Environment/Data Handling/CSV directory/") + symbol + string(".csv")).c_str(),
+                                                      (char*)"./Backtest Environment/Data Handling/cookies.txt",
+                                                      (char*)"./Backtest Environment/Data Handling/crumb.txt").marketmovements;
         symbol_data[symbol] = moves.data;
         currentDatesIndex[symbol] = 0;
         append_to_dates(moves.indices);

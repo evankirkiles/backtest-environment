@@ -317,7 +317,10 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = Z38G8Z9XR4;
 				HEADER_SEARCH_PATHS = /usr/local/Cellar/boost/1.67.0_1/include/;
-				LIBRARY_SEARCH_PATHS = /usr/local/Cellar/boost/1.67.0_1/lib;
+				LIBRARY_SEARCH_PATHS = (
+					/usr/local/Cellar/boost/1.67.0_1/lib,
+					/usr/local/Cellar/qwt/6.1.3_4/lib,
+				);
 				OTHER_LDFLAGS = (
 					"-lcurl",
 					"-lboost_context-mt",
@@ -336,7 +339,10 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = Z38G8Z9XR4;
 				HEADER_SEARCH_PATHS = /usr/local/Cellar/boost/1.67.0_1/include/;
-				LIBRARY_SEARCH_PATHS = /usr/local/Cellar/boost/1.67.0_1/lib;
+				LIBRARY_SEARCH_PATHS = (
+					/usr/local/Cellar/boost/1.67.0_1/lib,
+					/usr/local/Cellar/qwt/6.1.3_4/lib,
+				);
 				OTHER_LDFLAGS = (
 					"-lcurl",
 					"-lboost_context-mt",
