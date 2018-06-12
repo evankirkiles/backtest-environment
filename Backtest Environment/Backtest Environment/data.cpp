@@ -69,13 +69,6 @@ tuple<string, long, double, double, double, double, double, double> HistoricalCS
     tuple<string, long, double, double, double, double, double, double>lastbar;
     long date = allDates[currentDatesIndex[symbol]];
     
-    // If date is 0, there are no more bars to retrieve so stop backtest
-    if (date < datesbegin || date > datesend) {
-        *continue_backtest = 0;
-        cout << "End of backtest reached for symbol " << symbol << "." << endl;
-        return lastbar;
-    }
-    
     // Formatted in symbol - date - open - low - high - close - volume
     if (symbol_data[symbol]["open"][date] != 0) {
         lastbar = make_tuple(symbol, date, symbol_data[symbol]["open"][date],symbol_data[symbol]["low"][date],symbol_data[symbol]["high"][date],

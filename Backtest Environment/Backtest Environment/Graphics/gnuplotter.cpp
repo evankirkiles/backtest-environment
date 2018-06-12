@@ -9,11 +9,14 @@
 #include "gnuplotter.hpp"
 
 // Constructor that takes in a pointer to the returns stream
-GNUPlotter::GNUPlotter(NaivePortfolio* i_portfolio, char* dat_file) {
+GNUPlotter::GNUPlotter(NaivePortfolio* i_portfolio, char* dat_file, long startdate, long enddate) {
     
     portfolio = i_portfolio;
     dataFile = dat_file;
     focused = false;
+    
+    start = startdate;
+    end = enddate;
     
     // Clear the data file
     remove(dataFile);
@@ -29,7 +32,9 @@ void GNUPlotter::initPlot() {
     fflush(gnuplotPipe);
     fprintf(gnuplotPipe, "set xlabel \"date (epochtime)\"\n");
     fflush(gnuplotPipe);
-    fprintf(gnuplotPipe, "set ylabel \"total returns\"\n");
+    fprintf(gnuplotPipe, "set ylabel \"portfolio value\"\n");
+    fflush(gnuplotPipe);
+    fprintf(gnuplotPipe, "set xrange [%ld:%ld]\n", start, end);
     fflush(gnuplotPipe);
 }
 

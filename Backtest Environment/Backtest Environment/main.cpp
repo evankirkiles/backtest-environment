@@ -14,13 +14,15 @@
 
 int main(int argc, const char * argv[]) {
 
+    char* startdate = (char*)"2007-01-01";
+    char* enddate = (char*)"2010-01-01";
     
     vector<string> symbol_list = {string("QQQ"), string("AAPL"), string("SPY")};
     
-    TradingInterface interface = TradingInterface(symbol_list, 10000000, (char*)"2012-01-01", (char*)"2014-01-01");
+    TradingInterface interface = TradingInterface(symbol_list, 10000000, startdate, enddate);
     BuyAndHoldStrategy strat = BuyAndHoldStrategy(&interface.pipeline, &interface.events);
     
-    GNUPlotter gnuplot(&interface.portfolio, (char*)"/Users/samkirkiles/Desktop/Backtest Environment/Backtest Environment/Backtest Environment/Graphics/data.csv");
+    GNUPlotter gnuplot(&interface.portfolio, (char*)"/Users/samkirkiles/Desktop/Backtest Environment/Backtest Environment/Backtest Environment/Graphics/data.csv", get_epoch_time(startdate), get_epoch_time(enddate));
     gnuplot.initPlot();
     
     // Begin the backtest on the created plot device

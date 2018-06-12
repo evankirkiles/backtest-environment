@@ -30,11 +30,14 @@ public:
     char* dataFile;
     fstream data;
     
+    long start;
+    long end;
+    
     // Refocuses the data if it is the first bar
     bool focused;
     
     // Constructor
-    GNUPlotter(NaivePortfolio* bars, char* dat_file);
+    GNUPlotter(NaivePortfolio* bars, char* dat_file, long startdate, long enddate);
     
     // Creates empty returns stream plot that prepares for data from returns stream
     void initPlot();
