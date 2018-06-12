@@ -8,6 +8,8 @@
 
 #include "interface.hpp"
 
+
+
 // Constructor that initializes the executor and replaces the empty portfolio and pipeline with functioning ones
 TradingInterface::TradingInterface(vector<string>i_symbol_list, double i_initial_cap, long i_start_date) : executor(&events) {
     
@@ -23,7 +25,7 @@ TradingInterface::TradingInterface(vector<string>i_symbol_list, double i_initial
 }
 
 // Begins the backtest!
-void TradingInterface::runbacktest(BuyAndHoldStrategy strategy) {
+void TradingInterface::runbacktest(BuyAndHoldStrategy strategy, GNUPlotter* plot) {
     continue_backtest = true;
     pipeline.format_csv_data();
     pipeline.update_bars();
@@ -63,6 +65,8 @@ void TradingInterface::runbacktest(BuyAndHoldStrategy strategy) {
         } else {
             portfolio.update_timeindex();
             pipeline.update_bars();
+            plot->updatePlot();
         }
     }
+    plot->quitPlot();
 }

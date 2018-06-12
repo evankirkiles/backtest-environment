@@ -20,11 +20,11 @@ int main(int argc, const char * argv[]) {
     TradingInterface interface = TradingInterface(symbol_list, 10000000, 0);
     BuyAndHoldStrategy strat = BuyAndHoldStrategy(&interface.pipeline, &interface.events);
     
-    GNUPlotter gnuplot(&interface.pipeline);
+    GNUPlotter gnuplot(&interface.portfolio, (char*)"/Users/samkirkiles/Desktop/Backtest Environment/Backtest Environment/Backtest Environment/Graphics/data.csv");
     gnuplot.initPlot();
     
     
-    //interface.runbacktest(strat);
+    interface.runbacktest(strat, &gnuplot);
     
     
     return 0;

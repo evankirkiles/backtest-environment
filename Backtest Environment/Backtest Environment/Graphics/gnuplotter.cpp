@@ -9,20 +9,50 @@
 #include "gnuplotter.hpp"
 
 // Constructor that takes in a pointer to the returns stream
-GNUPlotter::GNUPlotter(HistoricalCSVDataHandler* i_bars) {
+GNUPlotter::GNUPlotter(NaivePortfolio* i_portfolio, char* dat_file) {
     
-    bars = i_bars;
+    portfolio = i_portfolio;
+    dataFile = dat_file;
+    
+    // Clear the data file
+    remove(dataFile);
+    
 }
 
 // Creates pipe for commands and creates an empty plot
 void GNUPlotter::initPlot() {
     gnuplotPipe = popen("/usr/local/bin/gnuplot", "w");
     
-    // Placeholder test for gnuplot
-    fprintf(gnuplotPipe, "plot sin(x)\n");
+    data.open(dataFile, ios::in | ios::out | ios::app);
+    data << "0, " << portfolio->start_date << "\n";
+    data.close();
+    
+    // Set plot settings
+    fprintf(gnuplotPipe, "set datafile separator \",\"\n");
     fflush(gnuplotPipe);
     
-    printf("press enter");
-    getchar();
+    // Initially plot a point at start_date where equity curve is 0
+    fprintf(gnuplotPipe, "plot \"%s\" every 5::0 using 1:2 with lines\n", dataFile);
+    fflush(gnuplotPipe);
+}
+
+// Replot from the updated returns stream
+void GNUPlotter::updatePlot() {
+    
+    // Update data file with new returns bar
+    long date = portfolio->all_holdings.rbegin()->first;
+    double equitycurve = portfolio->all_holdings.rbegin()->second["equitycurve"];
+    
+    data.open(dataFile, ios::in | ios::out | ios::app);
+    data << date << ", " << equitycurve << "\n";
+    data.close();
+    
+    // Replot with new data
+    fprintf(gnuplotPipe, "replot \n");
+    fflush(gnuplotPipe);
+}
+
+// Quits the plot
+void GNUPlotter::quitPlot() {
     fprintf(gnuplotPipe, "exit \n");
 }

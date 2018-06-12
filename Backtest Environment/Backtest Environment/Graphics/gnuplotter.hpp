@@ -9,27 +9,37 @@
 #ifndef gnuplotter_hpp
 #define gnuplotter_hpp
 
-#ifndef DataHandler
-#include "data.hpp"
+#ifndef Portfolio
+#include "portfolio.hpp"
+#endif
+#ifndef fstream
+#include <fstream>
 #endif
 
 #include <stdio.h>
+
+using namespace std;
 
 // Graphing functionality
 class GNUPlotter {
 public:
     
     // Contains the latest data and returns stream
-    HistoricalCSVDataHandler* bars;
-    FILE* gnuplotPipe;
+    NaivePortfolio* portfolio;
+    FILE *gnuplotPipe;
+    char* dataFile;
+    fstream data;
     
     // Constructor
-    GNUPlotter(HistoricalCSVDataHandler* bars);
+    GNUPlotter(NaivePortfolio* bars, char* dat_file);
     
     // Creates empty returns stream plot that prepares for data from returns stream
     void initPlot();
     // Updates the plot with data from the returns stream
     void updatePlot();
+    
+    // Quits the gnuplot instance
+    void quitPlot();
 };
 
 #endif /* gnuplotter_hpp */

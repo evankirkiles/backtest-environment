@@ -42,7 +42,6 @@ void BuyAndHoldStrategy::calculate_signals(MarketEvent i_event) {
     for (int i=0; i < symbol_list->size(); i++) {
         string symbol = (*symbol_list)[i];
         map<string, map<long, double>> newbars = bars->get_latest_bars(symbol, 1);
-        cout << "Open for " << symbol << " at date " << newbars["open"].begin()->first << " is " <<  newbars["open"].begin()->second << "." << endl;
         if (!newbars.empty() && newbars["open"].begin()->second > 0.01) {
             if (bought[symbol] == false) {
                 

@@ -17,6 +17,9 @@
 #ifndef iostream
 #include <iostream>
 #endif
+#ifndef GNUPlotter
+#include "Graphics/gnuplotter.hpp"
+#endif
 
 #include <stdio.h>
 #include "strategiesheader.hpp"
@@ -53,7 +56,7 @@ public:
     TradingInterface(vector<string>symbol_list, double initial_cap, long start_date);
     
     // Executes the while loop for running the backtest
-    void runbacktest(BuyAndHoldStrategy strategy);
+    void runbacktest(BuyAndHoldStrategy strategy, GNUPlotter* plot);
 };
 
 #endif /* interface_hpp */
