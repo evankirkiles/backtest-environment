@@ -74,6 +74,9 @@ public:
     // Send order for 100 shares of each asset
     void generate_naive_order(SignalEvent signal);
     
+    // Function to calculate how many shares need to be bought for the given percentage
+    int calculate_quantity(string symbol, double percentage);
+    
     // Create a percentage based returns stream for performance calculations
     // WILL BE REPLACED BY update_equity_curve()
     void create_equity_curve();

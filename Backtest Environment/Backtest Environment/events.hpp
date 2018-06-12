@@ -37,15 +37,13 @@ class SignalEvent: public Event {
 public:
     string symbol;
     long datetime;
-    string signal_type;
     double strength;
     
     // PARAMS:
     // symbol: ticker symbol
     // datetime: the timestamp at which signal was generated
-    // signal_type: "LONG" or "SHORT"
-    // strength: tells how strong to make the symbol (will be removed for a percentage-based)
-    SignalEvent(string symbol, long datetime, string signal_type, double i_strength);
+    // percentage: target percent (positive for long, negative for short)
+    SignalEvent(string symbol, long datetime, double percentage);
 };
 
 // Order event for sending an order to execution system

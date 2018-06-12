@@ -46,7 +46,7 @@ void BuyAndHoldStrategy::calculate_signals(MarketEvent i_event) {
             if (bought[symbol] == false) {
                 
                 // (symbol, time, type=LONG, SHORT or EXIT)
-                events->push_back(new SignalEvent(symbol, bars->latestDates[symbol][0], string("LONG"), 100.0));
+                events->push_back(new SignalEvent(symbol, bars->latestDates[symbol][0], 0.1));
                 bought[symbol] = true;
             }
         }

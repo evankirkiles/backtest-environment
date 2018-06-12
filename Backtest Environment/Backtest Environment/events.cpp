@@ -16,12 +16,11 @@ MarketEvent::MarketEvent() {
 }
 
 // Signal event initialization
-SignalEvent::SignalEvent(string i_symbol, long i_datetime, string i_signal_type, double i_strength) {
+SignalEvent::SignalEvent(string i_symbol, long i_datetime, double percentage) {
     type = "SIGNAL";
     symbol = i_symbol;
     datetime = i_datetime;
-    strength = i_strength;
-    signal_type = i_signal_type;
+    strength = percentage;
 }
 
 // Order event initialization

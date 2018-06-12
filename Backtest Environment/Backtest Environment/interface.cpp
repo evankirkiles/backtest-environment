@@ -57,6 +57,7 @@ void TradingInterface::runbacktest(BuyAndHoldStrategy strategy, GNUPlotter* plot
                 
                 // In case of an OrderEvent, the execution handler fills the received order (like a brokerage)
                 executor.execute_order(*orderevent);
+                orderevent->print_order();
                 
             } else if (events[0].type == "FILL") {
                 FillEvent* fillevent = dynamic_cast<FillEvent*>(&events[0]);

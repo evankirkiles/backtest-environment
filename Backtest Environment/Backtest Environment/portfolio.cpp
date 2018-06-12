@@ -98,9 +98,11 @@ void NaivePortfolio::update_timeindex() {
         // Estimates market value of a stock by using the quantity * its closing price (most likely inaccurate)
         double market_value = current_positions[symbol_list[i]] * lastbar[symbol_list[i]]["close"][date];
         all_holdings[date][symbol_list[i]] = market_value;
+        current_holdings[symbol_list[i]] = market_value;
         sumvalues += market_value;
     }
     
+    current_holdings["totalholdings"] = current_holdings["heldcash"] + sumvalues;
     all_holdings[date]["totalholdings"] = current_holdings["heldcash"] + sumvalues;
     all_holdings[date]["heldcash"] = current_holdings["heldcash"];
     all_holdings[date]["commission"] = current_holdings["commission"];
@@ -142,7 +144,7 @@ void NaivePortfolio::update_holdings_from_fill(FillEvent fill) {
     current_holdings[fill.symbol] += cost;
     current_holdings["commission"] += fill.commission;
     current_holdings["heldcash"] -= (cost + fill.commission);
-    current_holdings["totalholdings"] -= (cost + fill.commission);
+    current_holdings["totalholdings"] -= fill.commission;
 }
 
 // Updates positions and holdings in case of fill event
@@ -159,21 +161,32 @@ void NaivePortfolio::update_signal(SignalEvent event) {
 void NaivePortfolio::generate_naive_order(SignalEvent signal) {
     
     string symbol = signal.symbol;
-    string direction = signal.signal_type;
     double strength = signal.strength;
     
-    int mkt_quantity = floor(100 * strength);
-    int cur_quantity = current_positions[symbol];
+    int mkt_quantity = calculate_quantity(symbol, strength);
+    cout << symbol << " : " << mkt_quantity << endl;
     string order_type = "MKT";
     
     // Order logic
-    if (direction == "LONG" && cur_quantity == 0) {
-        events->push_back(new OrderEvent(symbol, order_type, mkt_quantity, "BUY"));
-    } else if (direction == "SHORT" && cur_quantity == 0) {
-        events->push_back(new OrderEvent(symbol, order_type, mkt_quantity, "SELL"));
-    } else if (direction == "EXIT" && cur_quantity > 0) {
-        events->push_back(new OrderEvent(symbol, order_type, abs(cur_quantity), "SELL"));
-    } else if (direction == "EXIT" && cur_quantity < 0) {
-        events->push_back(new OrderEvent(symbol, order_type, abs(cur_quantity), "BUY"));
+    if (mkt_quantity > 0) {
+        events->push_back(new OrderEvent(symbol, order_type, abs(mkt_quantity), "BUY"));
+    } else if (mkt_quantity < 0) {
+        events->push_back(new OrderEvent(symbol, order_type, abs(mkt_quantity), "SELL"));
+    } else {
+        cout << "Already holding " << strength << "% in " << symbol << ".";
     }
+}
+
+// Calculates the number of shares needed to fill the given percentage (rounds down)
+int NaivePortfolio::calculate_quantity(string symbol, double percentage) {
+    
+    // If want to completely exit, then just return the opposite position size
+    if (percentage == 0) {
+        return -current_positions[symbol];
+    }
+    
+    // Otherwise, calculate required quantity of shares
+    double givencash = percentage * all_holdings.rbegin()->second["totalholdings"];
+    double currentposition = current_positions[symbol];
+    return floor((givencash / (bars->get_latest_bars(symbol, 1)["close"].rbegin()->second)) - currentposition);
 }
