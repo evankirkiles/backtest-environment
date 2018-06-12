@@ -41,15 +41,19 @@ public:
     vector<long> allDates;
     map<string, vector<long>> latestDates;
     map<string, int> currentDatesIndex;
-    bool continue_backtest;
+    int* continue_backtest;
     boost::ptr_vector<Event>* events;
     vector<string>* symbol_list;
+    char* start_date;
+    char* end_date;
+    long datesbegin;
+    long datesend;
     
     // PARAMS:
     // events: Event Queue on which to push new events
     // csv_dir: the path to the folder containing all the symbol csvs
     // symbol_list: list of all the symbols being traded
-    HistoricalCSVDataHandler(boost::ptr_vector<Event>* events, vector<string>* symbol_list);
+    HistoricalCSVDataHandler(boost::ptr_vector<Event>* events, vector<string>* symbol_list, char* i_start_date, char* i_end_date, int* i_continue_backtest);
     
     // Placeholder initializer
     HistoricalCSVDataHandler();

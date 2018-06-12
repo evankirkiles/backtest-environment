@@ -16,12 +16,13 @@ using namespace std;
 NaivePortfolio::NaivePortfolio() { };
 
 // Constructor
-NaivePortfolio::NaivePortfolio(HistoricalCSVDataHandler* i_bars, vector<string> i_symbol_list, boost::ptr_vector<Event>* i_events, long i_start_date, double i_initial_capital=100000.0) {
+NaivePortfolio::NaivePortfolio(HistoricalCSVDataHandler* i_bars, vector<string> i_symbol_list, boost::ptr_vector<Event>* i_events, char* i_start_date, char* i_end_date, double i_initial_capital=100000.0) {
     
     // Initialize all instance variables
     bars = i_bars;
     events = i_events;
     start_date = i_start_date;
+    end_date = i_end_date;
     initial_capital = i_initial_capital;
     symbol_list = i_symbol_list;
     
@@ -39,7 +40,7 @@ map<long, map<string, double>> NaivePortfolio::construct_all_positions() {
         temp[symbol_list[i]] = 0;
     }
     map<long, map<string, double>> c;
-    c[start_date] = temp;
+    c[get_epoch_time(start_date)] = temp;
     return c;
 }
 map<string, double> NaivePortfolio::construct_current_positions() {
@@ -63,7 +64,7 @@ map<long, map<string, double>> NaivePortfolio::construct_all_holdings() {
     temp["equitycurve"] = 0.0;
     
     map<long, map<string, double>> c;
-    c[start_date] = temp;
+    c[get_epoch_time(start_date)] = temp;
     return c;
 }
 map<string, double> NaivePortfolio::construct_current_holdings() {

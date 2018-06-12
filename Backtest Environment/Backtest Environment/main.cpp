@@ -17,7 +17,7 @@ int main(int argc, const char * argv[]) {
     
     vector<string> symbol_list = {string("QQQ"), string("AAPL"), string("SPY")};
     
-    TradingInterface interface = TradingInterface(symbol_list, 10000000, 0);
+    TradingInterface interface = TradingInterface(symbol_list, 10000000, (char*)"2012-01-01", (char*)"2014-01-01");
     BuyAndHoldStrategy strat = BuyAndHoldStrategy(&interface.pipeline, &interface.events);
     
     GNUPlotter gnuplot(&interface.portfolio, (char*)"/Users/samkirkiles/Desktop/Backtest Environment/Backtest Environment/Backtest Environment/Graphics/data.csv");

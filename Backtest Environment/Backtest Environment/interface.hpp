@@ -40,8 +40,9 @@ public:
     
     vector<string> symbol_list;
     double initial_capital;
-    bool continue_backtest;
-    long startdate;
+    int continue_backtest;
+    char* startdate;
+    char* enddate;
     
     boost::ptr_vector<Event> events;
     SimulatedExecutionHandler executor;
@@ -53,7 +54,7 @@ public:
     // symbol_list: list of symbols to be traded
     // initial_cap: initial amount of capital allocated to algorithm
     // strategy: the algorithm whose signals are sent to the portfolio
-    TradingInterface(vector<string>symbol_list, double initial_cap, long start_date);
+    TradingInterface(vector<string>symbol_list, double initial_cap, char* start_date, char* end_date);
     
     // Executes the while loop for running the backtest
     void runbacktest(BuyAndHoldStrategy strategy, GNUPlotter* plot);

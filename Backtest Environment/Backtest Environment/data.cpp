@@ -12,11 +12,16 @@ using namespace std;
 
 // Gets data from Yahoo Finance CSV's and returns them in format
 // An interface to allow for getting "latest"
-HistoricalCSVDataHandler::HistoricalCSVDataHandler(boost::ptr_vector<Event>* i_events, vector<string>* i_symbol_list) {
+HistoricalCSVDataHandler::HistoricalCSVDataHandler(boost::ptr_vector<Event>* i_events, vector<string>* i_symbol_list, char* i_start_date, char* i_end_date, int* i_continue_backtest) {
     
     events = i_events;
     symbol_list = i_symbol_list;
-    continue_backtest = true;
+    continue_backtest = i_continue_backtest;
+    start_date = i_start_date;
+    end_date = i_end_date;
+    
+    datesbegin = get_epoch_time(start_date);
+    datesend = get_epoch_time(end_date);
 };
 
 // Placeholder initializer
@@ -43,7 +48,9 @@ void HistoricalCSVDataHandler::format_csv_data() {
         // Get the data from Yahoo Finance
         // Access formula is symbol_data[SYMBOL].data[TYPE][DATE]
         MarketDataFrame moves = YahooFinanceCSVReader((char*)symbol.c_str(),
-                                                      (char*)(string("/Users/samkirkiles/Desktop/Backtest Environment/Backtest Environment/Backtest Environment/Data Handling/CSV directory") + symbol + string(".csv")).c_str(),
+                                                      start_date,
+                                                      end_date,
+                                                      (char*)(string("/Users/samkirkiles/Desktop/Backtest Environment/Backtest Environment/Backtest Environment/Data Handling/CSV directory/") + symbol + string(".csv")).c_str(),
                                                       (char*)"/Users/samkirkiles/Desktop/Backtest Environment/Backtest Environment/Backtest Environment/Data Handling/cookies.txt",
                                                       (char*)"/Users/samkirkiles/Desktop/Backtest Environment/Backtest Environment/Backtest Environment/Data Handling/crumb.txt").marketmovements;
         symbol_data[symbol] = moves.data;
@@ -61,6 +68,13 @@ tuple<string, long, double, double, double, double, double, double> HistoricalCS
     // Spits out a bar until there are no more bars to yield
     tuple<string, long, double, double, double, double, double, double>lastbar;
     long date = allDates[currentDatesIndex[symbol]];
+    
+    // If date is 0, there are no more bars to retrieve so stop backtest
+    if (date < datesbegin || date > datesend) {
+        *continue_backtest = 0;
+        cout << "End of backtest reached for symbol " << symbol << "." << endl;
+        return lastbar;
+    }
     
     // Formatted in symbol - date - open - low - high - close - volume
     if (symbol_data[symbol]["open"][date] != 0) {
@@ -127,7 +141,7 @@ void HistoricalCSVDataHandler::update_bars() {
         
         // Check if there are any more bars to get
         if (currentDatesIndex[symbol] == allDates.size()) {
-            continue_backtest = false;
+            *continue_backtest = 0;
         }
     }
     // Add bar as a MarketEvent
