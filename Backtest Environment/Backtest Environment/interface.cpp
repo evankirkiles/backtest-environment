@@ -32,6 +32,8 @@ void TradingInterface::runbacktest(BuyAndHoldStrategy strategy, GNUPlotter* plot
     
     strat = strategy;
     
+    cout << "Initializing backtest..." << endl;
+    
     // Event-driven loop that continues to check for events
     while(continue_backtest) {
         

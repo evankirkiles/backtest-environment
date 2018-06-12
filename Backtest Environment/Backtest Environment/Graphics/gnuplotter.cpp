@@ -13,6 +13,7 @@ GNUPlotter::GNUPlotter(NaivePortfolio* i_portfolio, char* dat_file) {
     
     portfolio = i_portfolio;
     dataFile = dat_file;
+    focused = false;
     
     // Clear the data file
     remove(dataFile);
@@ -23,16 +24,12 @@ GNUPlotter::GNUPlotter(NaivePortfolio* i_portfolio, char* dat_file) {
 void GNUPlotter::initPlot() {
     gnuplotPipe = popen("/usr/local/bin/gnuplot", "w");
     
-    data.open(dataFile, ios::in | ios::out | ios::app);
-    data << "0, " << portfolio->start_date << "\n";
-    data.close();
-    
     // Set plot settings
     fprintf(gnuplotPipe, "set datafile separator \",\"\n");
     fflush(gnuplotPipe);
-    
-    // Initially plot a point at start_date where equity curve is 0
-    fprintf(gnuplotPipe, "plot \"%s\" every 5::0 using 1:2 with lines\n", dataFile);
+    fprintf(gnuplotPipe, "set xlabel \"date (epochtime)\"\n");
+    fflush(gnuplotPipe);
+    fprintf(gnuplotPipe, "set ylabel \"total returns\"\n");
     fflush(gnuplotPipe);
 }
 
@@ -47,12 +44,22 @@ void GNUPlotter::updatePlot() {
     data << date << ", " << equitycurve << "\n";
     data.close();
     
-    // Replot with new data
-    fprintf(gnuplotPipe, "replot \n");
-    fflush(gnuplotPipe);
+    // In case of it being the first equity curve, plot the data there
+    if (!focused) {
+        cout << "Building GNUPlot..." << endl;
+        fprintf(gnuplotPipe, "plot \"%s\" using 1:2 with lines title \"PERFORMANCE\", 0 with lines title \"baseline\" \n", dataFile);
+        fflush(gnuplotPipe);
+        focused = true;
+    } else {
+        // Replot with new data
+        fprintf(gnuplotPipe, "replot \n");
+        fflush(gnuplotPipe);
+    }
 }
 
 // Quits the plot
 void GNUPlotter::quitPlot() {
+    cout << "Press enter to quit." << endl;
+    getchar();
     fprintf(gnuplotPipe, "exit \n");
 }

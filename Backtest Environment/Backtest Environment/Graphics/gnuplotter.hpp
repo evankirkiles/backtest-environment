@@ -30,6 +30,9 @@ public:
     char* dataFile;
     fstream data;
     
+    // Refocuses the data if it is the first bar
+    bool focused;
+    
     // Constructor
     GNUPlotter(NaivePortfolio* bars, char* dat_file);
     
