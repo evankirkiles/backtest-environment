@@ -23,6 +23,7 @@ using namespace std;
 class Event {
 public:
     string type;
+    string target;
     virtual ~Event() = default;
 };
 
@@ -43,7 +44,8 @@ public:
     // symbol: ticker symbol
     // datetime: the timestamp at which signal was generated
     // percentage: target percent (positive for long, negative for short)
-    SignalEvent(string symbol, long datetime, double percentage);
+    // target: "ALGO" or "BENCH" for specifying which portfolio should fill it
+    SignalEvent(string symbol, long datetime, double percentage, string target="ALGO");
 };
 
 // Order event for sending an order to execution system
@@ -59,14 +61,15 @@ public:
     // order_type: "MKT" or "LMT" for market or limit
     // quantity: non-negative integer for quantity
     // direction: "BUY" or "SELL" for long or short
-    OrderEvent(string symbol, string order_type, int quantity, string direction);
+    // target: "ALGO" or "BENCH" for specifying which portfolio should fill it
+    OrderEvent(string symbol, string order_type, int quantity, string direction, string target="ALGO");
     
     // Default constructor does nothing
     OrderEvent();
     
     // Prints the values in the order
     void print_order() {
-        cout << "Order: Symbol=" << symbol << " Type=" << order_type << " Quantity=" << quantity << " Direction=" << direction << endl;
+        cout << "Order: Symbol=" << symbol << " Type=" << order_type << " Quantity=" << quantity << " Direction=" << direction << "Target=" << target << endl;
     }
 };
 
@@ -89,9 +92,10 @@ public:
     // direction: the direction of the fill ("BUY" or "SELL")
     // fill_cost: the holdings value in dollars
     // commission: optional commission sent from IB
+    // target: "ALGO" or "BENCH" for specifying which portfolio should fill it
     
     FillEvent(long timeindex, string symbol, string exchange, int quantity, string direction,
-              double fill_cost, double commission=-1);
+              double fill_cost, double commission=-1, string target="ALGO");
     
     // Calculates the commission for an order given the size
     // Based on Interactive Brokers' https://www.interactivebrokers.com/en/index.php?f=commission&p=stocks2

@@ -169,9 +169,9 @@ void NaivePortfolio::generate_naive_order(SignalEvent signal) {
     
     // Order logic
     if (mkt_quantity > 0) {
-        events->push_back(new OrderEvent(symbol, order_type, abs(mkt_quantity), "BUY"));
+        events->push_back(new OrderEvent(symbol, order_type, abs(mkt_quantity), "BUY", signal.target));
     } else if (mkt_quantity < 0) {
-        events->push_back(new OrderEvent(symbol, order_type, abs(mkt_quantity), "SELL"));
+        events->push_back(new OrderEvent(symbol, order_type, abs(mkt_quantity), "SELL", signal.target));
     } else {
         cout << "Already holding " << strength << "% in " << symbol << ".";
     }

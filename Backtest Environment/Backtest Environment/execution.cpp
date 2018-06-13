@@ -24,6 +24,8 @@ SimulatedExecutionHandler::SimulatedExecutionHandler(boost::ptr_vector<Event>* e
 void SimulatedExecutionHandler::execute_order(OrderEvent event) {
     
     // Fill_cost is 1 here because it is taken care of by the Naive Portfolio object
-    eventlist->push_back(new FillEvent(long(chrono::duration_cast<std::chrono::seconds>(chrono::system_clock::now().time_since_epoch()).count()), event.symbol, "NYSE", event.quantity, event.direction, 1));
+    // Commission is -1 so it will be calculated by the FillEvent
+    cout << "TARGET: " << event.target << endl;
+    eventlist->push_back(new FillEvent(long(chrono::duration_cast<std::chrono::seconds>(chrono::system_clock::now().time_since_epoch()).count()), event.symbol, "NYSE", event.quantity, event.direction, 1, -1, event.target));
 }
 

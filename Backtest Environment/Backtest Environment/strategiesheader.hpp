@@ -28,6 +28,24 @@ public:
     virtual void calculate_signals(MarketEvent event) = 0;
 };
 
+// Benchmark class that goes 100% long in SPY on the first MarketEvent and holds forever
+// Mimics the setup of a real strategy to allow for easy editing
+class Benchmark: Strategy {
+public:
+    HistoricalCSVDataHandler* bars;
+    boost::ptr_vector<Event>* events;
+    vector<string>* symbol_list;
+    map<string, bool> bought;
+    
+    Benchmark();
+    // Initialize instance of Buy and Hold strategy
+    Benchmark(HistoricalCSVDataHandler* i_bars, boost::ptr_vector<Event>* i_events);
+    // Add keys for all symbols in symbol_list to bought and sets them to false
+    map<string, bool> calculate_initial_bought();
+    // Trading logic in this function for new event
+    void calculate_signals(MarketEvent event);
+};
+
 // INCLUDE DEFINITION OF ALL STRATEGIES IN THIS FILE
 // INITIALIZE THE FUNCTIONS OF EACH STRATEGY IN THEIR OWN .cpp
 

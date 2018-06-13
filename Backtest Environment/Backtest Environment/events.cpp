@@ -16,27 +16,29 @@ MarketEvent::MarketEvent() {
 }
 
 // Signal event initialization
-SignalEvent::SignalEvent(string i_symbol, long i_datetime, double percentage) {
+SignalEvent::SignalEvent(string i_symbol, long i_datetime, double percentage, string i_target) {
     type = "SIGNAL";
     symbol = i_symbol;
     datetime = i_datetime;
     strength = percentage;
+    target = i_target;
 }
 
 // Order event initialization
-OrderEvent::OrderEvent(string i_symbol, string i_order_type, int i_quantity, string i_direction) {
+OrderEvent::OrderEvent(string i_symbol, string i_order_type, int i_quantity, string i_direction, string i_target) {
     type = "ORDER";
     symbol = i_symbol;
     order_type = i_order_type;
     quantity = i_quantity;
     direction = i_direction;
+    target = i_target;
 }
 
 // Default order event initializer
 OrderEvent::OrderEvent() { }
 
 // Fill event initialization
-FillEvent::FillEvent(long i_timeindex, string i_symbol, string i_exchange, int i_quantity, string i_direction, double i_fill_cost, double i_commission) {
+FillEvent::FillEvent(long i_timeindex, string i_symbol, string i_exchange, int i_quantity, string i_direction, double i_fill_cost, double i_commission, string i_target) {
     type = "FILL";
     timeindex = i_timeindex;
     symbol = i_symbol;
@@ -44,6 +46,7 @@ FillEvent::FillEvent(long i_timeindex, string i_symbol, string i_exchange, int i
     quantity = i_quantity;
     direction = i_direction;
     fill_cost = i_fill_cost;
+    target = i_target;
     
     // Calculate commission
     if (i_commission >= 0) {

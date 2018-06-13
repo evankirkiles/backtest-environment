@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		840CF1DC20B9FC2000CFC546 /* YahooFinanceCSVReader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 840CF1DA20B9FC2000CFC546 /* YahooFinanceCSVReader.cpp */; };
 		F40B91C920CC8BB900F3A505 /* interface.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F40B91C720CC8BB900F3A505 /* interface.cpp */; };
+		F4353AE220D19118003464ED /* benchmark.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F4353AE120D19118003464ED /* benchmark.cpp */; };
 		F44CCAAE20CB5B9300B50B9D /* execution.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F44CCAAC20CB5B9300B50B9D /* execution.cpp */; };
 		F44F8D7D20C2F82000511DF8 /* portfolio.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F44F8D7B20C2F82000511DF8 /* portfolio.cpp */; };
 		F462E25F20B912B4002D3A62 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F462E25E20B912B4002D3A62 /* main.cpp */; };
@@ -38,6 +39,7 @@
 		8435F58B20BA5A2A00BA94F7 /* crumb.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = crumb.txt; sourceTree = "<group>"; };
 		F40B91C720CC8BB900F3A505 /* interface.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = interface.cpp; sourceTree = "<group>"; };
 		F40B91C820CC8BB900F3A505 /* interface.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = interface.hpp; sourceTree = "<group>"; };
+		F4353AE120D19118003464ED /* benchmark.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = benchmark.cpp; sourceTree = "<group>"; };
 		F44CCAAC20CB5B9300B50B9D /* execution.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = execution.cpp; sourceTree = "<group>"; };
 		F44CCAAD20CB5B9300B50B9D /* execution.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = execution.hpp; sourceTree = "<group>"; };
 		F44F8D7B20C2F82000511DF8 /* portfolio.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = portfolio.cpp; sourceTree = "<group>"; };
@@ -138,6 +140,7 @@
 		F4F9EF5E20C08C820057CF6C /* Strategies */ = {
 			isa = PBXGroup;
 			children = (
+				F4353AE120D19118003464ED /* benchmark.cpp */,
 				F4F9EF5F20C08CBB0057CF6C /* strat_buyandhold.cpp */,
 			);
 			path = Strategies;
@@ -205,6 +208,7 @@
 				F44CCAAE20CB5B9300B50B9D /* execution.cpp in Sources */,
 				F44F8D7D20C2F82000511DF8 /* portfolio.cpp in Sources */,
 				F4F9EF6120C08CBB0057CF6C /* strat_buyandhold.cpp in Sources */,
+				F4353AE220D19118003464ED /* benchmark.cpp in Sources */,
 				F40B91C920CC8BB900F3A505 /* interface.cpp in Sources */,
 				F462E26920BB3BC3002D3A62 /* MarketDataFrame.cpp in Sources */,
 				840CF1DC20B9FC2000CFC546 /* YahooFinanceCSVReader.cpp in Sources */,

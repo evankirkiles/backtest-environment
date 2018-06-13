@@ -26,6 +26,7 @@ public:
     
     // Contains the latest data and returns stream
     NaivePortfolio* portfolio;
+    NaivePortfolio* benchmark;
     FILE *gnuplotPipe;
     char* dataFile;
     fstream data;
@@ -37,7 +38,7 @@ public:
     bool focused;
     
     // Constructor
-    GNUPlotter(NaivePortfolio* bars, char* dat_file, long startdate, long enddate);
+    GNUPlotter(NaivePortfolio* bars, NaivePortfolio* benchmark, char* dat_file, long startdate, long enddate);
     
     // Creates empty returns stream plot that prepares for data from returns stream
     void initPlot();

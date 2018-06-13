@@ -73,6 +73,7 @@ MarketDataFrame::MarketDataFrame(char csv_file[FILENAME_MAX], string symbol) {
     map<long, double> volume;
     
     // Iterate through the csv file
+    cout << csv_file << endl;
     while(getline(csv, line)) {
         string date;
         
@@ -103,9 +104,6 @@ MarketDataFrame::MarketDataFrame(char csv_file[FILENAME_MAX], string symbol) {
     data["adj"] = adj;
     data["volume"] = volume;
     
-    // Reverse the index vector so most recent date is 0
-    reverse(indices.begin(), indices.end());
-    
     // Pop out the index that says "Date"
-    indices.pop_back();
+    indices.erase(indices.begin());
 };
