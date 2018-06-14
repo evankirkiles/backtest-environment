@@ -81,10 +81,10 @@ void TradingInterface::runbacktest(BuyAndHoldStrategy strategy, Benchmark i_benc
                 // In case of a FillEvent, the portfolio updates its information based on the fill information
                 // Determine who is target for the fill event
                 if (events[0].target == "ALGO") {
-                    cout << "FILLED FOR " << fillevent->symbol << " FOR ALGO" << endl;
+                    cout << "FILLED " << fillevent->symbol << " FOR ALGO" << endl;
                     portfolio.update_fill(*fillevent);
                 } else if (events[0].target == "BENCH") {
-                    cout << "FILLED FOR " << fillevent->symbol << " FOR BENCH" << endl;
+                    cout << "FILLED " << fillevent->symbol << " FOR BENCH" << endl;
                     benchmarkportfolio.update_fill(*fillevent);
                 }
             }

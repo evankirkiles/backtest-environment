@@ -29,6 +29,7 @@ public:
     NaivePortfolio* benchmark;
     FILE *gnuplotPipe;
     char* dataFile;
+    char* positionsFile;
     fstream data;
     
     long start;
@@ -38,7 +39,7 @@ public:
     bool focused;
     
     // Constructor
-    GNUPlotter(NaivePortfolio* bars, NaivePortfolio* benchmark, char* dat_file, long startdate, long enddate);
+    GNUPlotter(NaivePortfolio* bars, NaivePortfolio* benchmark, char* dat_file, char* i_positionsFile, long startdate, long enddate);
     
     // Creates empty returns stream plot that prepares for data from returns stream
     void initPlot();
