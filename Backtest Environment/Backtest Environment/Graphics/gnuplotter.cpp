@@ -30,12 +30,11 @@ void GNUPlotter::initPlot() {
     
     // Set plot settings
     fprintf(gnuplotPipe, "set datafile separator \",\"\n");
-    fflush(gnuplotPipe);
+    fprintf(gnuplotPipe, "set terminal x11 size 2000, 400\n");
     fprintf(gnuplotPipe, "set xlabel \"date (epochtime)\"\n");
-    fflush(gnuplotPipe);
     fprintf(gnuplotPipe, "set ylabel \"portfolio value\"\n");
-    fflush(gnuplotPipe);
     fprintf(gnuplotPipe, "set xrange [%ld:%ld]\n", start, end);
+    fprintf(gnuplotPipe, "set format y '%%2.0f%%%%' \n");
     fflush(gnuplotPipe);
 }
 
@@ -54,7 +53,7 @@ void GNUPlotter::updatePlot() {
     // In case of it being the first equity curve, plot the data there
     if (!focused) {
         cout << "Building GNUPlot..." << endl;
-        fprintf(gnuplotPipe, "plot \"%s\" using 1:2 with lines title \"ALGORITHM\", \"\" using 1:3 with lines title \"BENCHMARK\", 0 with lines title \"baseline\" \n", dataFile);
+        fprintf(gnuplotPipe, "plot \"%s\" using ($1):($2*100) with lines title \"ALGORITHM\" lc 15, \"\" using ($1):($3*100) with lines title \"BENCHMARK\" lc 6, 0 with lines title \"baseline\" \n", dataFile);
         fflush(gnuplotPipe);
         focused = true;
     } else {

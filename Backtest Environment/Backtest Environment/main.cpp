@@ -16,7 +16,6 @@ int main(int argc, const char * argv[]) {
 
     char* startdate = (char*)"2007-01-01";
     char* enddate = (char*)"2010-01-01";
-    
     vector<string> symbol_list = {string("GS"), string("AAPL"), string("SPY")};
     vector<string> symbol_list2 = {string("SPY")};
     

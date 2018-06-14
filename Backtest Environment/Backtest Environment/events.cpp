@@ -56,7 +56,7 @@ FillEvent::FillEvent(long i_timeindex, string i_symbol, string i_exchange, int i
     }
 }
 
-// Calculate commission based on Interactive Brokers' rates
+// Calculate commission based on Interactive Brokers' rates (outdated at the moment)
 double FillEvent::calculate_IB_commission() {
     double full_cost = 1.3;
     if (quantity <= 500) {
@@ -64,6 +64,5 @@ double FillEvent::calculate_IB_commission() {
     } else {
         full_cost = max(1.3, 0.008 * quantity);
     }
-    full_cost = min(full_cost, 0.5 / 100.0 * quantity * fill_cost);
     return full_cost;
 }

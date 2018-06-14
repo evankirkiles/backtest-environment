@@ -186,7 +186,14 @@ int NaivePortfolio::calculate_quantity(string symbol, double percentage) {
     }
     
     // Otherwise, calculate required quantity of shares
-    double givencash = percentage * all_holdings.rbegin()->second["totalholdings"];
     double currentposition = current_positions[symbol];
-    return floor((givencash / (bars->get_latest_bars(symbol, 1)["close"].rbegin()->second)) - currentposition);
+    double sellingprice = bars->get_latest_bars(symbol, 1)["close"].rbegin()->second;
+    double requiredcash = (percentage * all_holdings.rbegin()->second["totalholdings"]) - (currentposition * sellingprice);
+    
+    // Commission included in calculation
+    if (requiredcash <= 500 * (sellingprice + 0.013)) {
+        return floor(requiredcash  / (sellingprice + 0.013));
+    } else {
+        return floor(requiredcash  / (sellingprice + 0.008));
+    }
 }
