@@ -22,7 +22,7 @@ int main(int argc, const char * argv[]) {
     TradingInterface interface = TradingInterface(symbol_list, symbol_list2, 10000000, startdate, enddate);
     BuyAndHoldStrategy strat = BuyAndHoldStrategy(&interface.pipeline, &interface.events);
     Benchmark bench = Benchmark(&interface.benchmarkpipeline, &interface.events);
-    GNUPlotter gnuplot(&interface.portfolio, &interface.benchmarkportfolio, (char*)"/Users/samkirkiles/Desktop/Backtest Environment/Backtest Environment/Backtest Environment/Graphics/data.csv", (char*)"/Users/samkirkiles/Desktop/Backtest Environment/Backtest Environment/Backtest Environment/Graphics/positions.csv", get_epoch_time(startdate), get_epoch_time(enddate));
+    GNUPlotter gnuplot(&interface.portfolio, &interface.benchmarkportfolio, (char*)"/Users/samkirkiles/Desktop/Backtest Environment/Backtest Environment/Backtest Environment/Graphics/data.csv", (char*)"/Users/samkirkiles/Desktop/Backtest Environment/Backtest Environment/Backtest Environment/Graphics/positions.csv", get_epoch_time(startdate), get_epoch_time(enddate), false);
     gnuplot.initPlot();
     
     // Begin the backtest on the created plot device

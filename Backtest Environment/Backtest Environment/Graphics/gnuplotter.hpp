@@ -38,8 +38,11 @@ public:
     // Refocuses the data if it is the first bar
     bool focused;
     
+    // Determines whether or not to plot holdings sizes
+    bool showholdings = false;
+    
     // Constructor
-    GNUPlotter(NaivePortfolio* bars, NaivePortfolio* benchmark, char* dat_file, char* i_positionsFile, long startdate, long enddate);
+    GNUPlotter(NaivePortfolio* bars, NaivePortfolio* benchmark, char* dat_file, char* i_positionsFile, long startdate, long enddate, bool showholds);
     
     // Creates empty returns stream plot that prepares for data from returns stream
     void initPlot();
