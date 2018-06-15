@@ -14,7 +14,7 @@
 		F44F8D7D20C2F82000511DF8 /* portfolio.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F44F8D7B20C2F82000511DF8 /* portfolio.cpp */; };
 		F462E25F20B912B4002D3A62 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F462E25E20B912B4002D3A62 /* main.cpp */; };
 		F462E26920BB3BC3002D3A62 /* MarketDataFrame.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F462E26820BB3BC3002D3A62 /* MarketDataFrame.cpp */; };
-		F4B612DB20CF38BF009EA01E /* gnuplotter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F4B612D920CF38BF009EA01E /* gnuplotter.cpp */; };
+		F48DB72F20D351E200B5CC7C /* gnuplotter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F48DB72E20D351E200B5CC7C /* gnuplotter.cpp */; };
 		F4B7553820BDA07A00B9FFCB /* data.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F4B7553620BDA07A00B9FFCB /* data.cpp */; };
 		F4B7553B20BDA97F00B9FFCB /* events.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F4B7553920BDA97F00B9FFCB /* events.cpp */; };
 		F4F9EF6120C08CBB0057CF6C /* strat_buyandhold.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F4F9EF5F20C08CBB0057CF6C /* strat_buyandhold.cpp */; };
@@ -48,7 +48,7 @@
 		F462E25E20B912B4002D3A62 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
 		F462E26620BB2D47002D3A62 /* MarketDataFrame.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = MarketDataFrame.hpp; sourceTree = "<group>"; };
 		F462E26820BB3BC3002D3A62 /* MarketDataFrame.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = MarketDataFrame.cpp; sourceTree = "<group>"; };
-		F4B612D920CF38BF009EA01E /* gnuplotter.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = gnuplotter.cpp; sourceTree = "<group>"; };
+		F48DB72E20D351E200B5CC7C /* gnuplotter.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = gnuplotter.cpp; sourceTree = "<group>"; };
 		F4B612DA20CF38BF009EA01E /* gnuplotter.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = gnuplotter.hpp; sourceTree = "<group>"; };
 		F4B7553620BDA07A00B9FFCB /* data.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = data.cpp; sourceTree = "<group>"; };
 		F4B7553720BDA07A00B9FFCB /* data.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = data.hpp; sourceTree = "<group>"; };
@@ -131,8 +131,8 @@
 		F4B612D820CF37CF009EA01E /* Graphics */ = {
 			isa = PBXGroup;
 			children = (
-				F4B612D920CF38BF009EA01E /* gnuplotter.cpp */,
 				F4B612DA20CF38BF009EA01E /* gnuplotter.hpp */,
+				F48DB72E20D351E200B5CC7C /* gnuplotter.cpp */,
 			);
 			path = Graphics;
 			sourceTree = "<group>";
@@ -203,11 +203,11 @@
 			buildActionMask = 2147483647;
 			files = (
 				F4B7553B20BDA97F00B9FFCB /* events.cpp in Sources */,
-				F4B612DB20CF38BF009EA01E /* gnuplotter.cpp in Sources */,
 				F462E25F20B912B4002D3A62 /* main.cpp in Sources */,
 				F44CCAAE20CB5B9300B50B9D /* execution.cpp in Sources */,
 				F44F8D7D20C2F82000511DF8 /* portfolio.cpp in Sources */,
 				F4F9EF6120C08CBB0057CF6C /* strat_buyandhold.cpp in Sources */,
+				F48DB72F20D351E200B5CC7C /* gnuplotter.cpp in Sources */,
 				F4353AE220D19118003464ED /* benchmark.cpp in Sources */,
 				F40B91C920CC8BB900F3A505 /* interface.cpp in Sources */,
 				F462E26920BB3BC3002D3A62 /* MarketDataFrame.cpp in Sources */,

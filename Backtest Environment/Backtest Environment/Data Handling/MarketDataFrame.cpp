@@ -21,7 +21,7 @@
 map<string, map<long, double>> data;
 vector<long> indices;
 
-// Find epoch time from normal YYYY/MM/DD
+// Find epoch time from normal YYYY-MM-DD
 long get_epoch_time(char* date) {
     string delimiter = "-";
     string token;
@@ -56,6 +56,14 @@ long get_epoch_time(char* date) {
     time_t timeSinceEpoch = mktime(&t);
     
     return long(timeSinceEpoch);
+}
+
+// Find normal time YYYY-MM-DD from epoch time
+string get_std_time(long epochtime) {
+    time_t t = epochtime;
+    char string[80];
+    strftime(string, 80, "%Y-%m-%d", gmtime(&t));
+    return string;
 }
 
 // Placeholder default constructor

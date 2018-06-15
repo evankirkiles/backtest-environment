@@ -35,6 +35,9 @@ public:
     long start;
     long end;
     
+    string holdingsformat;
+    string equitycurveformat;
+    
     // Refocuses the data if it is the first bar
     bool focused;
     
