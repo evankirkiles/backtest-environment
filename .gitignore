@@ -10,6 +10,7 @@
 build/
 DerivedData/
 .idea/
+cmake-build-debug/
 
 ## Various settings
 *.pbxuser

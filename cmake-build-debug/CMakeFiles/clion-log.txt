@@ -1,5 +1,0 @@
-/Applications/CLion.app/Contents/bin/cmake/bin/cmake -DCMAKE_BUILD_TYPE=Debug -G "CodeBlocks - Unix Makefiles" /Users/samkirkiles/Desktop/algobacktester
--- Boost version: 1.67.0
--- Configuring done
--- Generating done
--- Build files have been written to: /Users/samkirkiles/Desktop/algobacktester/cmake-build-debug
