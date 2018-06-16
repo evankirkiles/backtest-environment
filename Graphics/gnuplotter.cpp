@@ -9,7 +9,7 @@
 #include "gnuplotter.hpp"
 
 // Constructor that takes in a pointer to the returns stream
-GNUPlotter::GNUPlotter(NaivePortfolio* i_portfolio, NaivePortfolio* i_benchmark, char* dat_file, char* i_positionsFile, string *startdate, string *enddate, bool showholds) {
+GNUPlotter::GNUPlotter(NaivePortfolio* i_portfolio, NaivePortfolio* i_benchmark, char* dat_file, char* i_positionsFile, string *startdate, string *enddate, int* showholds) {
     
     portfolio = i_portfolio;
     benchmark = i_benchmark;
@@ -56,14 +56,17 @@ void GNUPlotter::initPlot() {
     
     cout << "Building GNUPlot..." << endl;
 
-    string init1 = getEquityFormat() + string("plot 0 with lines title \"baseline\" \n");
+    string init1 = getEquityFormat() + string(" clear\n plot 0 with lines title \"baseline\" \n");
 
     fprintf(gnuplotPipe, "%s", init1.c_str());
     fflush(gnuplotPipe);
 
-    if (showholdings) {
-        string init2 = holdingsformat + string("set xrange[0:1] \n") +string("plot 102 with boxes \n");
+    if (*showholdings == 1) {
+        string init2 = holdingsformat + string(" clear \n set xrange[0:1] \n") +string("plot 102 with boxes \n");
         fprintf(gnuplotPipe, "%s", init2.c_str());
+        fflush(gnuplotPipe);
+    } else {
+        fprintf(gnuplotPipe, "set terminal x11 1 close\n");
         fflush(gnuplotPipe);
     }
 
@@ -80,14 +83,13 @@ void GNUPlotter::updatePlot() {
     double equitycurve = portfolio->all_holdings.rbegin().operator*().second["equitycurve"];
     double benchequity = benchmark->all_holdings.rbegin().operator*().second["equitycurve"];
     double totalheld = portfolio->all_holdings.rbegin().operator*().second["totalholdings"];
-    double hwm = portfolio->all_holdings.rbegin().operator*().second["highwatermark"];
     
     data.open(dataFile, ios::in | ios::out | ios::app);
     data << get_std_time(date) << ", " << equitycurve*100 << ", " << benchequity*100 << "\n";
     data.close();
     
     // VERY intensive, so be wary when turning this on
-    if (showholdings) {
+    if (*showholdings == 1) {
         
         string plotpositions = holdingsformat + string("set xrange[0:") + to_string(portfolio->bars->allDates.size()) + "] \n" + "plot \"" + string(positionsFile) + "\" ";
         

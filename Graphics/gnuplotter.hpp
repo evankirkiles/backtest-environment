@@ -41,10 +41,10 @@ public:
     bool focused;
     
     // Determines whether or not to plot holdings sizes
-    bool showholdings = false;
+    int* showholdings;
     
     // Constructor
-    GNUPlotter(NaivePortfolio* bars, NaivePortfolio* benchmark, char* dat_file, char* i_positionsFile, string *startdate, string *enddate, bool showholds);
+    GNUPlotter(NaivePortfolio* bars, NaivePortfolio* benchmark, char* dat_file, char* i_positionsFile, string *startdate, string *enddate, int* showholds);
 
     // Defualt constructor
     GNUPlotter() = default;

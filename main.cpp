@@ -19,6 +19,7 @@ int main(int argc, char **argv) {
     auto startdate = string("1970-01-01");
     auto enddate = string("1971-01-01");
     double initialcapital = 100000000;
+    int showholdings = 0;
     vector<string> symbol_list = {string("GS"), string("AAPL"), string("SPY")};
     vector<string> symbol_list2 = {string("SPY")};
 
@@ -26,14 +27,14 @@ int main(int argc, char **argv) {
     BuyAndHoldStrategy strat = BuyAndHoldStrategy(&interface.pipeline, &interface.events);
     Benchmark bench = Benchmark(&interface.benchmarkpipeline, &interface.events);
     GNUPlotter gnuplot(&interface.portfolio,
-                       &interface.benchmarkportfolio, (char*)"/Users/samkirkiles/Desktop/algobacktester/Graphics/data.csv", (char*)"/Users/samkirkiles/Desktop/algobacktester/Graphics/positions.csv", &startdate, &enddate, false);
+                       &interface.benchmarkportfolio, (char*)"/Users/samkirkiles/Desktop/algobacktester/Graphics/data.csv", (char*)"/Users/samkirkiles/Desktop/algobacktester/Graphics/positions.csv", &startdate, &enddate, &showholdings);
 
     // Begin the backtest on the created plot device
     //interface.runbacktest(strat, bench, &gnuplot);
 
     QApplication app(argc, argv);
 
-    AlgoWindow window(&interface, &strat, &bench, &gnuplot, &startdate, &enddate, &initialcapital);
+    AlgoWindow window(&interface, &strat, &bench, &gnuplot, &startdate, &enddate, &initialcapital, &showholdings);
     window.show();
     window.raise();
 

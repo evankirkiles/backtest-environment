@@ -13,6 +13,7 @@ class QPushButton;
 class QLabel;
 class QDateEdit;
 class QLineEdit;
+class QCheckBox;
 class AlgoWindow : public QWidget {
 
     // Backtesting variables
@@ -26,11 +27,12 @@ class AlgoWindow : public QWidget {
     string *startdateaddr;
     string *enddateaddr;
     double* initialcapaddr;
+    int* showholds;
 
     Q_OBJECT
 public:
     explicit AlgoWindow(TradingInterface* trader, BuyAndHoldStrategy* strat, Benchmark* bench, GNUPlotter* gnuplot,
-                        string *startdate, string *enddate, double* initialcapitalval, QWidget *parent = 0);
+                        string *startdate, string *enddate, double* initialcapitalval, int* showholds, QWidget *parent = 0);
 private slots:
     void buttonClicked(bool checked);
     void varsChanged();
@@ -44,6 +46,8 @@ private:
     QDateEdit*enddateedit;
     QLabel *initialcapital;
     QLineEdit *initialcapedit;
+    QLabel *showholdings;
+    QCheckBox *holdingsbool;
     QLabel *totalreturn;
     QLabel *sharpe;
     QLabel *hwm;
