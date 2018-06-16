@@ -32,11 +32,10 @@ public:
     char* positionsFile;
     fstream data;
     
-    long start;
-    long end;
+    char* *start;
+    char* *end;
     
     string holdingsformat;
-    string equitycurveformat;
     
     // Refocuses the data if it is the first bar
     bool focused;
@@ -45,8 +44,11 @@ public:
     bool showholdings = false;
     
     // Constructor
-    GNUPlotter(NaivePortfolio* bars, NaivePortfolio* benchmark, char* dat_file, char* i_positionsFile, long startdate, long enddate, bool showholds);
-    
+    GNUPlotter(NaivePortfolio* bars, NaivePortfolio* benchmark, char* dat_file, char* i_positionsFile, char* *startdate, char* *enddate, bool showholds);
+
+    // Defualt constructor
+    GNUPlotter() = default;
+
     // Creates empty returns stream plot that prepares for data from returns stream
     void initPlot();
     // Updates the plot with data from the returns stream
@@ -54,6 +56,8 @@ public:
     
     // Quits the gnuplot instance
     void quitPlot();
+
+    string getEquityFormat();
 };
 
 #endif /* gnuplotter_hpp */

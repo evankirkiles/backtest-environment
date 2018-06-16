@@ -6,4 +6,19 @@ QPushButton:pressed {
 }
 QPushButton {
      background-color: #313534; border: 1px solid white;
+	border-radius: 3 px;
+	color: #FFFFFF;
+}
+QLabel {
+	color: #FFFFFF;
+}
+QDateEdit {
+	background-color: #202020;
+	color: #FFFFFF;
+	border: 1px solid #202020;
+}
+QLineEdit {
+	background-color: #202020;
+	color: #FFFFFF;
+	border: 1px solid #202020;
 }

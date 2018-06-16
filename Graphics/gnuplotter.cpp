@@ -9,43 +9,18 @@
 #include "gnuplotter.hpp"
 
 // Constructor that takes in a pointer to the returns stream
-GNUPlotter::GNUPlotter(NaivePortfolio* i_portfolio, NaivePortfolio* i_benchmark, char* dat_file, char* i_positionsFile, long startdate, long enddate, bool showholds) {
+GNUPlotter::GNUPlotter(NaivePortfolio* i_portfolio, NaivePortfolio* i_benchmark, char* dat_file, char* i_positionsFile, char* *startdate, char* *enddate, bool showholds) {
     
     portfolio = i_portfolio;
     benchmark = i_benchmark;
     dataFile = dat_file;
     positionsFile = i_positionsFile;
     focused = false;
-    
+
     start = startdate;
     end = enddate;
     
     showholdings = showholds;
-    
-    // Settings for the equity curve
-    equitycurveformat = string(" set terminal x11 0 background \"#232323\" size 2000, 400 title \"Equity Curve\" \n") +
-                        string("set xdata time\n") +
-                        string("set style data lines\n") +
-                        string("set timefmt \"%Y-%m-%d\"\n") +
-                        string("set format x \"%Y/%m/%d\"\n") +
-                        string("set format y '%4.2f%%' \n") +
-                        string("set autoscale y \n") +
-                        string("set xrange[\"") + get_std_time(start) + "\":\"" + get_std_time(end) + "\"] \n" +
-                        string("set style line 1 lt 1 lc rgb \"#5CDB95\" \n") +
-                        string("set style line 2 lt 2 lc rgb \"#C3073F\" pt 6 \n") +
-                        string("set style line 3 lc rgb \"#FFFFFF\" \n") +
-                        string("set style line 4 lt 0 lc rgb \"#6d6d6d\" \n") +
-                        string("set xtics textcolor linestyle 3 \n") +
-                        string("set ytics textcolor linestyle 1 \n") +
-                        string("set xlabel \"Date\" tc ls 3 \n") +
-                        string("set ylabel \"Total Holdings\" tc ls 3 offset 0, -3 \n") +
-                        string("set key tc ls 3 \n") +
-                        string("set key outside top right \n") +
-                        string("set key title \"Legend\" tc ls 3 \n") +
-                        string("set key Left \n") +
-                        string("set grid ls 4 \n") +
-                        string("set title \"Equity Curve\" tc ls 3 \n") +
-                        string("set border linewidth 1 linestyle 3 \n");
     
     holdingsformat = string(" set terminal x11 1 background \"#232323\" size 2000, 200 title \"Holdings\"\n") +
                         string("set xdata\n") +
@@ -74,6 +49,7 @@ GNUPlotter::GNUPlotter(NaivePortfolio* i_portfolio, NaivePortfolio* i_benchmark,
 
 // Creates pipe for commands and creates an empty plot
 void GNUPlotter::initPlot() {
+
     gnuplotPipe = popen("/usr/local/bin/gnuplot", "w");
     
     // Set plot settings
@@ -83,7 +59,7 @@ void GNUPlotter::initPlot() {
     
     cout << "Building GNUPlot..." << endl;
 
-    string init1 = equitycurveformat + string("plot 0 with lines title \"baseline\" \n");
+    string init1 = getEquityFormat() + string("plot 0 with lines title \"baseline\" \n");
 
     fprintf(gnuplotPipe, "%s", init1.c_str());
     fflush(gnuplotPipe);
@@ -143,7 +119,7 @@ void GNUPlotter::updatePlot() {
     }
     
     // Plot the main equity curve and benchmark
-    string plot2 = equitycurveformat + string("plot \"") + string(dataFile) +
+    string plot2 = getEquityFormat() + string("plot \"") + string(dataFile) +
             string("\" using 1:2 with lines title \"ALGORITHM\" ls 1, "
                    "\"\" using 1:3 with lines title \"BENCHMARK\" ls 2,"
                    " 0 with lines title \"baseline\" \n");
@@ -156,4 +132,31 @@ void GNUPlotter::quitPlot() {
     cout << "Press enter to quit." << endl;
     getchar();
     fprintf(gnuplotPipe, "exit \n");
+}
+
+// Gets the format for the equity curve
+string GNUPlotter::getEquityFormat() {
+    return string(" set terminal x11 0 background \"#232323\" size 2000, 400 title \"Equity Curve\" \n") +
+           string("set xdata time\n") +
+           string("set style data lines\n") +
+           string("set timefmt \"%Y-%m-%d\"\n") +
+           string("set format x \"%Y/%m/%d\"\n") +
+           string("set format y '%4.2f%%' \n") +
+           string("set autoscale y \n") +
+           string("set xrange[\"") + *start + "\":\"" + *end + "\"] \n" +
+           string("set style line 1 lt 1 lc rgb \"#5CDB95\" \n") +
+           string("set style line 2 lt 2 lc rgb \"#C3073F\" pt 6 \n") +
+           string("set style line 3 lc rgb \"#FFFFFF\" \n") +
+           string("set style line 4 lt 0 lc rgb \"#6d6d6d\" \n") +
+           string("set xtics textcolor linestyle 3 \n") +
+           string("set ytics textcolor linestyle 1 \n") +
+           string("set xlabel \"Date\" tc ls 3 \n") +
+           string("set ylabel \"Total Holdings\" tc ls 3 offset 0, -3 \n") +
+           string("set key tc ls 3 \n") +
+           string("set key outside top right \n") +
+           string("set key title \"Legend\" tc ls 3 \n") +
+           string("set key Left \n") +
+           string("set grid ls 4 \n") +
+           string("set title \"Equity Curve\" tc ls 3 \n") +
+           string("set border linewidth 1 linestyle 3 \n");
 }

@@ -14,7 +14,7 @@ using namespace std;
 
 // Gets data from Yahoo Finance CSV's and returns them in format
 // An interface to allow for getting "latest"
-HistoricalCSVDataHandler::HistoricalCSVDataHandler(boost::ptr_vector<Event>* i_events, vector<string>* i_symbol_list, char* i_start_date, char* i_end_date, int* i_continue_backtest) {
+HistoricalCSVDataHandler::HistoricalCSVDataHandler(boost::ptr_vector<Event>* i_events, vector<string>* i_symbol_list, char* *i_start_date, char* *i_end_date, int* i_continue_backtest) {
     
     events = i_events;
     symbol_list = i_symbol_list;
@@ -22,8 +22,8 @@ HistoricalCSVDataHandler::HistoricalCSVDataHandler(boost::ptr_vector<Event>* i_e
     start_date = i_start_date;
     end_date = i_end_date;
     
-    datesbegin = get_epoch_time(start_date);
-    datesend = get_epoch_time(end_date);
+    datesbegin = get_epoch_time(*start_date);
+    datesend = get_epoch_time(*end_date);
 };
 
 // Placeholder initializer
@@ -50,8 +50,8 @@ void HistoricalCSVDataHandler::format_csv_data() {
         // Get the data from Yahoo Finance
         // Access formula is symbol_data[SYMBOL].data[TYPE][DATE]
         MarketDataFrame moves = YahooFinanceCSVReader((char*)symbol.c_str(),
-                                                      start_date,
-                                                      end_date,
+                                                      *start_date,
+                                                      *end_date,
                                                       (char*)(string("/Users/samkirkiles/Desktop/algobacktester/DataHandling/CSV directory/") + symbol + string(".csv")).c_str(),
                                                       (char*)"/Users/samkirkiles/Desktop/algobacktester/DataHandling/cookies.txt",
                                                       (char*)"/Users/samkirkiles/Desktop/algobacktester/DataHandling/crumb.txt").marketmovements;

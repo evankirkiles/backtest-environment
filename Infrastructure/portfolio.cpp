@@ -16,7 +16,7 @@ using namespace std;
 NaivePortfolio::NaivePortfolio() { };
 
 // Constructor
-NaivePortfolio::NaivePortfolio(HistoricalCSVDataHandler* i_bars, vector<string> i_symbol_list, boost::ptr_vector<Event>* i_events, char* i_start_date, char* i_end_date, double i_initial_capital=100000.0) {
+NaivePortfolio::NaivePortfolio(HistoricalCSVDataHandler* i_bars, vector<string> i_symbol_list, boost::ptr_vector<Event>* i_events, char* *i_start_date, char* *i_end_date, double *i_initial_capital) {
     
     // Initialize all instance variables
     bars = i_bars;
@@ -40,7 +40,7 @@ map<long, map<string, double>> NaivePortfolio::construct_all_positions() {
         temp[symbol_list[i]] = 0;
     }
     map<long, map<string, double>> c;
-    c[get_epoch_time(start_date)] = temp;
+    c[get_epoch_time(*start_date)] = temp;
     return c;
 }
 map<string, double> NaivePortfolio::construct_current_positions() {
@@ -55,9 +55,9 @@ map<long, map<string, double>> NaivePortfolio::construct_all_holdings() {
     for (int i = 0; i < symbol_list.size(); i++) {
         temp[symbol_list[i]] = 0;
     }
-    temp["heldcash"] = initial_capital;
+    temp["heldcash"] = *initial_capital;
     temp["commission"] = 0.0;
-    temp["totalholdings"] = initial_capital;
+    temp["totalholdings"] = *initial_capital;
     
     // Equity curve data
     temp["returns"] = 0.0;
@@ -72,7 +72,7 @@ map<long, map<string, double>> NaivePortfolio::construct_all_holdings() {
     temp["ddperiod"] = 0.0;
     
     map<long, map<string, double>> c;
-    c[get_epoch_time(start_date)] = temp;
+    c[get_epoch_time(*start_date)] = temp;
     return c;
 }
 map<string, double> NaivePortfolio::construct_current_holdings() {
@@ -80,9 +80,9 @@ map<string, double> NaivePortfolio::construct_current_holdings() {
     for (int i = 0; i < symbol_list.size(); i++) {
         temp[symbol_list[i]] = 0;
     }
-    temp["heldcash"] = initial_capital;
+    temp["heldcash"] = *initial_capital;
     temp["commission"] = 0.0;
-    temp["totalholdings"] = initial_capital;
+    temp["totalholdings"] = *initial_capital;
     return temp;
 }
 

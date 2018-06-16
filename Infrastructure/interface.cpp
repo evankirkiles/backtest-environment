@@ -11,7 +11,7 @@
 
 
 // Constructor that initializes the executor and replaces the empty portfolio and pipeline with functioning ones
-TradingInterface::TradingInterface(vector<string>i_symbol_list, vector<string>i_benchmarksymbols, double i_initial_cap, char* i_start_date, char* i_end_date) : executor(&events) {
+TradingInterface::TradingInterface(vector<string>i_symbol_list, vector<string>i_benchmarksymbols, double* i_initial_cap, char* *i_start_date, char* *i_end_date) : executor(&events) {
     
     // Initialize variables inputted in constructor
     symbol_list = i_symbol_list;

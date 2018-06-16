@@ -34,6 +34,9 @@ class SimulatedExecutionHandler: ExecutionHandler {
 public:
     // Constructor
     SimulatedExecutionHandler(boost::ptr_vector<Event>* events);
+
+    // Placeholder constructor
+    SimulatedExecutionHandler() = default;
     
     // Inherited order execution system
     void execute_order(OrderEvent event);

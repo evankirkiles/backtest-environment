@@ -18,22 +18,22 @@ int main(int argc, char **argv) {
 
     auto startdate = (char*)"2007-01-01";
     auto enddate = (char*)"2010-01-01";
+    double initialcapital = 100000000;
     vector<string> symbol_list = {string("GS"), string("AAPL"), string("SPY")};
     vector<string> symbol_list2 = {string("SPY")};
-    
-    TradingInterface interface = TradingInterface(symbol_list, symbol_list2, 10000000, startdate, enddate);
+
+    TradingInterface interface = TradingInterface(symbol_list, symbol_list2, &initialcapital, &startdate, &enddate);
     BuyAndHoldStrategy strat = BuyAndHoldStrategy(&interface.pipeline, &interface.events);
     Benchmark bench = Benchmark(&interface.benchmarkpipeline, &interface.events);
     GNUPlotter gnuplot(&interface.portfolio,
-                       &interface.benchmarkportfolio, (char*)"/Users/samkirkiles/Desktop/algobacktester/Graphics/data.csv", (char*)"/Users/samkirkiles/Desktop/algobacktester/Graphics/positions.csv", get_epoch_time(startdate), get_epoch_time(enddate), true);
-    gnuplot.initPlot();
+                       &interface.benchmarkportfolio, (char*)"/Users/samkirkiles/Desktop/algobacktester/Graphics/data.csv", (char*)"/Users/samkirkiles/Desktop/algobacktester/Graphics/positions.csv", &startdate, &enddate, false);
 
     // Begin the backtest on the created plot device
     //interface.runbacktest(strat, bench, &gnuplot);
 
     QApplication app(argc, argv);
 
-    Window window(&interface, &strat, &bench, &gnuplot);
+    AlgoWindow window(&interface, &strat, &bench, &gnuplot, &startdate, &enddate, &initialcapital);
     window.show();
     window.raise();
 
