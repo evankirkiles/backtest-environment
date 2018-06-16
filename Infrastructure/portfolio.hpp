@@ -76,6 +76,19 @@ public:
     
     // Function to calculate how many shares need to be bought for the given percentage
     int calculate_quantity(string symbol, double percentage);
+
+    // MARK: Performance functions
+    // Mean and variance of the returns stream of the equity curve
+    void update_MeanAndVariance(long date);
+
+    // Sharpe ratio (https://www.investopedia.com/terms/s/sharperatio.asp)
+    void update_Sharpe(long date, int periods=252);
+
+    // High-Water Mark (https://www.investopedia.com/terms/h/highwatermark.asp)
+    void update_HighWaterMark(long date);
+
+    // Drawdowns (https://www.investopedia.com/terms/d/drawdown.asp)
+    void update_Drawdowns(long date);
 };
 
 #endif /* portfolio_hpp */

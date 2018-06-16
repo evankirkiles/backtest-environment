@@ -62,6 +62,14 @@ map<long, map<string, double>> NaivePortfolio::construct_all_holdings() {
     // Equity curve data
     temp["returns"] = 0.0;
     temp["equitycurve"] = 0.0;
+
+    // Necessary performance data
+    temp["mean"] = 0.0;
+    temp["variance"]= 0.0;
+    temp["sharpe"] = 0.0;
+    temp["highwatermark"] = 0.0;
+    temp["drawdown"] = 0.0;
+    temp["ddperiod"] = 0.0;
     
     map<long, map<string, double>> c;
     c[get_epoch_time(start_date)] = temp;
@@ -107,11 +115,19 @@ void NaivePortfolio::update_timeindex() {
     all_holdings[date]["heldcash"] = current_holdings["heldcash"];
     all_holdings[date]["commission"] = current_holdings["commission"];
     
-    // Equity curve handling
+    // Equity curve and performance handling
     if (all_holdings.size() > 1) {
+
+        // Equity curve updating
         double returns = (all_holdings[date]["totalholdings"]/previoustotal) - 1;
         all_holdings[date]["returns"] = returns;
         all_holdings[date]["equitycurve"] = (previouscurve + 1) * (returns + 1) - 1;
+
+        // Update the performance values
+        update_MeanAndVariance(date);
+        update_Sharpe(date);
+        update_HighWaterMark(date);
+        update_Drawdowns(date);
     }
 }
 
@@ -188,7 +204,7 @@ int NaivePortfolio::calculate_quantity(string symbol, double percentage) {
     // Otherwise, calculate required quantity of shares
     double currentposition = current_positions[symbol];
     double sellingprice = bars->get_latest_bars(symbol, 1)["close"].rbegin()->second;
-    double requiredcash = (percentage * all_holdings.rbegin()->second["totalholdings"]) - (currentposition * sellingprice);
+    double requiredcash = (percentage * all_holdings.rbegin().operator*().second["totalholdings"]) - (currentposition * sellingprice);
     
     // Commission included in calculation
     if (requiredcash <= 500 * (sellingprice + 0.013)) {
@@ -196,4 +212,54 @@ int NaivePortfolio::calculate_quantity(string symbol, double percentage) {
     } else {
         return floor(requiredcash  / (sellingprice + 0.008));
     }
+}
+
+// MARK: Performance calculation functions
+// Mean and variance of the returns stream of the equity curve
+void NaivePortfolio::update_MeanAndVariance(long date) {
+
+    // Assumes there is no risk-free rate or benchmark return being used in calculation (value is 0)
+    double previousMean = all_holdings.rbegin()++.operator*().second["mean"];
+    double previousVariance = all_holdings.rbegin()++.operator*().second["variance"];
+    double newReturn = all_holdings.rbegin().operator*().second["equitycurve"];
+    long n = all_holdings.size();
+
+    // Incremental updating of mean and variance
+    // (https://math.stackexchange.com/questions/102978/incremental-computation-of-standard-deviation)
+    all_holdings[date]["mean"] = ((previousMean * (n - 1)) + newReturn) / n;
+    all_holdings[date]["variance"] = ((n-2)/(n-1))*previousVariance + pow((newReturn - previousMean), 2)/n;
+}
+
+// Sharpe Ratio of the portfolio
+void NaivePortfolio::update_Sharpe(long date, int periods) {
+
+    double mean = all_holdings.rbegin().operator*().second["mean"];
+    double variance = next(all_holdings.rbegin(), 0).operator*().second["variance"];
+
+    all_holdings[date]["sharpe"] = sqrt(periods) * (mean/sqrt(variance));
+}
+
+// High-Water Mark used to calculate drawdowns
+void NaivePortfolio::update_HighWaterMark(long date) {
+
+    double prevHWM = next(all_holdings.rbegin(), 1).operator*().second["highwatermark"];
+    double currReturn = all_holdings.rbegin().operator*().second["equitycurve"];
+
+    // Simply keeps the highest returns up to that date
+    if (prevHWM > currReturn) {
+        all_holdings[date]["highwatermark"] = prevHWM;
+        all_holdings[date]["ddperiod"]++;
+    } else {
+        all_holdings[date]["highwatermark"] = currReturn;
+        all_holdings[date]["ddperiod"] = 0;
+    }
+}
+
+// Drawdown value and period
+void NaivePortfolio::update_Drawdowns(long date) {
+
+    double hwm = all_holdings.rbegin().operator*().second["highwatermark"];
+    double returns = all_holdings.rbegin().operator*().second["equitycurve"];
+
+    all_holdings[date]["drawdown"] = hwm - returns;
 }

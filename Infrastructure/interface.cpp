@@ -39,27 +39,27 @@ void TradingInterface::runbacktest(BuyAndHoldStrategy strategy, Benchmark i_benc
     pipeline.update_bars();
     benchmarkpipeline.format_csv_data();
     benchmarkpipeline.update_bars();
-    
+
     strat = strategy;
     benchmark = i_benchmark;
-    
+
     cout << "Initializing backtest..." << endl;
-    
+
     // Event-driven loop that continues to check for events
-    while(continue_backtest == 1) {
-        
+    while (continue_backtest == 1) {
+
         // Handles each event in the list and removes it from the stack
-        if (events.size() != 0) {
+        if (!events.empty()) {
             if (events[0].type == "MARKET") {
-                MarketEvent* marketevent = dynamic_cast<MarketEvent*>(&events[0]);
-                
+                auto marketevent = dynamic_cast<MarketEvent *>(&events[0]);
+
                 // In case of a MarketEvent, use updated data to calculate next strategy's next move and send a signal
                 strat.calculate_signals(*marketevent);
                 benchmark.calculate_signals(*marketevent);
-                
+
             } else if (events[0].type == "SIGNAL") {
-                SignalEvent* signalevent = dynamic_cast<SignalEvent*>(&events[0]);
-                
+                auto signalevent = dynamic_cast<SignalEvent *>(&events[0]);
+
                 // In case of a SignalEvent, portfolio sends necessary orders based on signal send by strategy
                 // Determine who is target for the signal event
                 if (events[0].target == "ALGO") {
@@ -67,17 +67,17 @@ void TradingInterface::runbacktest(BuyAndHoldStrategy strategy, Benchmark i_benc
                 } else if (events[0].target == "BENCH") {
                     benchmarkportfolio.update_signal(*signalevent);
                 }
-                
+
             } else if (events[0].type == "ORDER") {
-                OrderEvent* orderevent = dynamic_cast<OrderEvent*>(&events[0]);
-                
+                auto orderevent = dynamic_cast<OrderEvent *>(&events[0]);
+
                 // In case of an OrderEvent, the execution handler fills the received order (like a brokerage)
                 executor.execute_order(*orderevent);
                 orderevent->print_order();
-                
+
             } else if (events[0].type == "FILL") {
-                FillEvent* fillevent = dynamic_cast<FillEvent*>(&events[0]);
-                
+                auto fillevent = dynamic_cast<FillEvent *>(&events[0]);
+
                 // In case of a FillEvent, the portfolio updates its information based on the fill information
                 // Determine who is target for the fill event
                 if (events[0].target == "ALGO") {
@@ -90,6 +90,13 @@ void TradingInterface::runbacktest(BuyAndHoldStrategy strategy, Benchmark i_benc
             }
             events.erase(events.begin());
         } else {
+
+            cout << "Total Returns: " << portfolio.all_holdings.rbegin().operator*().second["equitycurve"] * 100 <<
+                 "% Mean: " << portfolio.all_holdings.rbegin().operator*().second["mean"] * 100 <<
+                 " Variance: " << portfolio.all_holdings.rbegin().operator*().second["variance"] * 100 <<
+                 " Sharpe: " << portfolio.all_holdings.rbegin().operator*().second["sharpe"] <<
+                 " Drawdown: " << portfolio.all_holdings.rbegin().operator*().second["drawdown"] * 100 <<
+                 " HWM: " << portfolio.all_holdings.rbegin().operator*().second["highwatermark"] * 100 << endl;
             benchmarkportfolio.update_timeindex();
             benchmarkpipeline.update_bars();
             portfolio.update_timeindex();

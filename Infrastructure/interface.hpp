@@ -21,10 +21,9 @@
 #include "../Graphics/gnuplotter.hpp"
 #endif
 
-#include <stdio.h>
+#include <cstdio>
 #include "../Strategies/strategiesheader.hpp"
 #include "execution.hpp"
-#include "portfolio.hpp"
 
 #include <boost/ptr_container/ptr_vector.hpp>
 

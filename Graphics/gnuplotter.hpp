@@ -9,7 +9,7 @@
 #ifndef gnuplotter_hpp
 #define gnuplotter_hpp
 
-#ifndef Portfolio
+#ifndef NaivePortfolio
 #include "../Infrastructure/portfolio.hpp"
 #endif
 #ifndef fstream
