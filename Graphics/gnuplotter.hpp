@@ -32,8 +32,8 @@ public:
     char* positionsFile;
     fstream data;
     
-    char* *start;
-    char* *end;
+    string* start;
+    string* end;
     
     string holdingsformat;
     
@@ -44,7 +44,7 @@ public:
     bool showholdings = false;
     
     // Constructor
-    GNUPlotter(NaivePortfolio* bars, NaivePortfolio* benchmark, char* dat_file, char* i_positionsFile, char* *startdate, char* *enddate, bool showholds);
+    GNUPlotter(NaivePortfolio* bars, NaivePortfolio* benchmark, char* dat_file, char* i_positionsFile, string *startdate, string *enddate, bool showholds);
 
     // Defualt constructor
     GNUPlotter() = default;

@@ -26,7 +26,7 @@ public:
     MarketDataFrame();
 };
 
-long get_epoch_time(char* date);
+long get_epoch_time(string date);
 string get_std_time(long epochtime);
 
 #endif /* MarketDataFrame_hpp */

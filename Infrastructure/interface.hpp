@@ -41,8 +41,8 @@ public:
     vector<string> benchmarksymbols;
     double *initial_capital;
     int continue_backtest;
-    char* *startdate;
-    char* *enddate;
+    string *startdate;
+    string *enddate;
     
     // Global events and execution handler
     boost::ptr_vector<Event> events;
@@ -62,7 +62,7 @@ public:
     // symbol_list: list of symbols to be traded
     // initial_cap: initial amount of capital allocated to algorithm
     // strategy: the algorithm whose signals are sent to the portfolio
-    TradingInterface(vector<string>symbol_list, vector<string>benchmarksymbols, double *initial_cap, char* *start_date, char* *end_date);
+    TradingInterface(vector<string>symbol_list, vector<string>benchmarksymbols, double *initial_cap, string *start_date, string *end_date);
 
     // Placeholder initializer
     TradingInterface() = default;

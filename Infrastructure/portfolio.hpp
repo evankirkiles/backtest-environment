@@ -35,8 +35,8 @@ public:
     HistoricalCSVDataHandler* bars;
     boost::ptr_vector<Event>* events;
     vector<string> symbol_list;
-    char* *start_date;
-    char* *end_date;
+    string *start_date;
+    string *end_date;
     double *initial_capital;
     
     map<long, map<string, double>> all_positions;
@@ -49,10 +49,13 @@ public:
     map<long, map<string, double>> equity_curve;
     
     // Initialization function
-    NaivePortfolio(HistoricalCSVDataHandler* i_bars, vector<string> i_symbol_list, boost::ptr_vector<Event>* i_events, char* *i_start_date, char* *i_end_date, double *i_initial_capital);
+    NaivePortfolio(HistoricalCSVDataHandler* i_bars, vector<string> i_symbol_list, boost::ptr_vector<Event>* i_events, string *i_start_date, string *i_end_date, double *i_initial_capital);
     
     // Placeholder initialization function
     NaivePortfolio();
+
+    // Initializes all positions and holdings by calling below functions
+    void format_portfolio();
     
     // Functions to construct positions and holdings
     map<long, map<string, double>> construct_all_positions();

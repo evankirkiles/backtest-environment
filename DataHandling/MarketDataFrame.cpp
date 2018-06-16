@@ -22,15 +22,14 @@ map<string, map<long, double>> data;
 vector<long> indices;
 
 // Find epoch time from normal YYYY-MM-DD
-long get_epoch_time(char* date) {
+long get_epoch_time(string date) {
     string delimiter = "-";
     string token;
     struct tm t = {0};
-    string sdate(date);
     size_t pos = 0;
-    while ((pos = sdate.find(delimiter)) != std::string::npos) {
-        token = sdate.substr(0, pos);
-        sdate.erase(0, pos + delimiter.length());
+    while ((pos = date.find(delimiter)) != std::string::npos) {
+        token = date.substr(0, pos);
+        date.erase(0, pos + delimiter.length());
         switch (pos) {
             case 4:
                 t.tm_year = stoi(token);
@@ -41,10 +40,10 @@ long get_epoch_time(char* date) {
         }
     }
 
-    if (sdate == "Date") {
+    if (date == "Date") {
         t.tm_mday = 0;
     } else {
-        t.tm_mday = stoi(sdate);
+        t.tm_mday = stoi(date);
     }
         
     // Get time since 1900 epoch

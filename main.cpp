@@ -16,8 +16,8 @@
 
 int main(int argc, char **argv) {
 
-    auto startdate = (char*)"2007-01-01";
-    auto enddate = (char*)"2010-01-01";
+    auto startdate = string("1970-01-01");
+    auto enddate = string("1971-01-01");
     double initialcapital = 100000000;
     vector<string> symbol_list = {string("GS"), string("AAPL"), string("SPY")};
     vector<string> symbol_list2 = {string("SPY")};

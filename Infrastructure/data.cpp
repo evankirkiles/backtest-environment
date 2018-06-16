@@ -14,20 +14,17 @@ using namespace std;
 
 // Gets data from Yahoo Finance CSV's and returns them in format
 // An interface to allow for getting "latest"
-HistoricalCSVDataHandler::HistoricalCSVDataHandler(boost::ptr_vector<Event>* i_events, vector<string>* i_symbol_list, char* *i_start_date, char* *i_end_date, int* i_continue_backtest) {
+HistoricalCSVDataHandler::HistoricalCSVDataHandler(boost::ptr_vector<Event>* i_events, vector<string>* i_symbol_list, string *i_start_date, string *i_end_date, int* i_continue_backtest) {
     
     events = i_events;
     symbol_list = i_symbol_list;
     continue_backtest = i_continue_backtest;
     start_date = i_start_date;
     end_date = i_end_date;
-    
-    datesbegin = get_epoch_time(*start_date);
-    datesend = get_epoch_time(*end_date);
 };
 
 // Placeholder initializer
-HistoricalCSVDataHandler::HistoricalCSVDataHandler() {};
+HistoricalCSVDataHandler::HistoricalCSVDataHandler() = default;
 
 // Appends unique dates to master dates list
 void HistoricalCSVDataHandler::append_to_dates(vector<long> new_dates) {
@@ -43,6 +40,13 @@ void HistoricalCSVDataHandler::append_to_dates(vector<long> new_dates) {
 
 // Format symbol data
 void HistoricalCSVDataHandler::format_csv_data() {
+    allDates = {};
+    datesbegin = get_epoch_time(*start_date);
+    datesend = get_epoch_time(*end_date);
+
+    symbol_data={};
+    currentDatesIndex = {};
+
     // Loop through symbols and load their data into a single frame
     for(int i=0;i<symbol_list->size();i++) {
         string symbol = (*symbol_list)[i];

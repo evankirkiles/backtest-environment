@@ -9,7 +9,7 @@
 #include "gnuplotter.hpp"
 
 // Constructor that takes in a pointer to the returns stream
-GNUPlotter::GNUPlotter(NaivePortfolio* i_portfolio, NaivePortfolio* i_benchmark, char* dat_file, char* i_positionsFile, char* *startdate, char* *enddate, bool showholds) {
+GNUPlotter::GNUPlotter(NaivePortfolio* i_portfolio, NaivePortfolio* i_benchmark, char* dat_file, char* i_positionsFile, string *startdate, string *enddate, bool showholds) {
     
     portfolio = i_portfolio;
     benchmark = i_benchmark;
@@ -19,43 +19,40 @@ GNUPlotter::GNUPlotter(NaivePortfolio* i_portfolio, NaivePortfolio* i_benchmark,
 
     start = startdate;
     end = enddate;
-    
+
     showholdings = showholds;
-    
+
+
     holdingsformat = string(" set terminal x11 1 background \"#232323\" size 2000, 200 title \"Holdings\"\n") +
-                        string("set xdata\n") +
-                        string("set style data histograms\n") +
-                        string("set style histogram rowstacked\n") +
-                        string("set style fill solid 0.75 noborder\n") +
-                        string("set boxwidth 1 relative\n") +
-                        string("set yrange [0:100]\n") +
-                        string("set style line 100 lc rgb \"#5CDB95\" \n") +
-                        string("set xtics textcolor rgb \"#232323\" \n") +
-                        string("set ytics textcolor linestyle 100 \n") +
-                        string("set xlabel \"Date\" tc ls 3 \n") +
-                        string("set ylabel \"Percent of Holdings\" tc ls 3 offset 0, -3 \n") +
-                        string("set key tc ls 3 \n") +
-                        string("set key outside top right \n") +
-                        string("set key title \"Legend\" tc ls 3 \n") +
-                        string("set key Left \n") +
-                        string("unset grid\n") +
-                        string("set title \"Holdings Distribution\" tc ls 3 \n") +
-                        string("set border linewidth 1 linestyle 3 \n");
-    
-    // Clear the data files
-    remove(dataFile);
-    remove(positionsFile);
+                     string("set xdata\n") +
+                     string("set style data histograms\n") +
+                     string("set style histogram rowstacked\n") +
+                     string("set style fill solid 0.75 noborder\n") +
+                     string("set boxwidth 1 relative\n") +
+                     string("set yrange [0:100]\n") +
+                     string("set style line 100 lc rgb \"#5CDB95\" \n") +
+                     string("set xtics textcolor rgb \"#232323\" \n") +
+                     string("set ytics textcolor linestyle 100 \n") +
+                     string("set xlabel \"Date\" tc ls 3 \n") +
+                     string("set ylabel \"Percent of Holdings\" tc ls 3 offset 0, -3 \n") +
+                     string("set key tc ls 3 \n") +
+                     string("set key outside top right \n") +
+                     string("set key title \"Legend\" tc ls 3 \n") +
+                     string("set key Left \n") +
+                     string("unset grid\n") +
+                     string("set title \"Holdings Distribution\" tc ls 3 \n") +
+                     string("set border linewidth 1 linestyle 3 \n");
+
+    // Initialize plot pipe and its settings
+    gnuplotPipe = popen("/usr/local/bin/gnuplot", "w");
+
+    // Set plot settings
+    fprintf(gnuplotPipe, "set datafile separator \",\" \n");
+    fflush(gnuplotPipe);
 }
 
 // Creates pipe for commands and creates an empty plot
 void GNUPlotter::initPlot() {
-
-    gnuplotPipe = popen("/usr/local/bin/gnuplot", "w");
-    
-    // Set plot settings
-    fprintf(gnuplotPipe, "set datafile separator \",\" \n");
-    fprintf(gnuplotPipe, "set xlabel \"date (epochtime)\" \n");
-    fflush(gnuplotPipe);
     
     cout << "Building GNUPlot..." << endl;
 
@@ -69,6 +66,10 @@ void GNUPlotter::initPlot() {
         fprintf(gnuplotPipe, "%s", init2.c_str());
         fflush(gnuplotPipe);
     }
+
+    // Clear the data files
+    remove(dataFile);
+    remove(positionsFile);
 }
 
 // Replot from the updated returns stream
@@ -136,6 +137,7 @@ void GNUPlotter::quitPlot() {
 
 // Gets the format for the equity curve
 string GNUPlotter::getEquityFormat() {
+    cout << "START: " << *start << " END: " << *end << endl;
     return string(" set terminal x11 0 background \"#232323\" size 2000, 400 title \"Equity Curve\" \n") +
            string("set xdata time\n") +
            string("set style data lines\n") +

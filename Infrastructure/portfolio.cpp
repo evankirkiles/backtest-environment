@@ -16,7 +16,7 @@ using namespace std;
 NaivePortfolio::NaivePortfolio() { };
 
 // Constructor
-NaivePortfolio::NaivePortfolio(HistoricalCSVDataHandler* i_bars, vector<string> i_symbol_list, boost::ptr_vector<Event>* i_events, char* *i_start_date, char* *i_end_date, double *i_initial_capital) {
+NaivePortfolio::NaivePortfolio(HistoricalCSVDataHandler* i_bars, vector<string> i_symbol_list, boost::ptr_vector<Event>* i_events, string *i_start_date, string *i_end_date, double *i_initial_capital) {
     
     // Initialize all instance variables
     bars = i_bars;
@@ -25,7 +25,9 @@ NaivePortfolio::NaivePortfolio(HistoricalCSVDataHandler* i_bars, vector<string> 
     end_date = i_end_date;
     initial_capital = i_initial_capital;
     symbol_list = i_symbol_list;
-    
+}
+
+void NaivePortfolio::format_portfolio() {
     // Create positions and holdings
     all_positions = construct_all_positions();
     current_positions = construct_current_positions();
@@ -208,9 +210,9 @@ int NaivePortfolio::calculate_quantity(string symbol, double percentage) {
     
     // Commission included in calculation
     if (requiredcash <= 500 * (sellingprice + 0.013)) {
-        return floor(requiredcash  / (sellingprice + 0.013));
+        return (int)floor(requiredcash  / (sellingprice + 0.013));
     } else {
-        return floor(requiredcash  / (sellingprice + 0.008));
+        return (int)floor(requiredcash  / (sellingprice + 0.008));
     }
 }
 

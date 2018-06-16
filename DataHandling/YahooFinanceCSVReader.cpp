@@ -49,7 +49,7 @@ const char* get_crumb_and_cookies(char *symbol, char cookiefilename[FILENAME_MAX
     // Netscape format cookie 
     snprintf(nline, sizeof(nline), "%s\t%s\t%s\t%s\t%lu\t%s\t%s",
              ".example.com", "TRUE", "/", "FALSE",
-             (unsigned long)time(NULL) + 31337UL,
+             (unsigned long)time(nullptr) + 31337UL,
              "PREF", "hello example, i like you very much!");
     
     // Set file as cookie jar
@@ -92,12 +92,12 @@ const char* get_crumb_and_cookies(char *symbol, char cookiefilename[FILENAME_MAX
 }
 
 // Constructor for CVS Reader
-YahooFinanceCSVReader:: YahooFinanceCSVReader(char *symbol, char* i_startdate, char* i_enddate, char outfilename[FILENAME_MAX], char cookiefilename[FILENAME_MAX], char crumbfilename[FILENAME_MAX]) : marketmovements() {
+YahooFinanceCSVReader:: YahooFinanceCSVReader(char *symbol, string i_startdate, string i_enddate, char outfilename[FILENAME_MAX], char cookiefilename[FILENAME_MAX], char crumbfilename[FILENAME_MAX]) : marketmovements() {
     
     // Dates formatted as YYYY-MM-DD
-    long startdate = get_epoch_time((char*)i_startdate);
-    long enddate = get_epoch_time((char*)i_enddate);
-    char *interval = (char*)"1d";
+    long startdate = get_epoch_time(i_startdate);
+    long enddate = get_epoch_time(i_enddate);
+    auto interval = (char*)"1d";
     
     // Initialize variables
     CURL *curl;

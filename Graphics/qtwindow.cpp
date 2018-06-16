@@ -5,6 +5,7 @@
 #include "qtwindow.hpp"
 #include <QPushButton>
 #include <QLabel>
+#include <QDate>
 #include <QVBoxLayout>
 #include <QHBoxLayout>
 #include <QDateEdit>
@@ -12,7 +13,7 @@
 #include <QLineEdit>
 
 AlgoWindow::AlgoWindow(TradingInterface* i_trader, BuyAndHoldStrategy* i_strat, Benchmark* i_bench, GNUPlotter* i_gnuplot,
-                       char* *i_startdateaddr, char* *i_enddateaddr, double* i_initialcapitaladdr, QWidget *parent) : QWidget(parent) {
+                       string *i_startdateaddr, string *i_enddateaddr, double* i_initialcapitaladdr, QWidget *parent) : QWidget(parent) {
 
     interface = i_trader;
     strat = i_strat;
@@ -66,9 +67,9 @@ AlgoWindow::AlgoWindow(TradingInterface* i_trader, BuyAndHoldStrategy* i_strat, 
     m_button->setFixedSize(210, 100);
     m_button->setCheckable(true);
     startdate->setFixedSize(75, 10);
-    startdateedit->setDisplayFormat("MM/dd/yyyy");
+    startdateedit->setDisplayFormat("yyyy-MM-dd");
     enddate->setFixedSize(75, 10);
-    enddateedit->setDisplayFormat("MM/dd/yyyy");
+    enddateedit->setDisplayFormat("yyyy-MM-dd");
     initialcapital->setFixedSize(100, 13);
     initialcapedit->setText("10000000");
     initialcapedit->setValidator(new QIntValidator(1, 100000000, this));
@@ -86,6 +87,11 @@ AlgoWindow::AlgoWindow(TradingInterface* i_trader, BuyAndHoldStrategy* i_strat, 
     // Add the slot and signal for the button click
     connect(m_button, SIGNAL (clicked(bool)), this, SLOT (buttonClicked(bool)));
 
+    // Add the slot and signals for the variables changed
+    connect(startdateedit, SIGNAL(dateChanged(QDate)), this, SLOT(varsChanged()));
+    connect(enddateedit, SIGNAL(dateChanged(QDate)), this, SLOT(varsChanged()));
+    connect(initialcapedit, SIGNAL(textChanged(QString)), this, SLOT(varsChanged()));
+
     // Set window options
     setLayout(mainLayout);
     setWindowTitle(tr("Algorithm Control"));
@@ -98,16 +104,30 @@ AlgoWindow::AlgoWindow(TradingInterface* i_trader, BuyAndHoldStrategy* i_strat, 
     setStyleSheet(StyleSheet);
 }
 
+// Private slot that changes the init variables when text is changed
+void AlgoWindow::varsChanged() {
+    *startdateaddr = startdateedit->text().toStdString();
+    *enddateaddr = enddateedit->text().toStdString();
+    *initialcapaddr = (double)initialcapedit->text().toInt();
+
+    m_button->setDisabled(false);
+    m_button->setChecked(false);
+    m_button->setText("Initialize Backtest");
+}
+
 // Private slot that listens for when button is clicked
 void AlgoWindow::buttonClicked(bool checked) {
     if (checked){
+        /*
         *startdateaddr = (char*)"2008-01-01";
         *enddateaddr = (char*)"2011-01-01";
         *initialcapaddr = 100000;
+         */
         gnuplot->initPlot();
         m_button->setText("Run Backtest");
     } else {
         m_button->setText("Built Backtest");
         interface->runbacktest(*strat, *bench, gnuplot);
+        m_button->setDisabled(true);
     }
 }

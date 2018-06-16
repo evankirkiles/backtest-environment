@@ -23,16 +23,17 @@ class AlgoWindow : public QWidget {
 
     bool initialized;
 
-    char* *startdateaddr;
-    char* *enddateaddr;
+    string *startdateaddr;
+    string *enddateaddr;
     double* initialcapaddr;
 
     Q_OBJECT
 public:
     explicit AlgoWindow(TradingInterface* trader, BuyAndHoldStrategy* strat, Benchmark* bench, GNUPlotter* gnuplot,
-                        char* *startdate, char* *enddate, double* initialcapitalval, QWidget *parent = 0);
+                        string *startdate, string *enddate, double* initialcapitalval, QWidget *parent = 0);
 private slots:
     void buttonClicked(bool checked);
+    void varsChanged();
 private:
 
     // Visualization widgets
