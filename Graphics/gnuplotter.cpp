@@ -82,6 +82,17 @@ void GNUPlotter::initPlot() {
     fflush(gnuplotPipe);
     
     cout << "Building GNUPlot..." << endl;
+
+    string init1 = equitycurveformat + string("plot 0 with lines title \"baseline\" \n");
+
+    fprintf(gnuplotPipe, "%s", init1.c_str());
+    fflush(gnuplotPipe);
+
+    if (showholdings) {
+        string init2 = holdingsformat + string("set xrange[0:1] \n") +string("plot 102 with boxes \n");
+        fprintf(gnuplotPipe, "%s", init2.c_str());
+        fflush(gnuplotPipe);
+    }
 }
 
 // Replot from the updated returns stream
@@ -92,6 +103,7 @@ void GNUPlotter::updatePlot() {
     double equitycurve = portfolio->all_holdings.rbegin().operator*().second["equitycurve"];
     double benchequity = benchmark->all_holdings.rbegin().operator*().second["equitycurve"];
     double totalheld = portfolio->all_holdings.rbegin().operator*().second["totalholdings"];
+    double hwm = portfolio->all_holdings.rbegin().operator*().second["highwatermark"];
     
     data.open(dataFile, ios::in | ios::out | ios::app);
     data << get_std_time(date) << ", " << equitycurve*100 << ", " << benchequity*100 << "\n";
@@ -131,7 +143,10 @@ void GNUPlotter::updatePlot() {
     }
     
     // Plot the main equity curve and benchmark
-    string plot2 = equitycurveformat + string("plot \"") + string(dataFile) + string("\" using 1:2 with lines title \"ALGORITHM\" ls 1, \"\" using 1:3 with lines title \"BENCHMARK\" ls 2, 0 with lines title \"baseline\" \n");
+    string plot2 = equitycurveformat + string("plot \"") + string(dataFile) +
+            string("\" using 1:2 with lines title \"ALGORITHM\" ls 1, "
+                   "\"\" using 1:3 with lines title \"BENCHMARK\" ls 2,"
+                   " 0 with lines title \"baseline\" \n");
     fprintf(gnuplotPipe, "%s", plot2.c_str());
     fflush(gnuplotPipe);
 }

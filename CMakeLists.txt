@@ -2,8 +2,13 @@ cmake_minimum_required(VERSION 3.10)
 project(algobacktester)
 
 set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_INCLUDE_CURRENT_DIR ON)
 set(APP_DOMAIN ./domain)
 set(APP_CALC ./calc)
+set(CMAKE_PREFIX_PATH /Users/samkirkiles/Qt/5.11.0/clang_64)
+set(CMAKE_AUTOMOC ON)
+set(CMAKE_AUTOUIC ON)
+set(CMAKE_AUTORCC ON)
 
 add_executable(algobacktester
         main.cpp
@@ -17,7 +22,7 @@ add_executable(algobacktester
         DataHandling/YahooFinanceCSVReader.cpp
         Strategies/strat_buyandhold.cpp
         Strategies/benchmark.cpp
-        )
+        Graphics/qtwindow.cpp)
 
 find_package(Boost REQUIRED)
 IF (Boost_FOUND)
