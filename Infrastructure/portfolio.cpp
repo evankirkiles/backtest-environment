@@ -187,7 +187,6 @@ void NaivePortfolio::generate_naive_order(SignalEvent signal) {
     double strength = signal.strength;
     
     int mkt_quantity = calculate_quantity(symbol, strength);
-    cout << symbol << " : " << mkt_quantity << endl;
     string order_type = "MKT";
     
     // Order logic

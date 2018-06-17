@@ -16,6 +16,15 @@
 #endif
 
 #include "data.hpp"
+#ifndef setprecision
+#include <iomanip>
+#endif
+#ifndef stringstream
+#include <sstream>
+#endif
+#ifndef QLabel
+#include <QLabel>
+#endif
 
 using namespace std;
 

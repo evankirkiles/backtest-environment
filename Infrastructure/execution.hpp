@@ -18,8 +18,9 @@
 #include <chrono>
 #endif
 
-#include <stdio.h>
+#ifndef Event
 #include "events.hpp"
+#endif
 
 // Base execution handler to which we can add features
 class ExecutionHandler {

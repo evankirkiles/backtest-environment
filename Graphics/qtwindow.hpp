@@ -6,7 +6,9 @@
 #define ALGOBACKTESTER_QTWINDOW_HPP
 
 #include <QWidget>
+#ifndef TradingInterface
 #include "../Infrastructure/interface.hpp"
+#endif
 
 // Window for displaying performance stats and start/stop button
 class QPushButton;

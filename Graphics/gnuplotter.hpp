@@ -16,8 +16,6 @@
 #include <fstream>
 #endif
 
-#include <stdio.h>
-
 using namespace std;
 
 // Graphing functionality

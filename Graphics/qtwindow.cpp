@@ -4,7 +4,9 @@
 
 #include "qtwindow.hpp"
 #include <QPushButton>
+#ifndef QLabel
 #include <QLabel>
+#endif
 #include <QDate>
 #include <QVBoxLayout>
 #include <QHBoxLayout>
@@ -12,6 +14,8 @@
 #include <QFile>
 #include <QLineEdit>
 #include <QCheckBox>
+#include <iomanip>
+#include <sstream>
 
 AlgoWindow::AlgoWindow(TradingInterface* i_trader, BuyAndHoldStrategy* i_strat, Benchmark* i_bench, GNUPlotter* i_gnuplot,
                        string *i_startdateaddr, string *i_enddateaddr, double* i_initialcapitaladdr, int* showholdingsval,
@@ -59,13 +63,13 @@ AlgoWindow::AlgoWindow(TradingInterface* i_trader, BuyAndHoldStrategy* i_strat, 
 
     // Performance labels
     totalreturn = new QLabel("Total Return: ", this);
-    totalreturnlabel= new QLabel("a", this);
+    totalreturnlabel= new QLabel("", this);
     sharpe = new QLabel("Sharpe Ratio: ", this);
-    sharpelabel = new QLabel("a", this);
+    sharpelabel = new QLabel("", this);
     hwm = new QLabel("High-Water Mark: ", this);
-    hwmlabel = new QLabel("a", this);
+    hwmlabel = new QLabel("", this);
     drawdown = new QLabel("Max Drawdown: ", this);
-    drawdownlabel = new QLabel("a", this);
+    drawdownlabel = new QLabel("", this);
 
     // Create horizontal layouts for top layout
     startdatelayout->addWidget(startdate);
@@ -115,11 +119,19 @@ AlgoWindow::AlgoWindow(TradingInterface* i_trader, BuyAndHoldStrategy* i_strat, 
     showholdings->setFixedSize(175, 13);
     holdingsbool->setCheckState(Qt::CheckState::Unchecked);
 
-    // Set bot widget propertis
+    // Set bot widget properties
     totalreturn->setFixedSize(110, 30);
+    totalreturnlabel->setAlignment(Qt::AlignmentFlag::AlignCenter);
+    totalreturnlabel->setObjectName("performancelabel");
     sharpe->setFixedSize(110, 30);
+    sharpelabel->setAlignment(Qt::AlignmentFlag::AlignCenter);
+    sharpelabel->setObjectName("performancelabel");
     hwm->setFixedSize(110, 30);
+    hwmlabel->setAlignment(Qt::AlignmentFlag::AlignCenter);
+    hwmlabel->setObjectName("performancelabel");
     drawdown->setFixedSize(110, 30);
+    drawdownlabel->setAlignment(Qt::AlignmentFlag::AlignCenter);
+    drawdownlabel->setObjectName("performancelabel");
 
     // Add sub-vertical layouts to main vert layout
     mainLayout->addLayout(topLayout);
@@ -152,15 +164,6 @@ AlgoWindow::AlgoWindow(TradingInterface* i_trader, BuyAndHoldStrategy* i_strat, 
 
 // Private slot that changes the init variables when text is changed
 void AlgoWindow::varsChanged() {
-    *startdateaddr = startdateedit->text().toStdString();
-    *enddateaddr = enddateedit->text().toStdString();
-    *initialcapaddr = (double)initialcapedit->text().toInt();
-    if(holdingsbool->checkState() == Qt::CheckState::Checked) {
-        *showholds = 1;
-    } else {
-        *showholds = 0;
-    }
-
     m_button->setDisabled(false);
     m_button->setChecked(false);
     m_button->setText("Initialize Backtest");
@@ -169,7 +172,14 @@ void AlgoWindow::varsChanged() {
 // Private slot that listens for when button is clicked
 void AlgoWindow::buttonClicked(bool checked) {
     if (checked){
-
+        *startdateaddr = startdateedit->text().toStdString();
+        *enddateaddr = enddateedit->text().toStdString();
+        *initialcapaddr = (double)initialcapedit->text().toInt();
+        if(holdingsbool->checkState() == Qt::CheckState::Checked) {
+            *showholds = 1;
+        } else {
+            *showholds = 0;
+        }
         gnuplot->initPlot();
         m_button->setText("Run Backtest");
     } else {
@@ -197,10 +207,18 @@ void AlgoWindow::performanceValues() {
     map<string, double>performance = interface->portfolio.getPerformanceStats(interface->benchmarkportfolio);
 
     // Set label values
-    totalreturnlabel->setText(QString(to_string(performance["totalreturn"] * 100).c_str()) + "%");
-    sharpelabel->setText(QString(to_string(performance["sharpe"]).c_str()));
-    hwmlabel->setText(QString(to_string(performance["hwm"] * 100).c_str()) + "%");
-    drawdownlabel->setText(QString(to_string(performance["maxdrawdown"] * -100).c_str()) + "%");
+    std::stringstream stream;
+    stream << std::fixed << std::setprecision(2) << performance["totalreturn"] * 100;
+    totalreturnlabel->setText(QString(stream.str().append("%").c_str()));
+    stream.str("");
+    stream << std::fixed << std::setprecision(2) << performance["sharpe"];
+    sharpelabel->setText(QString(stream.str().c_str()));
+    stream.str("");
+    stream << std::fixed << std::setprecision(2) << performance["hwm"] * 100;
+    hwmlabel->setText(QString(stream.str().append("%").c_str()));
+    stream.str("");
+    stream << std::fixed << std::setprecision(2) << performance["maxdrawdown"] * -100;
+    drawdownlabel->setText(QString(stream.str().append("%").c_str()));
 
     cout << "alpha: " << performance["alpha"] << ", beta: " << performance["beta"] <<  ", mean: " << performance["mean"] <<
          ", variance:" << performance["variance"] << endl;

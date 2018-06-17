@@ -95,12 +95,14 @@ void TradingInterface::runbacktest(BuyAndHoldStrategy strategy, Benchmark i_benc
             events.erase(events.begin());
         } else {
 
+            /*
             cout << "Total Returns: " << portfolio.all_holdings.rbegin().operator*().second["equitycurve"] * 100 <<
                  "% Mean: " << portfolio.all_holdings.rbegin().operator*().second["mean"] * 100 <<
                  " Variance: " << portfolio.all_holdings.rbegin().operator*().second["variance"] * 100*100 <<
                  " Sharpe: " << portfolio.all_holdings.rbegin().operator*().second["sharpe"] <<
                  " Drawdown: " << portfolio.all_holdings.rbegin().operator*().second["drawdown"] * 100 <<
                  " HWM: " << portfolio.all_holdings.rbegin().operator*().second["highwatermark"] * 100 << endl;
+                 */
 
             if (continue_backtest == 0) {
                 instcontinue = 0;

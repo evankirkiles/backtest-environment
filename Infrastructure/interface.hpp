@@ -17,11 +17,8 @@
 #ifndef iostream
 #include <iostream>
 #endif
-#ifndef GNUPlotter
+#include "portfolio.hpp"
 #include "../Graphics/gnuplotter.hpp"
-#endif
-
-#include <cstdio>
 #include "../Strategies/strategiesheader.hpp"
 #include "execution.hpp"
 
@@ -57,7 +54,7 @@ public:
     HistoricalCSVDataHandler benchmarkpipeline;
     NaivePortfolio benchmarkportfolio;
     Benchmark benchmark;
-    
+
     // PARAMS
     // symbol_list: list of symbols to be traded
     // initial_cap: initial amount of capital allocated to algorithm

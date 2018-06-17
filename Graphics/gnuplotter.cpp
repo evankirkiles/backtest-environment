@@ -139,7 +139,6 @@ void GNUPlotter::quitPlot() {
 
 // Gets the format for the equity curve
 string GNUPlotter::getEquityFormat() {
-    cout << "START: " << *start << " END: " << *end << endl;
     return string(" set terminal x11 0 background \"#232323\" size 2000, 400 title \"Equity Curve\" \n") +
            string("set xdata time\n") +
            string("set style data lines\n") +

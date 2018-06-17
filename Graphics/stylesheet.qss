@@ -12,6 +12,11 @@ QPushButton {
 QLabel {
 	color: #FFFFFF;
 }
+QLabel#performancelabel {
+	color: #ddeaff;
+	font-size: 20px;
+	text-align: center;
+}
 QDateEdit {
 	background-color: #202020;
 	color: #FFFFFF;

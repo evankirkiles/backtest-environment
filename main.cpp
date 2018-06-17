@@ -8,11 +8,9 @@
 
 #include <iostream>
 #include "DataHandling/YahooFinanceCSVReader.hpp"
-#include "Infrastructure/interface.hpp"
-#include "Graphics/gnuplotter.hpp"
+#include "Graphics/qtwindow.hpp"
 
 #include <QApplication>
-#include "Graphics/qtwindow.hpp"
 
 int main(int argc, char **argv) {
 
