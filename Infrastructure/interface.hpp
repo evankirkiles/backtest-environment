@@ -34,7 +34,7 @@ public:
     // pipeline: Data Handler instantiated from data.cpp
     // events: global list of events
     
-    vector<string> symbol_list;
+    vector<string>* symbol_list;
     vector<string> benchmarksymbols;
     double *initial_capital;
     int continue_backtest;
@@ -48,7 +48,7 @@ public:
     // Strategy setup
     NaivePortfolio portfolio;
     HistoricalCSVDataHandler pipeline;
-    BuyAndHoldStrategy strat;
+    MainStrategy strat;
     
     // Benchmark setup
     HistoricalCSVDataHandler benchmarkpipeline;
@@ -59,13 +59,13 @@ public:
     // symbol_list: list of symbols to be traded
     // initial_cap: initial amount of capital allocated to algorithm
     // strategy: the algorithm whose signals are sent to the portfolio
-    TradingInterface(vector<string>symbol_list, vector<string>benchmarksymbols, double *initial_cap, string *start_date, string *end_date);
+    TradingInterface(vector<string>*symbol_list, vector<string>benchmarksymbols, double *initial_cap, string *start_date, string *end_date);
 
     // Placeholder initializer
     TradingInterface() = default;
 
     // Executes the while loop for running the backtest
-    void runbacktest(BuyAndHoldStrategy strategy, Benchmark benchmark, GNUPlotter* plot);
+    void runbacktest(MainStrategy strategy, Benchmark benchmark, GNUPlotter* plot);
 };
 
 #endif /* interface_hpp */

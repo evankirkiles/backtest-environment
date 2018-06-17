@@ -11,7 +11,7 @@
 using namespace std;
 
 // Constructor that initializes the executor and replaces the empty portfolio and pipeline with functioning ones
-TradingInterface::TradingInterface(vector<string>i_symbol_list, vector<string>i_benchmarksymbols, double* i_initial_cap, string *i_start_date, string *i_end_date) : executor(&events) {
+TradingInterface::TradingInterface(vector<string>*i_symbol_list, vector<string>i_benchmarksymbols, double* i_initial_cap, string *i_start_date, string *i_end_date) : executor(&events) {
     
     // Initialize variables inputted in constructor
     symbol_list = i_symbol_list;
@@ -21,19 +21,17 @@ TradingInterface::TradingInterface(vector<string>i_symbol_list, vector<string>i_
     enddate = i_end_date;
     continue_backtest = 0;
 
-    vector<string> spy = {string("SPY")};
-
     // Create data handler and portfolio management
-    pipeline = HistoricalCSVDataHandler(&events, &symbol_list, startdate, enddate, &continue_backtest);
+    pipeline = HistoricalCSVDataHandler(&events, symbol_list, startdate, enddate, &continue_backtest);
     portfolio = NaivePortfolio(&pipeline, symbol_list, &events, startdate, enddate, initial_capital);
 
     // Initialize benchmark portfolio and data
     benchmarkpipeline = HistoricalCSVDataHandler(&events, &benchmarksymbols, startdate, enddate, &continue_backtest);
-    benchmarkportfolio = NaivePortfolio(&benchmarkpipeline, benchmarksymbols, &events, startdate, enddate, initial_capital);
+    benchmarkportfolio = NaivePortfolio(&benchmarkpipeline, &benchmarksymbols, &events, startdate, enddate, initial_capital);
 }
 
 // Begins the backtest!
-void TradingInterface::runbacktest(BuyAndHoldStrategy strategy, Benchmark i_benchmark, GNUPlotter* plot) {
+void TradingInterface::runbacktest(MainStrategy strategy, Benchmark i_benchmark, GNUPlotter* plot) {
     continue_backtest = 1;
     portfolio.format_portfolio();
     pipeline.format_csv_data();

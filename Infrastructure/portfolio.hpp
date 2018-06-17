@@ -43,7 +43,7 @@ class NaivePortfolio:Portfolio {
 public:
     HistoricalCSVDataHandler* bars;
     boost::ptr_vector<Event>* events;
-    vector<string> symbol_list;
+    vector<string>* symbol_list;
     string *start_date;
     string *end_date;
     double *initial_capital;
@@ -58,7 +58,7 @@ public:
     map<string, double> perfmap;
     
     // Initialization function
-    NaivePortfolio(HistoricalCSVDataHandler* i_bars, vector<string> i_symbol_list, boost::ptr_vector<Event>* i_events, string *i_start_date, string *i_end_date, double *i_initial_capital);
+    NaivePortfolio(HistoricalCSVDataHandler* i_bars, vector<string>* i_symbol_list, boost::ptr_vector<Event>* i_events, string *i_start_date, string *i_end_date, double *i_initial_capital);
     
     // Placeholder initialization function
     NaivePortfolio();

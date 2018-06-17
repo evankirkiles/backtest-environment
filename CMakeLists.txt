@@ -20,7 +20,7 @@ add_executable(algobacktester
         Graphics/gnuplotter.cpp
         DataHandling/MarketDataFrame.cpp
         DataHandling/YahooFinanceCSVReader.cpp
-        Strategies/strat_buyandhold.cpp
+        Strategies/mainstrategy.cpp
         Strategies/benchmark.cpp
         Graphics/qtwindow.cpp)
 

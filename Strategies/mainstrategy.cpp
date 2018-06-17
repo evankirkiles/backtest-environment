@@ -1,9 +1,5 @@
 //
-//  strat_buyandhold.cpp
-//  Backtest Environment
-//
-//  Created by Evan Kirkiles on 5/31/18.
-//  Copyright © 2018 Evan Kirkiles. All rights reserved.
+// Created by Evan Kirkiles on 6/17/18.
 //
 
 #include "strategiesheader.hpp"
@@ -14,12 +10,13 @@
 
 // Initialize strategy
 MainStrategy::MainStrategy(HistoricalCSVDataHandler* i_bars, boost::ptr_vector<Event>*i_events) {
-    
+
     // Set instance variables
     bars = i_bars;
     events = i_events;
+    *bars->symbol_list = {string("CAT")};
     symbol_list = bars->symbol_list;
-    
+
     // Create the bought dictionary
     bought = calculate_initial_bought();
 }
@@ -37,14 +34,14 @@ map<string, bool> MainStrategy::calculate_initial_bought() {
 
 // Update map of bought symbols
 void MainStrategy::calculate_signals(MarketEvent i_event) {
-    
+
     // LONG any symbol whose bar is updated by marketevent
     for (int i=0; i < symbol_list->size(); i++) {
         string symbol = (*symbol_list)[i];
         map<string, map<long, double>> newbars = bars->get_latest_bars(symbol, 1);
         if (!newbars.empty() && newbars["open"].begin()->second > 0.01) {
             if (!bought[symbol]) {
-                
+
                 // (symbol, time, type=LONG, SHORT or EXIT)
                 events->push_back(new SignalEvent(symbol, bars->latestDates[symbol][0], 0.1));
                 bought[symbol] = true;

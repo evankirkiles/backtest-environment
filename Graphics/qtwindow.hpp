@@ -20,7 +20,7 @@ class AlgoWindow : public QWidget {
 
     // Backtesting variables
     TradingInterface* interface;
-    BuyAndHoldStrategy* strat;
+    MainStrategy* strat;
     Benchmark* bench;
     GNUPlotter* gnuplot;
 
@@ -33,7 +33,7 @@ class AlgoWindow : public QWidget {
 
     Q_OBJECT
 public:
-    explicit AlgoWindow(TradingInterface* trader, BuyAndHoldStrategy* strat, Benchmark* bench, GNUPlotter* gnuplot,
+    explicit AlgoWindow(TradingInterface* trader, MainStrategy* strat, Benchmark* bench, GNUPlotter* gnuplot,
                         string *startdate, string *enddate, double* initialcapitalval, int* showholds, QWidget *parent = 0);
 
     void performanceValues();

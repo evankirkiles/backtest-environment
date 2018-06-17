@@ -97,8 +97,8 @@ void GNUPlotter::updatePlot() {
         data.open(positionsFile, ios::in | ios::out | ios::app);
         data << date << ", ";
         focused = false;
-        for (int i=0; i<(portfolio->symbol_list.size()); i++) {
-            string symbol = portfolio->symbol_list[i];
+        for (int i=0; i<(portfolio->symbol_list->size()); i++) {
+            string symbol = portfolio->symbol_list->at(i);
             double holdings = portfolio->all_holdings.rbegin().operator*().second[symbol];
             data << (holdings/totalheld)*100 << ", ";
             string toappend;
@@ -113,7 +113,7 @@ void GNUPlotter::updatePlot() {
         }
         double cashpct = portfolio->all_holdings.rbegin().operator*().second["heldcash"];
         data << (cashpct/totalheld)*100 << "\n";
-        plotpositions.append(", \"\" using " + to_string(portfolio->symbol_list.size() + 2) + ":xticlabels(1) title \"cash\" \n");
+        plotpositions.append(", \"\" using " + to_string(portfolio->symbol_list->size() + 2) + ":xticlabels(1) title \"cash\" \n");
         data.close();
         
         // Plot the position percentages

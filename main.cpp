@@ -14,15 +14,16 @@
 
 int main(int argc, char **argv) {
 
+    // Placeholder starting global variables
     auto startdate = string("1970-01-01");
     auto enddate = string("1971-01-01");
     double initialcapital = 100000000;
     int showholdings = 0;
-    vector<string> symbol_list = {string("GS"), string("AAPL"), string("SPY")};
+    vector<string> symbol_list = {string("SPY")};
     vector<string> symbol_list2 = {string("SPY")};
 
-    TradingInterface interface = TradingInterface(symbol_list, symbol_list2, &initialcapital, &startdate, &enddate);
-    BuyAndHoldStrategy strat = BuyAndHoldStrategy(&interface.pipeline, &interface.events);
+    TradingInterface interface = TradingInterface(&symbol_list, {string("SPY")}, &initialcapital, &startdate, &enddate);
+    MainStrategy strat = MainStrategy(&interface.pipeline, &interface.events);
     Benchmark bench = Benchmark(&interface.benchmarkpipeline, &interface.events);
     GNUPlotter gnuplot(&interface.portfolio,
                        &interface.benchmarkportfolio, (char*)"/Users/samkirkiles/Desktop/algobacktester/Graphics/data.csv", (char*)"/Users/samkirkiles/Desktop/algobacktester/Graphics/positions.csv", &startdate, &enddate, &showholdings);

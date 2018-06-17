@@ -16,7 +16,7 @@ using namespace std;
 NaivePortfolio::NaivePortfolio() { };
 
 // Constructor
-NaivePortfolio::NaivePortfolio(HistoricalCSVDataHandler* i_bars, vector<string> i_symbol_list, boost::ptr_vector<Event>* i_events, string *i_start_date, string *i_end_date, double *i_initial_capital) {
+NaivePortfolio::NaivePortfolio(HistoricalCSVDataHandler* i_bars, vector<string>*i_symbol_list, boost::ptr_vector<Event>* i_events, string *i_start_date, string *i_end_date, double *i_initial_capital) {
     
     // Initialize all instance variables
     bars = i_bars;
@@ -43,8 +43,8 @@ void NaivePortfolio::format_portfolio() {
 // Positions & holdings constructors
 map<long, map<string, double>> NaivePortfolio::construct_all_positions() {
     map<string, double> temp = {};
-    for (int i = 0; i < symbol_list.size(); i++) {
-        temp[symbol_list[i]] = 0;
+    for (int i = 0; i < symbol_list->size(); i++) {
+        temp[symbol_list->at(i)] = 0;
     }
     map<long, map<string, double>> c;
     c[get_epoch_time(*start_date)] = temp;
@@ -52,15 +52,15 @@ map<long, map<string, double>> NaivePortfolio::construct_all_positions() {
 }
 map<string, double> NaivePortfolio::construct_current_positions() {
     map<string, double> temp = {};
-    for (int i = 0; i < symbol_list.size(); i++) {
-        temp[symbol_list[i]] = 0;
+    for (int i = 0; i < symbol_list->size(); i++) {
+        temp[symbol_list->at(i)] = 0;
     }
     return temp;
 }
 map<long, map<string, double>> NaivePortfolio::construct_all_holdings() {
     map<string, double> temp = {};
-    for (int i = 0; i < symbol_list.size(); i++) {
-        temp[symbol_list[i]] = 0;
+    for (int i = 0; i < symbol_list->size(); i++) {
+        temp[symbol_list->at(i)] = 0;
     }
     temp["heldcash"] = *initial_capital;
     temp["commission"] = 0.0;
@@ -84,8 +84,8 @@ map<long, map<string, double>> NaivePortfolio::construct_all_holdings() {
 }
 map<string, double> NaivePortfolio::construct_current_holdings() {
     map<string, double> temp = {};
-    for (int i = 0; i < symbol_list.size(); i++) {
-        temp[symbol_list[i]] = 0;
+    for (int i = 0; i < symbol_list->size(); i++) {
+        temp[symbol_list->at(i)] = 0;
     }
     temp["heldcash"] = *initial_capital;
     temp["commission"] = 0.0;
@@ -101,19 +101,20 @@ void NaivePortfolio::update_timeindex() {
     double previoustotal = all_holdings.rbegin().operator*().second["totalholdings"];
     double previouscurve = all_holdings.rbegin().operator*().second["equitycurve"];
     
-    for (int i=0; i<symbol_list.size();i++) {
+    for (int i=0; i<symbol_list->size();i++) {
+        string symbol = symbol_list->at(i);
         
         // Update positions
-        lastbar[symbol_list[i]] = bars->get_latest_bars(symbol_list[i],1);
+        lastbar[symbol] = bars->get_latest_bars(symbol,1);
         
-        date = lastbar[symbol_list[i]]["open"].rbegin()->first;
-        all_positions[date][symbol_list[i]] = current_positions[symbol_list[i]];
+        date = lastbar[symbol]["open"].rbegin()->first;
+        all_positions[date][symbol] = current_positions[symbol];
         
         // Update holdings
         // Estimates market value of a stock by using the quantity * its closing price (most likely inaccurate)
-        double market_value = current_positions[symbol_list[i]] * lastbar[symbol_list[i]]["close"][date];
-        all_holdings[date][symbol_list[i]] = market_value;
-        current_holdings[symbol_list[i]] = market_value;
+        double market_value = current_positions[symbol] * lastbar[symbol]["close"][date];
+        all_holdings[date][symbol] = market_value;
+        current_holdings[symbol] = market_value;
         sumvalues += market_value;
     }
     

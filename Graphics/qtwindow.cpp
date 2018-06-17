@@ -17,7 +17,7 @@
 #include <iomanip>
 #include <sstream>
 
-AlgoWindow::AlgoWindow(TradingInterface* i_trader, BuyAndHoldStrategy* i_strat, Benchmark* i_bench, GNUPlotter* i_gnuplot,
+AlgoWindow::AlgoWindow(TradingInterface* i_trader, MainStrategy* i_strat, Benchmark* i_bench, GNUPlotter* i_gnuplot,
                        string *i_startdateaddr, string *i_enddateaddr, double* i_initialcapitaladdr, int* showholdingsval,
                        QWidget *parent) : QWidget(parent) {
 
