@@ -33,6 +33,11 @@ void NaivePortfolio::format_portfolio() {
     current_positions = construct_current_positions();
     all_holdings = construct_all_holdings();
     current_holdings = construct_current_holdings();
+
+    // Update performance map
+    perfmap.clear();
+    perfmap["maxdrawdown"] = 0;
+    perfmap["maxddperiod"] = 0;
 }
 
 // Positions & holdings constructors
@@ -221,22 +226,23 @@ int NaivePortfolio::calculate_quantity(string symbol, double percentage) {
 void NaivePortfolio::update_MeanAndVariance(long date) {
 
     // Assumes there is no risk-free rate or benchmark return being used in calculation (value is 0)
-    double previousMean = all_holdings.rbegin()++.operator*().second["mean"];
-    double previousVariance = all_holdings.rbegin()++.operator*().second["variance"];
+    double previousMean = next(all_holdings.rbegin(), 1).operator*().second["mean"];
+    double previousVariance = next(all_holdings.rbegin(), 1).operator*().second["variance"];
     double newReturn = all_holdings.rbegin().operator*().second["equitycurve"];
     long n = all_holdings.size();
 
     // Incremental updating of mean and variance
     // (https://math.stackexchange.com/questions/102978/incremental-computation-of-standard-deviation)
-    all_holdings[date]["mean"] = ((previousMean * (n - 1)) + newReturn) / n;
-    all_holdings[date]["variance"] = ((n-2)/(n-1))*previousVariance + pow((newReturn - previousMean), 2)/n;
+    double mean = previousMean + ((newReturn - previousMean) / n);
+    all_holdings[date]["mean"] = mean;
+    all_holdings[date]["variance"] = ((previousVariance*(n-1)) + ((newReturn - previousMean) * (newReturn - mean)))/n;
 }
 
 // Sharpe Ratio of the portfolio
 void NaivePortfolio::update_Sharpe(long date, int periods) {
 
     double mean = all_holdings.rbegin().operator*().second["mean"];
-    double variance = next(all_holdings.rbegin(), 0).operator*().second["variance"];
+    double variance = all_holdings.rbegin().operator*().second["variance"];
 
     all_holdings[date]["sharpe"] = sqrt(periods) * (mean/sqrt(variance));
 }
@@ -252,6 +258,9 @@ void NaivePortfolio::update_HighWaterMark(long date) {
         all_holdings[date]["highwatermark"] = prevHWM;
         all_holdings[date]["ddperiod"]++;
     } else {
+        if (all_holdings[date]["ddperiod"] > perfmap["maxddperiod"]) {
+            perfmap["maxddperiod"] = all_holdings[date]["ddperiod"];
+        }
         all_holdings[date]["highwatermark"] = currReturn;
         all_holdings[date]["ddperiod"] = 0;
     }
@@ -264,4 +273,45 @@ void NaivePortfolio::update_Drawdowns(long date) {
     double returns = all_holdings.rbegin().operator*().second["equitycurve"];
 
     all_holdings[date]["drawdown"] = hwm - returns;
+
+    if (all_holdings[date]["drawdown"] > perfmap["maxdrawdown"]) {
+        perfmap["maxdrawdown"] = all_holdings[date]["drawdown"];
+    }
+}
+
+// Run at the end of the backtest, calculates final performance statistics in readable format
+// Total return, alpha, beta, Sharpe ratio, max drawdown, max drawdown period, highwater mark
+map<string, double> NaivePortfolio::getPerformanceStats(NaivePortfolio benchmark) {
+
+    // Total return
+    perfmap["totalreturn"] = all_holdings.rbegin().operator*().second["equitycurve"];
+    // Sharpe ratio
+    perfmap["sharpe"] = all_holdings.rbegin().operator*().second["sharpe"];
+    // Highwater mark
+    perfmap["hwm"] = all_holdings.rbegin().operator*().second["highwatermark"];
+
+    // Beta
+    // Covariance (http://ci.columbia.edu/ci/premba_test/c0331/s7/s7_5.html)
+    double mean = all_holdings.rbegin().operator*().second["mean"];
+    double mkt_mean = benchmark.all_holdings.rbegin().operator*().second["mean"];
+    double cov = 0;
+    for (int i=0; i < bars->allDates.size(); i++) {
+        long date = bars->allDates[i];
+        cov += ((all_holdings[date]["equitycurve"] - mean) * (benchmark.all_holdings[date]["equitycurve"] - mkt_mean));
+    }
+    cov /= bars->allDates.size()-1;
+    // Variance of the market's returns
+    double variance = benchmark.all_holdings.rbegin().operator*().second["variance"];
+    perfmap["beta"] = cov/variance;
+
+    // Alpha
+    double returns = all_holdings.rbegin().operator*().second["equitycurve"];
+    double mkt_return = benchmark.all_holdings.rbegin().operator*().second["equitycurve"];
+    perfmap["alpha"] = returns - (mkt_return * (cov/variance));
+
+    // Mean & variance
+    perfmap["mean"] = mean;
+    perfmap["variance"] = all_holdings.rbegin().operator*().second["variance"];
+
+    return perfmap;
 }

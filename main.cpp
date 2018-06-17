@@ -29,9 +29,7 @@ int main(int argc, char **argv) {
     GNUPlotter gnuplot(&interface.portfolio,
                        &interface.benchmarkportfolio, (char*)"/Users/samkirkiles/Desktop/algobacktester/Graphics/data.csv", (char*)"/Users/samkirkiles/Desktop/algobacktester/Graphics/positions.csv", &startdate, &enddate, &showholdings);
 
-    // Begin the backtest on the created plot device
-    //interface.runbacktest(strat, bench, &gnuplot);
-
+    // Run the backtest window
     QApplication app(argc, argv);
 
     AlgoWindow window(&interface, &strat, &bench, &gnuplot, &startdate, &enddate, &initialcapital, &showholdings);

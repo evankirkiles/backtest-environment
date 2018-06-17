@@ -45,8 +45,8 @@ public:
     map<long, map<string, double>> all_holdings;
     map<string, double> current_holdings;
     
-    // Returns stream for performance calculation
-    map<long, map<string, double>> equity_curve;
+    // Performance map for all necessary evaluation statistics
+    map<string, double> perfmap;
     
     // Initialization function
     NaivePortfolio(HistoricalCSVDataHandler* i_bars, vector<string> i_symbol_list, boost::ptr_vector<Event>* i_events, string *i_start_date, string *i_end_date, double *i_initial_capital);
@@ -92,6 +92,9 @@ public:
 
     // Drawdowns (https://www.investopedia.com/terms/d/drawdown.asp)
     void update_Drawdowns(long date);
+
+    // Retrieves performance stats about the algorithm
+    map<string, double> getPerformanceStats(NaivePortfolio benchmark);
 };
 
 #endif /* portfolio_hpp */

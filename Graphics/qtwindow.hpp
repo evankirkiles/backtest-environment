@@ -33,9 +33,18 @@ class AlgoWindow : public QWidget {
 public:
     explicit AlgoWindow(TradingInterface* trader, BuyAndHoldStrategy* strat, Benchmark* bench, GNUPlotter* gnuplot,
                         string *startdate, string *enddate, double* initialcapitalval, int* showholds, QWidget *parent = 0);
+
+    void performanceValues();
+    QLabel *totalreturnlabel;
+    QLabel *sharpelabel;
+    QLabel *hwmlabel;
+    QLabel *drawdownlabel;
+
 private slots:
     void buttonClicked(bool checked);
     void varsChanged();
+    void setMaxDate();
+    void setMinDate();
 private:
 
     // Visualization widgets
