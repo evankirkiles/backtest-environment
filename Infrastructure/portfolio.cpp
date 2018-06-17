@@ -228,7 +228,7 @@ void NaivePortfolio::update_MeanAndVariance(long date) {
     // Assumes there is no risk-free rate or benchmark return being used in calculation (value is 0)
     double previousMean = next(all_holdings.rbegin(), 1).operator*().second["mean"];
     double previousVariance = next(all_holdings.rbegin(), 1).operator*().second["variance"];
-    double newReturn = all_holdings.rbegin().operator*().second["equitycurve"];
+    double newReturn = all_holdings.rbegin().operator*().second["returns"];
     long n = all_holdings.size();
 
     // Incremental updating of mean and variance
@@ -297,7 +297,7 @@ map<string, double> NaivePortfolio::getPerformanceStats(NaivePortfolio benchmark
     double cov = 0;
     for (int i=0; i < bars->allDates.size(); i++) {
         long date = bars->allDates[i];
-        cov += ((all_holdings[date]["equitycurve"] - mean) * (benchmark.all_holdings[date]["equitycurve"] - mkt_mean));
+        cov += ((all_holdings[date]["returns"] - mean) * (benchmark.all_holdings[date]["returns"] - mkt_mean));
     }
     cov /= bars->allDates.size()-1;
     // Variance of the market's returns
@@ -306,7 +306,7 @@ map<string, double> NaivePortfolio::getPerformanceStats(NaivePortfolio benchmark
 
     // Alpha
     double returns = all_holdings.rbegin().operator*().second["equitycurve"];
-    double mkt_return = benchmark.all_holdings.rbegin().operator*().second["equitycurve"];
+    double mkt_return = next(benchmark.all_holdings.rbegin(), 1).operator*().second["equitycurve"];
     perfmap["alpha"] = returns - (mkt_return * (cov/variance));
 
     // Mean & variance

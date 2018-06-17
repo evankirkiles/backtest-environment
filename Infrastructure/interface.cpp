@@ -47,8 +47,10 @@ void TradingInterface::runbacktest(BuyAndHoldStrategy strategy, Benchmark i_benc
 
     cout << "Initializing backtest..." << endl;
 
+    int instcontinue = continue_backtest;
+
     // Event-driven loop that continues to check for events
-    while (continue_backtest == 1) {
+    while (instcontinue == 1) {
 
         // Handles each event in the list and removes it from the stack
         if (!events.empty()) {
@@ -95,10 +97,19 @@ void TradingInterface::runbacktest(BuyAndHoldStrategy strategy, Benchmark i_benc
 
             cout << "Total Returns: " << portfolio.all_holdings.rbegin().operator*().second["equitycurve"] * 100 <<
                  "% Mean: " << portfolio.all_holdings.rbegin().operator*().second["mean"] * 100 <<
-                 " Variance: " << portfolio.all_holdings.rbegin().operator*().second["variance"] * 100 <<
+                 " Variance: " << portfolio.all_holdings.rbegin().operator*().second["variance"] * 100*100 <<
                  " Sharpe: " << portfolio.all_holdings.rbegin().operator*().second["sharpe"] <<
                  " Drawdown: " << portfolio.all_holdings.rbegin().operator*().second["drawdown"] * 100 <<
                  " HWM: " << portfolio.all_holdings.rbegin().operator*().second["highwatermark"] * 100 << endl;
+
+            if (continue_backtest == 0) {
+                instcontinue = 0;
+                benchmarkportfolio.update_timeindex();
+                portfolio.update_timeindex();
+                plot->updatePlot();
+                break;
+            }
+
             benchmarkportfolio.update_timeindex();
             benchmarkpipeline.update_bars();
             portfolio.update_timeindex();
