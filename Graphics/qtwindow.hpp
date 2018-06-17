@@ -41,6 +41,8 @@ public:
     QLabel *sharpelabel;
     QLabel *hwmlabel;
     QLabel *drawdownlabel;
+    QLabel *betalabel;
+    QLabel *alphalabel;
 
 private slots:
     void buttonClicked(bool checked);
@@ -63,6 +65,9 @@ private:
     QLabel *sharpe;
     QLabel *hwm;
     QLabel *drawdown;
+    QLabel *beta;
+    QLabel *alpha;
+    QFrame *dividerline;
 };
 
 #endif //ALGOBACKTESTER_QTWINDOW_HPP

@@ -12,10 +12,29 @@ QPushButton {
 QLabel {
 	color: #FFFFFF;
 }
+QLabel#bigstatistic {
+	font-size: 20px;
+}
+QLabel#bigstatisticlabel {
+	font-size: 25px;
+	color: #ddeaff;
+	text-align: center;
+}
+QLabel#mediumstatistic {
+	font-size: 15px;
+}
+QLabel#mediumstatisticlabel {
+	font-size: 22px;
+	color: #ddeaff;
+	text-align: center;
+}
 QLabel#performancelabel {
 	color: #ddeaff;
 	font-size: 20px;
 	text-align: center;
+}
+QFrame {
+	color: #FFFFFF;
 }
 QDateEdit {
 	background-color: #202020;

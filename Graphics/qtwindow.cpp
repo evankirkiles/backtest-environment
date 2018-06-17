@@ -46,9 +46,11 @@ AlgoWindow::AlgoWindow(TradingInterface* i_trader, BuyAndHoldStrategy* i_strat, 
     auto sharpelayout = new QHBoxLayout;
     auto hwmlayout = new QHBoxLayout;
     auto drawdownlayout = new QHBoxLayout;
+    auto betalayout = new QHBoxLayout;
+    auto alphalayout = new QHBoxLayout;
 
     // Set size of the window
-    setFixedSize(250, 500);
+    setFixedSize(250, 600);
 
     // Create the widgets to add to vertical layout
     m_button = new QPushButton("Initialize Backtest", this);
@@ -61,6 +63,11 @@ AlgoWindow::AlgoWindow(TradingInterface* i_trader, BuyAndHoldStrategy* i_strat, 
     showholdings = new QLabel("Show Holdings", this);
     holdingsbool = new QCheckBox(this);
 
+    // Dividing line between top and bottom layouts
+    dividerline = new QFrame();
+    dividerline->setFrameShape(QFrame::HLine);
+    dividerline->setFixedSize(210, 3);
+
     // Performance labels
     totalreturn = new QLabel("Total Return: ", this);
     totalreturnlabel= new QLabel("", this);
@@ -70,6 +77,10 @@ AlgoWindow::AlgoWindow(TradingInterface* i_trader, BuyAndHoldStrategy* i_strat, 
     hwmlabel = new QLabel("", this);
     drawdown = new QLabel("Max Drawdown: ", this);
     drawdownlabel = new QLabel("", this);
+    beta = new QLabel("Beta:", this);
+    betalabel = new QLabel("", this);
+    alpha = new QLabel("Alpha:", this);
+    alphalabel = new QLabel("", this);
 
     // Create horizontal layouts for top layout
     startdatelayout->addWidget(startdate);
@@ -90,6 +101,11 @@ AlgoWindow::AlgoWindow(TradingInterface* i_trader, BuyAndHoldStrategy* i_strat, 
     hwmlayout->addWidget(hwmlabel);
     drawdownlayout->addWidget(drawdown);
     drawdownlayout->addWidget(drawdownlabel);
+    betalayout->addWidget(beta);
+    betalayout->addWidget(betalabel);
+    alphalayout->addWidget(alpha);
+    alphalayout->addWidget(alphalabel);
+
 
     // Add widgets to top layout
     topLayout->addWidget(m_button);
@@ -99,6 +115,8 @@ AlgoWindow::AlgoWindow(TradingInterface* i_trader, BuyAndHoldStrategy* i_strat, 
     topLayout->addLayout(holdingslay);
 
     // Add widgets to bot layout
+    botLayout->addLayout(alphalayout);
+    botLayout->addLayout(betalayout);
     botLayout->addLayout(totalreturnlayout);
     botLayout->addLayout(sharpelayout);
     botLayout->addLayout(hwmlayout);
@@ -121,20 +139,31 @@ AlgoWindow::AlgoWindow(TradingInterface* i_trader, BuyAndHoldStrategy* i_strat, 
 
     // Set bot widget properties
     totalreturn->setFixedSize(110, 30);
+    totalreturn->setObjectName("mediumstatistic");
     totalreturnlabel->setAlignment(Qt::AlignmentFlag::AlignCenter);
-    totalreturnlabel->setObjectName("performancelabel");
+    totalreturnlabel->setObjectName("mediumstatisticlabel");
     sharpe->setFixedSize(110, 30);
+    sharpe->setObjectName("mediumstatistic");
     sharpelabel->setAlignment(Qt::AlignmentFlag::AlignCenter);
-    sharpelabel->setObjectName("performancelabel");
+    sharpelabel->setObjectName("mediumstatisticlabel");
     hwm->setFixedSize(110, 30);
     hwmlabel->setAlignment(Qt::AlignmentFlag::AlignCenter);
     hwmlabel->setObjectName("performancelabel");
     drawdown->setFixedSize(110, 30);
     drawdownlabel->setAlignment(Qt::AlignmentFlag::AlignCenter);
     drawdownlabel->setObjectName("performancelabel");
+    beta->setFixedSize(110, 30);
+    beta->setObjectName("bigstatistic");
+    betalabel->setAlignment(Qt::AlignmentFlag::AlignCenter);
+    betalabel->setObjectName("bigstatisticlabel");
+    alpha->setFixedSize(110, 30);
+    alpha->setObjectName("bigstatistic");
+    alphalabel->setAlignment(Qt::AlignmentFlag::AlignCenter);
+    alphalabel->setObjectName("bigstatisticlabel");
 
     // Add sub-vertical layouts to main vert layout
     mainLayout->addLayout(topLayout);
+    mainLayout->addWidget(dividerline);
     mainLayout->addLayout(botLayout);
 
     // Add the slot and signal for the button click
@@ -210,16 +239,56 @@ void AlgoWindow::performanceValues() {
     std::stringstream stream;
     stream << std::fixed << std::setprecision(2) << performance["totalreturn"] * 100;
     totalreturnlabel->setText(QString(stream.str().append("%").c_str()));
+    double annualizingfactor = startdateedit->date().daysTo(enddateedit->date()) / 365;
+    if (performance["totalreturn"] / annualizingfactor > 0.25) {
+        totalreturnlabel->setStyleSheet("color: #D4AF37");
+    } else if (performance["totalreturn"] / annualizingfactor > 0.15) {
+        totalreturnlabel->setStyleSheet("color: #77d68d");
+    } else if (performance["totalreturn"] / annualizingfactor < 0) {
+        totalreturnlabel->setStyleSheet("color: #f44e42");
+    } else {
+        totalreturnlabel->setStyleSheet("color: #ddeaff");
+    }
     stream.str("");
     stream << std::fixed << std::setprecision(2) << performance["sharpe"];
     sharpelabel->setText(QString(stream.str().c_str()));
+    if (performance["sharpe"] > 2) {
+        sharpelabel->setStyleSheet("color: #D4AF37");
+    } else if (performance["sharpe"] > 1) {
+        sharpelabel->setStyleSheet("color: #77d68d");
+    } else if (performance["sharpe"] < 0.75) {
+        sharpelabel->setStyleSheet("color: #f44e42");
+    } else {
+        sharpelabel->setStyleSheet("color: #ddeaff");
+    }
     stream.str("");
     stream << std::fixed << std::setprecision(2) << performance["hwm"] * 100;
     hwmlabel->setText(QString(stream.str().append("%").c_str()));
     stream.str("");
     stream << std::fixed << std::setprecision(2) << performance["maxdrawdown"] * -100;
     drawdownlabel->setText(QString(stream.str().append("%").c_str()));
-
-    cout << "alpha: " << performance["alpha"] << ", beta: " << performance["beta"] <<  ", mean: " << performance["mean"] <<
-         ", variance:" << performance["variance"] << endl;
+    stream.str("");
+    stream << std::fixed << std::setprecision(2) << performance["beta"];
+    betalabel->setText(QString(stream.str().c_str()));
+    if (abs(performance["beta"]) < 0.15) {
+        betalabel->setStyleSheet("color: #D4AF37");
+    } else if (abs(performance["beta"]) < 0.4) {
+        betalabel->setStyleSheet("color: #77d68d");
+    } else if (abs(performance["beta"]) > 1.0) {
+        betalabel->setStyleSheet("color: #f44e42");
+    } else {
+        betalabel->setStyleSheet("color: #ddeaff");
+    }
+    stream.str("");
+    stream << std::fixed << std::setprecision(2) << performance["alpha"];
+    alphalabel->setText(QString(stream.str().c_str()));
+    if (performance["alpha"] > 0.15) {
+        alphalabel->setStyleSheet("color: #D4AF37");
+    } else if (performance["alpha"] > 0.05) {
+        alphalabel->setStyleSheet("color: #77d68d");
+    } else if (performance["alpha"] < 0.0) {
+        alphalabel->setStyleSheet("color: #f44e42");
+    } else {
+        alphalabel->setStyleSheet("color: #ddeaff");
+    }
 }
