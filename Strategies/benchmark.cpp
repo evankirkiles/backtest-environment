@@ -46,7 +46,7 @@ void Benchmark::calculate_signals(MarketEvent i_event) {
             if (!bought[symbol]) {
                 
                 // (symbol, time, type=LONG, SHORT or EXIT)
-                events->push_back(new SignalEvent(symbol, bars->latestDates[symbol][0], 1.0, "BENCH"));
+                events->push_back(new SignalEvent(symbol, newbars["open"].begin()->first, 1.0, "BENCH"));
                 bought[symbol] = true;
             }
         }

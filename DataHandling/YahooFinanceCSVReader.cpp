@@ -92,11 +92,9 @@ const char* get_crumb_and_cookies(char *symbol, char cookiefilename[FILENAME_MAX
 }
 
 // Constructor for CVS Reader
-YahooFinanceCSVReader:: YahooFinanceCSVReader(char *symbol, string i_startdate, string i_enddate, char outfilename[FILENAME_MAX], char cookiefilename[FILENAME_MAX], char crumbfilename[FILENAME_MAX]) : marketmovements() {
+YahooFinanceCSVReader:: YahooFinanceCSVReader(char *symbol, long startdate, long enddate, char outfilename[FILENAME_MAX], char cookiefilename[FILENAME_MAX], char crumbfilename[FILENAME_MAX]) : marketmovements() {
     
     // Dates formatted as YYYY-MM-DD
-    long startdate = get_epoch_time(i_startdate);
-    long enddate = get_epoch_time(i_enddate);
     auto interval = (char*)"1d";
     
     // Initialize variables

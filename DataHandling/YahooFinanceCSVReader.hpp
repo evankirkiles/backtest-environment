@@ -13,7 +13,7 @@
 #include "MarketDataFrame.hpp"
 
 class YahooFinanceCSVReader {
-public: YahooFinanceCSVReader(char *symbol, string startdate, string enddate, char outfilename[FILENAME_MAX], char cookiefilename[FILENAME_MAX], char crumbfilename[FILENAME_MAX]);
+public: YahooFinanceCSVReader(char *symbol, long startdate, long enddate, char outfilename[FILENAME_MAX], char cookiefilename[FILENAME_MAX], char crumbfilename[FILENAME_MAX]);
     MarketDataFrame marketmovements;
 };
 

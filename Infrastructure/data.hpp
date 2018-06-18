@@ -39,7 +39,7 @@ public:
     map<string, map<string, map<long, double>>> latest_data;
     map<string, tuple<string, long, double, double, double, double, double, double>> previousbar;
     vector<long> allDates;
-    map<string, vector<long>> latestDates;
+    vector<long> latestDates;
     map<string, int> currentDatesIndex;
     int* continue_backtest;
     boost::ptr_vector<Event>* events;
@@ -68,7 +68,7 @@ public:
     map<string, map<long, double>> get_latest_bars(std::string symbol, int N);
     void update_bars();
     
-    void append_to_dates(vector<long> new_dates);
+    void append_to_dates(vector<long> new_dates, string which);
 };
 
 #endif /* data_hpp */

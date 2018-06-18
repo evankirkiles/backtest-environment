@@ -49,19 +49,35 @@ public:
 // ONLY MAINSTRATEGY_CPP IS INCLUDED IN BUILD PATH, SO IT IS THE ONE WHOSE STRATEGY WILL BE USED
 class MainStrategy: Strategy {
 public:
+    // Default strategy context variables
     HistoricalCSVDataHandler* bars;
     boost::ptr_vector<Event>* events;
     vector<string>* symbol_list;
-    map<string, bool> bought;
     string title;
+
+    // Custom strategy variables
+    int lookback = 20;                  // Lookback for regression for hedge calculation
+    int z_lookback = 20;                // Lookback for Z-score calculation, must be <= lookback
+    vector<double> spreads = {};        // Vector holding the spreads between the pair
+    bool inLong = false;                // True when long in the pair
+    bool inShort = false;               // True when short in the pair
     
     MainStrategy();
-    // Initialize instance of Buy and Hold strategy
+    // Initialize instance of Main Strategy
     MainStrategy(HistoricalCSVDataHandler* i_bars, boost::ptr_vector<Event>* i_events);
-    // Add keys for all symbols in symbol_list to bought and sets them to false
-    map<string, bool> calculate_initial_bought();
     // Trading logic in this function for new event
     void calculate_signals(MarketEvent event);
+
+
+    // Custom strategy functions
+
+    map<string, bool> bought;
+    map<string, bool> calculate_initial_bought();
+
+    /*
+    double calculate_hedge_ratio(vector<double>X, vector<double>Y);
+    vector<double> computeHoldingsPct(double yShares, double xShares, double yPrice, double xPrice);
+     */
 };
 
 #endif /* strategiesheader_hpp */

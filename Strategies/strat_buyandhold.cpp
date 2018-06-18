@@ -18,9 +18,11 @@ MainStrategy::MainStrategy(HistoricalCSVDataHandler* i_bars, boost::ptr_vector<E
     // Set instance variables
     bars = i_bars;
     events = i_events;
+    *bars->symbol_list = {string("GS"),string("AAPL"), string("CAT")};
     symbol_list = bars->symbol_list;
     
-    // Create the bought dictionary
+    // Set custom strategy variables
+    // Need to instantiate map bought in header file
     bought = calculate_initial_bought();
 }
 
@@ -46,7 +48,7 @@ void MainStrategy::calculate_signals(MarketEvent i_event) {
             if (!bought[symbol]) {
                 
                 // (symbol, time, type=LONG, SHORT or EXIT)
-                events->push_back(new SignalEvent(symbol, bars->latestDates[symbol][0], 0.1));
+                events->push_back(new SignalEvent(symbol, newbars["open"].begin()->first, 0.1));
                 bought[symbol] = true;
             }
         }

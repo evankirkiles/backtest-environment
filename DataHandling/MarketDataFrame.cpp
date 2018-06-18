@@ -80,7 +80,6 @@ MarketDataFrame::MarketDataFrame(char csv_file[FILENAME_MAX], string symbol) {
     map<long, double> volume;
     
     // Iterate through the csv file
-    cout << csv_file << endl;
     while(getline(csv, line)) {
         string date;
         

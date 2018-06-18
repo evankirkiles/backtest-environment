@@ -27,24 +27,37 @@ HistoricalCSVDataHandler::HistoricalCSVDataHandler(boost::ptr_vector<Event>* i_e
 HistoricalCSVDataHandler::HistoricalCSVDataHandler() = default;
 
 // Appends unique dates to master dates list
-void HistoricalCSVDataHandler::append_to_dates(vector<long> new_dates) {
-    if (allDates.empty()) {
-        allDates = new_dates;
-    } else {
-        allDates.insert(allDates.end(), new_dates.begin(), new_dates.end());
-        sort(allDates.begin(), allDates.end());
-        auto last = unique(allDates.begin(), allDates.end());
-        allDates.erase(last, allDates.end());
+void HistoricalCSVDataHandler::append_to_dates(vector<long> new_dates, string which) {
+    if (which == "allDates") {
+        if (allDates.empty()) {
+            allDates = new_dates;
+        } else {
+            allDates.insert(allDates.end(), new_dates.begin(), new_dates.end());
+            sort(allDates.begin(), allDates.end());
+            auto last = unique(allDates.begin(), allDates.end());
+            allDates.erase(last, allDates.end());
+        }
+    } else if (which == "latestDates") {
+        if (latestDates.empty()) {
+            latestDates = new_dates;
+        } else {
+            latestDates.insert(latestDates.end(), new_dates.begin(), new_dates.end());
+            sort(latestDates.begin(), latestDates.end());
+            auto last = unique(latestDates.begin(), latestDates.end());
+            latestDates.erase(last, latestDates.end());
+        }
     }
 }
 
 // Format symbol data
 void HistoricalCSVDataHandler::format_csv_data() {
     allDates = {};
+    latestDates = {};
     datesbegin = get_epoch_time(*start_date);
     datesend = get_epoch_time(*end_date);
 
     symbol_data={};
+    latest_data = {};
     currentDatesIndex = {};
 
     // Loop through symbols and load their data into a single frame
@@ -53,23 +66,29 @@ void HistoricalCSVDataHandler::format_csv_data() {
         
         // Get the data from Yahoo Finance
         // Access formula is symbol_data[SYMBOL].data[TYPE][DATE]
-        MarketDataFrame moves = YahooFinanceCSVReader((char*)symbol.c_str(),
-                                                      *start_date,
-                                                      *end_date,
+        MarketDataFrame moves = YahooFinanceCSVReader((char*)symbol.c_str(), get_epoch_time(*start_date),
+                                                      get_epoch_time(*end_date),
                                                       (char*)(string("/Users/samkirkiles/Desktop/algobacktester/DataHandling/CSV directory/") + symbol + string(".csv")).c_str(),
                                                       (char*)"/Users/samkirkiles/Desktop/algobacktester/DataHandling/cookies.txt",
                                                       (char*)"/Users/samkirkiles/Desktop/algobacktester/DataHandling/crumb.txt").marketmovements;
         symbol_data[symbol] = moves.data;
         currentDatesIndex[symbol] = 0;
-        append_to_dates(moves.indices);
+        append_to_dates(moves.indices, "allDates");
+
+        // Also adds data from a year back to latest_data as a buffer for data requests
+        // For a larger buffer, increase the number subtracted from the epoch time of the start date
+        MarketDataFrame movesbuffer = YahooFinanceCSVReader((char*)symbol.c_str(), get_epoch_time(*start_date) - 31557600,
+                                                            get_epoch_time(*start_date) - 86400,
+                                                            (char*)(string("/Users/samkirkiles/Desktop/algobacktester/DataHandling/CSV directory/") + symbol + string(".csv")).c_str(),
+                                                            (char*)"/Users/samkirkiles/Desktop/algobacktester/DataHandling/cookies.txt",
+                                                            (char*)"/Users/samkirkiles/Desktop/algobacktester/DataHandling/crumb.txt").marketmovements;
+        latest_data[symbol] = movesbuffer.data;
+        append_to_dates(movesbuffer.indices, "latestDates");
     }
-    latest_data = {};
-    latestDates = {};
 }
 
 
 // Gets input iterator for going through data with forward merge implemented within
-// Coroutine will return SDOLHCV data
 tuple<string, long, double, double, double, double, double, double> HistoricalCSVDataHandler::get_new_bar(string symbol) {
     // Spits out a bar until there are no more bars to yield
     tuple<string, long, double, double, double, double, double, double>lastbar;
@@ -93,51 +112,42 @@ tuple<string, long, double, double, double, double, double, double> HistoricalCS
 map<string, map<long, double>> HistoricalCSVDataHandler::get_latest_bars(string symbol, int N=1) {
     
     // If symbol exists in latest_data
-    try { map<string, map<long, double>>bars_list = latest_data[symbol];
-        
-        // Iterate through the bars and erase ones before the date specified by N
-        std::map<long, double>::iterator iter = bars_list["open"].begin();
-        for (; iter != bars_list["open"].end();) {
-            if (iter->first < latestDates[symbol].end()[-N]) {
-                long date = iter->first;
-                iter++;
-                bars_list["open"].erase(date);
-                bars_list["close"].erase(date);
-                bars_list["high"].erase(date);
-                bars_list["low"].erase(date);
-                bars_list["volume"].erase(date);
-                bars_list["adj"].erase(date);
-            } else {
-                iter++;
-            }
-        }
-        
-        // Return cleaned bars list
-        return bars_list;
-    } catch (exception& e) {
-        cout << "Data nonexistent for symbol " << symbol << endl;
-        return { };
+    map<string, map<long, double>>bars_list;
+
+    for (int i = N; i >= 0; i--) {
+        long date = latestDates[latestDates.size() - 1 - i];
+        bars_list["open"][date] = latest_data[symbol]["open"][date];
+        bars_list["close"][date] = latest_data[symbol]["close"][date];
+        bars_list["high"][date] = latest_data[symbol]["high"][date];
+        bars_list["low"][date] = latest_data[symbol]["low"][date];
+        bars_list["adj"][date] = latest_data[symbol]["adj"][date];
+        bars_list["volume"][date] = latest_data[symbol]["volume"][date];
     }
+        
+    // Return cleaned bars list
+    return bars_list;
 }
 
 // Push the latest bar to latest_data for all symbols in list
 void HistoricalCSVDataHandler::update_bars() {
     
-    for (int i=0; i < symbol_list->size(); i++)  {
+    for (int i=0; i < symbol_list->size(); i++) {
         string symbol = (*symbol_list)[i];
 
         // There will always be a first bar to get
-        tuple<string, long, double, double, double, double, double, double>updateData = get_new_bar(symbol);
+        tuple<string, long, double, double, double, double, double, double> updateData = get_new_bar(symbol);
         latest_data[get<0>(updateData)]["open"][get<1>(updateData)] = get<2>(updateData);
         latest_data[get<0>(updateData)]["low"][get<1>(updateData)] = get<3>(updateData);
         latest_data[get<0>(updateData)]["high"][get<1>(updateData)] = get<4>(updateData);
         latest_data[get<0>(updateData)]["close"][get<1>(updateData)] = get<5>(updateData);
         latest_data[get<0>(updateData)]["adj"][get<1>(updateData)] = get<6>(updateData);
         latest_data[get<0>(updateData)]["volume"][get<1>(updateData)] = get<7>(updateData);
-        
-        // Add new date to the dates available
-        latestDates[get<0>(updateData)].push_back(get<1>(updateData));
-        
+
+        // Add new date to latestDates
+        if (latestDates.back() != get<1>(updateData)) {
+            latestDates.push_back(get<1>(updateData));
+        }
+
         // Check if there are any more bars to get
         if (currentDatesIndex[symbol] == allDates.size()) {
             *continue_backtest = 0;
