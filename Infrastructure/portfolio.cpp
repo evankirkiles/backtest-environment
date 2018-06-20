@@ -156,6 +156,9 @@ void NaivePortfolio::update_positions_from_fill(FillEvent fill) {
 // To estimate the cost of a fill, uses the closing price of the last bar
 void NaivePortfolio::update_holdings_from_fill(FillEvent fill) {
     int fill_dir = 0;
+
+    // Makes sure that selling shares one does not have is correctly subtracted from the total cash
+    // The same situation is also true for buying shares when already short
     if (fill.direction == "BUY") {
         fill_dir = 1;
     } else if (fill.direction == "SELL") {
@@ -173,8 +176,8 @@ void NaivePortfolio::update_holdings_from_fill(FillEvent fill) {
 
 // Updates positions and holdings in case of fill event
 void NaivePortfolio::update_fill(FillEvent event) {
-    update_positions_from_fill(event);
     update_holdings_from_fill(event);
+    update_positions_from_fill(event);
 }
 void NaivePortfolio::update_signal(SignalEvent event) {
     generate_naive_order(event);

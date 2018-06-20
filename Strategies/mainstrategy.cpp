@@ -18,7 +18,7 @@ MainStrategy::MainStrategy(HistoricalCSVDataHandler* i_bars, boost::ptr_vector<E
     // Set instance variables
     bars = i_bars;
     events = i_events;
-    *bars->symbol_list = {string("GS"),string("AAPL"), string("CAT")};
+    *bars->symbol_list = {string("GS"),string("AAPL"), string("QQQ")};
     symbol_list = bars->symbol_list;
 
     // Set custom strategy variables
@@ -48,7 +48,7 @@ void MainStrategy::calculate_signals(MarketEvent i_event) {
             if (!bought[symbol]) {
 
                 // (symbol, time, type=LONG, SHORT or EXIT)
-                events->push_back(new SignalEvent(symbol, newbars["open"].begin()->first, 0.1));
+                events->push_back(new SignalEvent(symbol, newbars["open"].begin()->first, -0.1));
                 bought[symbol] = true;
             }
         }

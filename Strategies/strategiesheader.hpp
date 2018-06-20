@@ -74,10 +74,10 @@ public:
     map<string, bool> bought;
     map<string, bool> calculate_initial_bought();
 
-    /*
+/*
     double calculate_hedge_ratio(vector<double>X, vector<double>Y);
     vector<double> computeHoldingsPct(double yShares, double xShares, double yPrice, double xPrice);
-     */
+*/
 };
 
 #endif /* strategiesheader_hpp */

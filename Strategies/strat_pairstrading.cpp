@@ -20,7 +20,7 @@ MainStrategy::MainStrategy(HistoricalCSVDataHandler* i_bars, boost::ptr_vector<E
     // Set default instance variables
     bars = i_bars;
     events = i_events;
-    *bars->symbol_list = {string("LPNT"),string("UHS")};
+    *bars->symbol_list = {string("MA"),string("V")};
     symbol_list = bars->symbol_list;
     title = "Pairs Trading";
 
@@ -103,7 +103,7 @@ void MainStrategy::calculate_signals(MarketEvent i_event) {
             // Enter the position long when zscore exceeds -1.0 and not already going long
             inShort = true;
             inLong = false;
-            vector<double> necessarypcts = computeHoldingsPct(hedge, 1, Y.back(), X.back());
+            vector<double> necessarypcts = computeHoldingsPct(-1, hedge, Y.back(), X.back());
             cout << get_std_time(bars->latestDates.back()) << " at " << necessarypcts[0] << " : " << necessarypcts[1] << endl;
             events->push_back(new SignalEvent(symbol_list->at(0), bars->latestDates.back(), necessarypcts[0]));
             events->push_back(new SignalEvent(symbol_list->at(1), bars->latestDates.back(), necessarypcts[1]));
@@ -119,10 +119,10 @@ double MainStrategy::calculate_hedge_ratio(vector<double>Y, vector<double>X) {
 
     // Performs a least squares linear regression where c0 is the intercept and c1 is the slope
     double c0, c1, cov00, cov01, cov11, sumsq;
-    gsl_fit_linear(Y.data(), 1, X.data(), 1, Y.size(), &c0, &c1, &cov00, &cov01, &cov11, &sumsq);
+    gsl_fit_linear(X.data(), 1, Y.data(), 1, Y.size(), &c0, &c1, &cov00, &cov01, &cov11, &sumsq);
 
-    // Return the slope
-    cout << get_std_time(bars->latestDates.back()) << " at hedge: " << c1 << endl;
+    //cout << get_std_time(bars->latestDates.back()) << ": hedge is " << c1 << endl;
+
     return c1;
 }
 
@@ -131,7 +131,7 @@ vector<double> MainStrategy::computeHoldingsPct(double yShares, double xShares, 
     double yDol = yShares * yPrice;
     double xDol = xShares * xPrice;
     double notionalDol = abs(yDol) + abs(xDol);
-    cout << " Y dol: " << yDol << " X Dol: " << xDol << " Notional Dol: " << notionalDol << endl;
+    cout << get_std_time(bars->latestDates.back()) << ": Y price: " << yPrice << " X price: " << xPrice <<" Y dol: " << yDol << " X Dol: " << xDol << " Notional Dol: " << notionalDol << endl;
     cout << "X shares: " << xShares << " Y shares: " << yShares << " X pct: " << (xDol / notionalDol) << " Y pct: " << (yDol / notionalDol) << endl;
     return { (xDol / notionalDol), (yDol / notionalDol) };
 }
