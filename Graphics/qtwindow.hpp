@@ -48,7 +48,7 @@ public:
     QLabel *betalabel;
     QLabel *alphalabel;
 
-    QtCharts::QLineSeries *series;\
+    QtCharts::QLineSeries *series;
     QtCharts::QDateTimeAxis *axisX;
     QtCharts::QValueAxis *axisY;
 

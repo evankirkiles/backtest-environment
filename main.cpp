@@ -10,6 +10,7 @@
 #include <iostream>
 #include "DataHandling/YahooFinanceCSVReader.hpp"
 #include "Graphics/qtwindow.hpp"
+#include
 
 #include <QApplication>
 
@@ -23,6 +24,7 @@ int main(int argc, char **argv) {
     int showholdings = 0;
     vector<string> symbol_list = {string("SPY")};
     vector<string> symbol_list2 = {string("SPY")};
+    //QtCharts::QLineSeries *lineseries = new QtCharts::QLineSeries();
 
     TradingInterface interface = TradingInterface(&symbol_list, {string("SPY")}, &initialcapital, &startdate, &enddate);
     MainStrategy strat = MainStrategy(&interface.pipeline, &interface.events);

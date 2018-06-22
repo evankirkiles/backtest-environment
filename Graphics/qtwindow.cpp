@@ -72,7 +72,7 @@ AlgoWindow::AlgoWindow(TradingInterface* i_trader, MainStrategy* i_strat, Benchm
     // Set size of the window
     QScreen *screen = QGuiApplication::primaryScreen();
     QRect dims = screen->geometry();
-    setFixedSize(std::min(1000, (int)floor(0.7*dims.width())), std::min(700, (int)floor(0.7*dims.height())));
+    setFixedSize(std::min(2000, (int)floor(0.7*dims.width())), std::min(500, (int)floor(0.7*dims.height())));
 
     // Create the widgets to add to top layout
     m_button = new QPushButton("Initialize Backtest", this);
@@ -111,7 +111,8 @@ AlgoWindow::AlgoWindow(TradingInterface* i_trader, MainStrategy* i_strat, Benchm
     QChart *chart = new QChart();
     chart->legend()->hide();
     chart->addSeries(series);
-    chart->setTitle("Simple line chart");
+    chart->setTitle("Equity Curve");
+    chart->setTitleBrush(QBrush(QColor("#FFFFFF")));
 
     // CHART CUSTOMIZATIONS
     // Axes settings
@@ -142,6 +143,7 @@ AlgoWindow::AlgoWindow(TradingInterface* i_trader, MainStrategy* i_strat, Benchm
     // Create the chartview
     auto *chartview = new QtCharts::QChartView(chart);
     chartview->setRenderHints(QPainter::Antialiasing);
+    chartview->setFixedHeight(300);
 
     // Also set the background colors of both the chartview and the chart
     chart->setBackgroundBrush(QColor("#232323"));
@@ -191,6 +193,12 @@ AlgoWindow::AlgoWindow(TradingInterface* i_trader, MainStrategy* i_strat, Benchm
     botLayout2->addLayout(sharpelayout);
     botLayout2->addLayout(hwmlayout);
     botLayout2->addLayout(drawdownlayout);
+    alphalayout->setAlignment(Qt::AlignmentFlag::AlignCenter);
+    betalayout->setAlignment(Qt::AlignmentFlag::AlignCenter);
+    totalreturnlayout->setAlignment(Qt::AlignmentFlag::AlignCenter);
+    sharpelayout->setAlignment(Qt::AlignmentFlag::AlignCenter);
+    hwmlayout->setAlignment(Qt::AlignmentFlag::AlignCenter);
+    drawdownlayout->setAlignment(Qt::AlignmentFlag::AlignCenter);
 
     // Set top widget properties
     m_button->setFixedSize(210, 50);
