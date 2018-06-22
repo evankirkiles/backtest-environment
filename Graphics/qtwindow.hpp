@@ -7,8 +7,9 @@
 
 #include <QWidget>
 #include <QtCharts/QLineSeries>
-#include <QtCharts/QChart>
 #include <QtCharts/QChartView>
+#include <QtCharts/QValueAxis>
+#include <QtCharts/QDateTimeAxis>
 #ifndef TradingInterface
 #include "../Infrastructure/interface.hpp"
 #endif
@@ -19,8 +20,6 @@ class QLabel;
 class QDateEdit;
 class QLineEdit;
 class QCheckBox;
-class QLineSeries;
-class QChart;
 class AlgoWindow : public QWidget {
 
     // Backtesting variables
@@ -49,7 +48,9 @@ public:
     QLabel *betalabel;
     QLabel *alphalabel;
 
-    QtCharts::QLineSeries *series;
+    QtCharts::QLineSeries *series;\
+    QtCharts::QDateTimeAxis *axisX;
+    QtCharts::QValueAxis *axisY;
 
 private slots:
     void buttonClicked(bool checked);
@@ -76,7 +77,6 @@ private:
     QLabel *drawdown;
     QLabel *beta;
     QLabel *alpha;
-    QFrame *dividerline;
 };
 
 #endif //ALGOBACKTESTER_QTWINDOW_HPP

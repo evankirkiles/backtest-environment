@@ -68,9 +68,9 @@ void HistoricalCSVDataHandler::format_csv_data() {
         // Access formula is symbol_data[SYMBOL].data[TYPE][DATE]
         MarketDataFrame moves = YahooFinanceCSVReader((char*)symbol.c_str(), get_epoch_time(*start_date),
                                                       get_epoch_time(*end_date),
-                                                      (char*)(string("/Users/evankirkiles/Desktop/backtest-environment/DataHandling/CSV directory/") + symbol + string(".csv")).c_str(),
-                                                      (char*)"/Users/evankirkiles/Desktop/backtest-environment/DataHandling/cookies.txt",
-                                                      (char*)"/Users/evankirkiles/Desktop/backtest-environment/DataHandling/crumb.txt").marketmovements;
+                                                      (char*)(string("/Users/samkirkiles/Desktop/algobacktester/DataHandling/CSV directory/") + symbol + string(".csv")).c_str(),
+                                                      (char*)"/Users/samkirkiles/Desktop/algobacktester/DataHandling/cookies.txt",
+                                                      (char*)"/Users/samkirkiles/Desktop/algobacktester/DataHandling/crumb.txt").marketmovements;
         symbol_data[symbol] = moves.data;
         currentDatesIndex[symbol] = 0;
         append_to_dates(moves.indices, "allDates");
@@ -79,9 +79,9 @@ void HistoricalCSVDataHandler::format_csv_data() {
         // For a larger buffer, increase the number subtracted from the epoch time of the start date
         MarketDataFrame movesbuffer = YahooFinanceCSVReader((char*)symbol.c_str(), get_epoch_time(*start_date) - 31557600,
                                                             get_epoch_time(*start_date) - 86400,
-                                                            (char*)(string("/Users/evankirkiles/Desktop/backtest-environment/DataHandling/CSV directory/") + symbol + string(".csv")).c_str(),
-                                                            (char*)"/Users/evankirkiles/Desktop/backtest-environment/DataHandling/cookies.txt",
-                                                            (char*)"/Users/evankirkiles/Desktop/backtest-environment/DataHandling/crumb.txt").marketmovements;
+                                                            (char*)(string("/Users/samkirkiles/Desktop/algobacktester/DataHandling/CSV directory/") + symbol + string(".csv")).c_str(),
+                                                            (char*)"/Users/samkirkiles/Desktop/algobacktester/DataHandling/cookies.txt",
+                                                            (char*)"/Users/samkirkiles/Desktop/algobacktester/DataHandling/crumb.txt").marketmovements;
         latest_data[symbol] = movesbuffer.data;
         append_to_dates(movesbuffer.indices, "latestDates");
     }

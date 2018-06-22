@@ -17,11 +17,14 @@
 #include <QDesktopWidget>
 #include <QScreen>
 #include <QGuiApplication>
+
 #include <iomanip>
 #include <sstream>
 #ifndef min
 #include <algorithm>
 #endif
+
+QT_CHARTS_USE_NAMESPACE
 
 AlgoWindow::AlgoWindow(TradingInterface* i_trader, MainStrategy* i_strat, Benchmark* i_bench, GNUPlotter* i_gnuplot,
                        string *i_startdateaddr, string *i_enddateaddr, double* i_initialcapitaladdr, int* showholdingsval,
@@ -99,23 +102,49 @@ AlgoWindow::AlgoWindow(TradingInterface* i_trader, MainStrategy* i_strat, Benchm
     alphalabel = new QLabel("", this);
 
     // Graph settings
-    series = new QtCharts::QLineSeries();
+    series = new QLineSeries();
     series->append(0, 6);
     series->append(2, 4);
     series->append(3, 1);
 
     // Create the chart
-    QtCharts::QChart *chart = new QtCharts::QChart();
+    QChart *chart = new QChart();
     chart->legend()->hide();
     chart->addSeries(series);
-    chart->createDefaultAxes();
     chart->setTitle("Simple line chart");
 
+    // CHART CUSTOMIZATIONS
+    // Axes settings
+    axisX = new QDateTimeAxis();
+    axisX->setFormat("yyyy-MM-dd");
+    axisY = new QValueAxis();
+    // Custom grid lines and shades
+    QPen gridPen(QColor("#464646"), 2, Qt::DotLine);
+    axisX->setGridLinePen(gridPen);
+    axisY->setGridLinePen(gridPen);
+    // Custom axis colors
+    QPen axisPen(QColor("#FFFFFF"), 2, Qt::SolidLine);
+    axisX->setLinePen(gridPen);
+    axisY->setLinePen(axisPen);
+    // Custom axis label colors
+    QBrush axisBrush(QColor("#FFFFFF"));
+    axisX->setLabelsBrush(axisBrush);
+    axisY->setLabelsBrush(axisBrush);
+
+    // SET RANGES
+    axisX->setRange(QDateTime::fromString("2004-01-01", "yyyy-MM-dd"), QDateTime::fromString("2005-01-01", "yyyy-MM-dd"));
+    axisY->setRange(-10, 10);
+
+    // Apply the axes to the chart
+    chart->setAxisX(axisX, series);
+    chart->setAxisY(axisY, series);
+
     // Create the chartview
-    QtCharts::QChartView *chartview = new QtCharts::QChartView(chart);
+    auto *chartview = new QtCharts::QChartView(chart);
     chartview->setRenderHints(QPainter::Antialiasing);
 
-    // Format the chart to look nice
+    // Also set the background colors of both the chartview and the chart
+    chart->setBackgroundBrush(QColor("#232323"));
     chartview->setBackgroundBrush(QColor("#232323"));
 
     // Create horizontal layouts for top layout
@@ -235,7 +264,7 @@ AlgoWindow::AlgoWindow(TradingInterface* i_trader, MainStrategy* i_strat, Benchm
     setObjectName("main_window");
 
     // Set the style sheet
-    QFile File("/Users/evankirkiles/Desktop/backtest-environment/Graphics/stylesheet.qss");
+    QFile File("/Users/samkirkiles/Desktop/algobacktester/Graphics/stylesheet.qss");
     File.open(QFile::ReadOnly);
     QString StyleSheet = QLatin1String(File.readAll());
     setStyleSheet(StyleSheet);
@@ -259,6 +288,9 @@ void AlgoWindow::buttonClicked(bool checked) {
         } else {
             *showholds = 0;
         }
+
+        axisX->setRange(startdateedit->dateTime(), enddateedit->dateTime());
+
         gnuplot->initPlot();
         m_button->setText("Run Backtest");
     } else {
