@@ -71,6 +71,7 @@ void HistoricalCSVDataHandler::format_csv_data() {
                                                       (char*)(string("/Users/samkirkiles/Desktop/algobacktester/DataHandling/CSV directory/") + symbol + string(".csv")).c_str(),
                                                       (char*)"/Users/samkirkiles/Desktop/algobacktester/DataHandling/cookies.txt",
                                                       (char*)"/Users/samkirkiles/Desktop/algobacktester/DataHandling/crumb.txt").marketmovements;
+        cout << string("/Users/samkirkiles/Desktop/algobacktester/DataHandling/CSV directory/") + symbol + string(".csv") << endl;
         symbol_data[symbol] = moves.data;
         currentDatesIndex[symbol] = 0;
         append_to_dates(moves.indices, "allDates");

@@ -51,6 +51,7 @@ public:
     QtCharts::QLineSeries *series;
     QtCharts::QLineSeries *benchseries;
     QtCharts::QChartView *chartview;
+    QtCharts::QChart *chart;
     QtCharts::QDateTimeAxis *axisX;
     QtCharts::QValueAxis *axisY;
 

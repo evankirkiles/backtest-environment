@@ -26,6 +26,7 @@
 #include <QLineSeries>
 #include <QDate>
 #include <QtCharts/QChartView>
+#include <QObject>
 
 // Create a class for different types of trading interfaces
 class TradingInterface {
@@ -62,16 +63,16 @@ public:
     // symbol_list: list of symbols to be traded
     // initial_cap: initial amount of capital allocated to algorithm
     // strategy: the algorithm whose signals are sent to the portfolio
-    TradingInterface(vector<string>*symbol_list, vector<string>benchmarksymbols, double *initial_cap, string *start_date, string *end_date);
+    explicit TradingInterface(vector<string>*symbol_list, vector<string>benchmarksymbols, double *initial_cap, string *start_date, string *end_date);
 
     // Placeholder initializer
     TradingInterface() = default;
 
     // Executes the while loop for running the backtest
-    void runbacktest(MainStrategy strategy, Benchmark benchmark, QtCharts::QLineSeries* plot, QtCharts::QLineSeries* otherplot, QtCharts::QChartView* cv);
+    void runbacktest(MainStrategy strategy, Benchmark benchmark, QtCharts::QLineSeries* plot, QtCharts::QLineSeries* otherplot);
 
     // Updates the plot
-    void updatePlot(QtCharts::QLineSeries* algoseries, QtCharts::QLineSeries* benchseries, QtCharts::QChartView* cv);
+    void updatePlot(QtCharts::QLineSeries* algoseries, QtCharts::QLineSeries* benchseries);
 };
 
 #endif /* interface_hpp */

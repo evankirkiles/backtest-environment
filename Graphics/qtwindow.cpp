@@ -23,6 +23,7 @@
 #ifndef min
 #include <algorithm>
 #endif
+#include <thread>
 
 QT_CHARTS_USE_NAMESPACE
 
@@ -106,7 +107,7 @@ AlgoWindow::AlgoWindow(TradingInterface* i_trader, MainStrategy* i_strat, Benchm
     benchseries = i_benchseries;
 
     // Create the chart
-    QChart *chart = new QChart();
+    chart = new QChart();
     chart->legend()->hide();
     chart->addSeries(series);
     chart->addSeries(benchseries);
@@ -134,16 +135,19 @@ AlgoWindow::AlgoWindow(TradingInterface* i_trader, MainStrategy* i_strat, Benchm
 
     // SET RANGES
     axisX->setRange(QDateTime::fromString("2004-01-01", "yyyy-MM-dd"), QDateTime::fromString("2005-01-01", "yyyy-MM-dd"));
-    axisY->setRange(-10, 10);
+    axisY->setRange(-40, 10);
 
     // Apply the axes to the chart
     chart->setAxisX(axisX, series);
+    chart->setAxisX(axisX, benchseries);
     chart->setAxisY(axisY, series);
+    chart->setAxisY(axisY, benchseries);
 
     // Create the chartview
     chartview = new QtCharts::QChartView(chart);
     chartview->setRenderHints(QPainter::Antialiasing);
     chartview->setFixedHeight(300);
+    chartview->setRubberBand(QChartView::HorizontalRubberBand);
 
     // Also set the background colors of both the chartview and the chart
     chart->setBackgroundBrush(QColor("#232323"));
@@ -303,7 +307,7 @@ void AlgoWindow::buttonClicked(bool checked) {
         m_button->setText("Run Backtest");
     } else {
         m_button->setText("Built Backtest");
-        interface->runbacktest(*strat, *bench, series, benchseries, chartview);
+        interface->runbacktest(*strat, *bench, series, benchseries);
         performanceValues();
         m_button->setDisabled(true);
     }
