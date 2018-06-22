@@ -14,8 +14,14 @@
 #include <QFile>
 #include <QLineEdit>
 #include <QCheckBox>
+#include <QDesktopWidget>
+#include <QScreen>
+#include <QGuiApplication>
 #include <iomanip>
 #include <sstream>
+#ifndef min
+#include <algorithm>
+#endif
 
 AlgoWindow::AlgoWindow(TradingInterface* i_trader, MainStrategy* i_strat, Benchmark* i_bench, GNUPlotter* i_gnuplot,
                        string *i_startdateaddr, string *i_enddateaddr, double* i_initialcapitaladdr, int* showholdingsval,
@@ -32,14 +38,25 @@ AlgoWindow::AlgoWindow(TradingInterface* i_trader, MainStrategy* i_strat, Benchm
 
     // Vertical layouts
     auto mainLayout = new QVBoxLayout;
-    auto topLayout = new QVBoxLayout;
-    auto botLayout = new QVBoxLayout;
+    auto topLayout = new QHBoxLayout;
+    auto botLayout1 = new QHBoxLayout;
+    auto botLayout2 = new QHBoxLayout;
 
     // Horizontal layouts for top
     auto startdatelayout = new QHBoxLayout;
     auto enddatelayout = new QHBoxLayout;
     auto initialcap = new QHBoxLayout;
     auto holdingslay = new QHBoxLayout;
+
+    // Vertical top groupings
+    auto secondcolumnlayout = new QVBoxLayout;
+    auto thirdcolumnlayout = new QVBoxLayout;
+
+    // Create fourth column with a special background color
+    QWidget* fourthcolbackground = new QWidget(this);
+    fourthcolbackground->setObjectName("fourthcolbackground");
+    fourthcolbackground->setFixedSize(210, 70);
+    auto fourthcolumnlayout = new QVBoxLayout(fourthcolbackground);
 
     // Horizontal layouts for bottom
     auto totalreturnlayout = new QHBoxLayout;
@@ -50,9 +67,11 @@ AlgoWindow::AlgoWindow(TradingInterface* i_trader, MainStrategy* i_strat, Benchm
     auto alphalayout = new QHBoxLayout;
 
     // Set size of the window
-    setFixedSize(250, 600);
+    QScreen *screen = QGuiApplication::primaryScreen();
+    QRect dims = screen->geometry();
+    setFixedSize(std::min(1000, (int)floor(0.7*dims.width())), std::min(700, (int)floor(0.7*dims.height())));
 
-    // Create the widgets to add to vertical layout
+    // Create the widgets to add to top layout
     m_button = new QPushButton("Initialize Backtest", this);
     startdate = new QLabel("Start Date: ", this);
     startdateedit = new QDateEdit(this);
@@ -62,11 +81,8 @@ AlgoWindow::AlgoWindow(TradingInterface* i_trader, MainStrategy* i_strat, Benchm
     initialcapedit = new QLineEdit(this);
     showholdings = new QLabel("Show Holdings", this);
     holdingsbool = new QCheckBox(this);
-
-    // Dividing line between top and bottom layouts
-    dividerline = new QFrame();
-    dividerline->setFrameShape(QFrame::HLine);
-    dividerline->setFixedSize(210, 3);
+    algoname = new QLabel("Algorithm Title: ", this);
+    algonamedisplay = new QLabel(QString(strat->title.c_str()), this);
 
     // Performance labels
     totalreturn = new QLabel("Total Return: ", this);
@@ -81,6 +97,26 @@ AlgoWindow::AlgoWindow(TradingInterface* i_trader, MainStrategy* i_strat, Benchm
     betalabel = new QLabel("", this);
     alpha = new QLabel("Alpha:", this);
     alphalabel = new QLabel("", this);
+
+    // Graph settings
+    series = new QtCharts::QLineSeries();
+    series->append(0, 6);
+    series->append(2, 4);
+    series->append(3, 1);
+
+    // Create the chart
+    QtCharts::QChart *chart = new QtCharts::QChart();
+    chart->legend()->hide();
+    chart->addSeries(series);
+    chart->createDefaultAxes();
+    chart->setTitle("Simple line chart");
+
+    // Create the chartview
+    QtCharts::QChartView *chartview = new QtCharts::QChartView(chart);
+    chartview->setRenderHints(QPainter::Antialiasing);
+
+    // Format the chart to look nice
+    chartview->setBackgroundBrush(QColor("#232323"));
 
     // Create horizontal layouts for top layout
     startdatelayout->addWidget(startdate);
@@ -109,62 +145,76 @@ AlgoWindow::AlgoWindow(TradingInterface* i_trader, MainStrategy* i_strat, Benchm
 
     // Add widgets to top layout
     topLayout->addWidget(m_button);
-    topLayout->addLayout(startdatelayout);
-    topLayout->addLayout(enddatelayout);
-    topLayout->addLayout(initialcap);
-    topLayout->addLayout(holdingslay);
+    secondcolumnlayout->addLayout(startdatelayout);
+    secondcolumnlayout->addLayout(enddatelayout);
+    topLayout->addLayout(secondcolumnlayout);
+    thirdcolumnlayout->addLayout(initialcap);
+    thirdcolumnlayout->addLayout(holdingslay);
+    topLayout->addLayout(thirdcolumnlayout);
+    fourthcolumnlayout->addWidget(algoname);
+    fourthcolumnlayout->addWidget(algonamedisplay);
+    topLayout->addWidget(fourthcolbackground);
 
     // Add widgets to bot layout
-    botLayout->addLayout(alphalayout);
-    botLayout->addLayout(betalayout);
-    botLayout->addLayout(totalreturnlayout);
-    botLayout->addLayout(sharpelayout);
-    botLayout->addLayout(hwmlayout);
-    botLayout->addLayout(drawdownlayout);
+    botLayout1->addLayout(alphalayout);
+    botLayout1->addLayout(betalayout);
+    botLayout1->addLayout(totalreturnlayout);
+    botLayout2->addLayout(sharpelayout);
+    botLayout2->addLayout(hwmlayout);
+    botLayout2->addLayout(drawdownlayout);
 
     // Set top widget properties
-    m_button->setFixedSize(210, 100);
+    m_button->setFixedSize(210, 50);
     m_button->setCheckable(true);
-    startdate->setFixedSize(75, 10);
+    startdate->setFixedSize(75, 15);
     startdateedit->setDisplayFormat("yyyy-MM-dd");
     startdateedit->setDate(QDate::fromString("2004-01-01", "yyyy-MM-dd"));
-    enddate->setFixedSize(75, 10);
+    startdateedit->setFixedSize(100, 15);
+    enddate->setFixedSize(75, 15);
     enddateedit->setDisplayFormat("yyyy-MM-dd");
     enddateedit->setDate(QDate::fromString("2005-01-01", "yyyy-MM-dd"));
-    initialcapital->setFixedSize(100, 13);
+    enddateedit->setFixedSize(100, 15);
+    initialcapital->setFixedSize(100, 15);
     initialcapedit->setText("10000000");
     initialcapedit->setValidator(new QIntValidator(1, 100000000, this));
-    showholdings->setFixedSize(175, 13);
+    initialcapedit->setFixedSize(75, 15);
+    showholdings->setFixedSize(165, 15);
     holdingsbool->setCheckState(Qt::CheckState::Unchecked);
+    algoname->setAlignment(Qt::AlignmentFlag::AlignCenter);
+    algonamedisplay->setObjectName("algonamedisplay");
+    algonamedisplay->setAlignment(Qt::AlignmentFlag::AlignCenter);
 
     // Set bot widget properties
-    totalreturn->setFixedSize(110, 30);
-    totalreturn->setObjectName("mediumstatistic");
+    totalreturn->setFixedSize(125, 30);
+    totalreturn->setObjectName("bigstatistic");
     totalreturnlabel->setAlignment(Qt::AlignmentFlag::AlignCenter);
-    totalreturnlabel->setObjectName("mediumstatisticlabel");
-    sharpe->setFixedSize(110, 30);
+    totalreturnlabel->setObjectName("bigstatisticlabel");
+    sharpe->setFixedSize(125, 30);
     sharpe->setObjectName("mediumstatistic");
     sharpelabel->setAlignment(Qt::AlignmentFlag::AlignCenter);
     sharpelabel->setObjectName("mediumstatisticlabel");
-    hwm->setFixedSize(110, 30);
+    hwm->setFixedSize(125, 30);
+    hwm->setObjectName("mediumstatistic");
     hwmlabel->setAlignment(Qt::AlignmentFlag::AlignCenter);
     hwmlabel->setObjectName("performancelabel");
-    drawdown->setFixedSize(110, 30);
+    drawdown->setFixedSize(125, 30);
+    drawdown->setObjectName("mediumstatistic");
     drawdownlabel->setAlignment(Qt::AlignmentFlag::AlignCenter);
     drawdownlabel->setObjectName("performancelabel");
-    beta->setFixedSize(110, 30);
+    beta->setFixedSize(125, 30);
     beta->setObjectName("bigstatistic");
     betalabel->setAlignment(Qt::AlignmentFlag::AlignCenter);
     betalabel->setObjectName("bigstatisticlabel");
-    alpha->setFixedSize(110, 30);
+    alpha->setFixedSize(125, 30);
     alpha->setObjectName("bigstatistic");
     alphalabel->setAlignment(Qt::AlignmentFlag::AlignCenter);
     alphalabel->setObjectName("bigstatisticlabel");
 
     // Add sub-vertical layouts to main vert layout
     mainLayout->addLayout(topLayout);
-    mainLayout->addWidget(dividerline);
-    mainLayout->addLayout(botLayout);
+    mainLayout->addWidget(chartview);
+    mainLayout->addLayout(botLayout1);
+    mainLayout->addLayout(botLayout2);
 
     // Add the slot and signal for the button click
     connect(m_button, SIGNAL (clicked(bool)), this, SLOT (buttonClicked(bool)));
@@ -185,7 +235,7 @@ AlgoWindow::AlgoWindow(TradingInterface* i_trader, MainStrategy* i_strat, Benchm
     setObjectName("main_window");
 
     // Set the style sheet
-    QFile File("/Users/samkirkiles/Desktop/algobacktester/Graphics/stylesheet.qss");
+    QFile File("/Users/evankirkiles/Desktop/backtest-environment/Graphics/stylesheet.qss");
     File.open(QFile::ReadOnly);
     QString StyleSheet = QLatin1String(File.readAll());
     setStyleSheet(StyleSheet);

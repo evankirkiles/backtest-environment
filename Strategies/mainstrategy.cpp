@@ -20,6 +20,7 @@ MainStrategy::MainStrategy(HistoricalCSVDataHandler* i_bars, boost::ptr_vector<E
     events = i_events;
     *bars->symbol_list = {string("GS"),string("AAPL"), string("QQQ")};
     symbol_list = bars->symbol_list;
+    title = "Test Algo";
 
     // Set custom strategy variables
     // Need to instantiate map bought in header file

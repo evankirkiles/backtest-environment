@@ -6,6 +6,9 @@
 #define ALGOBACKTESTER_QTWINDOW_HPP
 
 #include <QWidget>
+#include <QtCharts/QLineSeries>
+#include <QtCharts/QChart>
+#include <QtCharts/QChartView>
 #ifndef TradingInterface
 #include "../Infrastructure/interface.hpp"
 #endif
@@ -16,6 +19,8 @@ class QLabel;
 class QDateEdit;
 class QLineEdit;
 class QCheckBox;
+class QLineSeries;
+class QChart;
 class AlgoWindow : public QWidget {
 
     // Backtesting variables
@@ -44,6 +49,8 @@ public:
     QLabel *betalabel;
     QLabel *alphalabel;
 
+    QtCharts::QLineSeries *series;
+
 private slots:
     void buttonClicked(bool checked);
     void varsChanged();
@@ -61,6 +68,8 @@ private:
     QLineEdit *initialcapedit;
     QLabel *showholdings;
     QCheckBox *holdingsbool;
+    QLabel *algoname;
+    QLabel *algonamedisplay;
     QLabel *totalreturn;
     QLabel *sharpe;
     QLabel *hwm;

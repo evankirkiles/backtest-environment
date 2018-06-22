@@ -26,7 +26,7 @@ int main(int argc, char **argv) {
     MainStrategy strat = MainStrategy(&interface.pipeline, &interface.events);
     Benchmark bench = Benchmark(&interface.benchmarkpipeline, &interface.events);
     GNUPlotter gnuplot(&interface.portfolio,
-                       &interface.benchmarkportfolio, (char*)"/Users/samkirkiles/Desktop/algobacktester/Graphics/data.csv", (char*)"/Users/samkirkiles/Desktop/algobacktester/Graphics/positions.csv", &startdate, &enddate, &showholdings);
+                       &interface.benchmarkportfolio, (char*)"/Users/evankirkiles/Desktop/backtest-environment/Graphics/data.csv", (char*)"/Users/evankirkiles/Desktop/backtest-environment/Graphics/positions.csv", &startdate, &enddate, &showholdings);
 
     // Run the backtest window
     QApplication app(argc, argv);

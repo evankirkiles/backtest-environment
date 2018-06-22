@@ -12,6 +12,13 @@ QPushButton {
 QLabel {
 	color: #FFFFFF;
 }
+QLabel#algonamedisplay {
+    font-size: 20px;
+	color: #83a8e2;
+}
+QWidget#fourthcolbackground {
+    background-color: #202020;
+}
 QLabel#bigstatistic {
 	font-size: 20px;
 }
