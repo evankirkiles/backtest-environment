@@ -23,6 +23,9 @@
 #include "execution.hpp"
 
 #include <boost/ptr_container/ptr_vector.hpp>
+#include <QLineSeries>
+#include <QDate>
+#include <QtCharts/QChartView>
 
 // Create a class for different types of trading interfaces
 class TradingInterface {
@@ -65,7 +68,10 @@ public:
     TradingInterface() = default;
 
     // Executes the while loop for running the backtest
-    void runbacktest(MainStrategy strategy, Benchmark benchmark, GNUPlotter* plot);
+    void runbacktest(MainStrategy strategy, Benchmark benchmark, QtCharts::QLineSeries* plot, QtCharts::QLineSeries* otherplot, QtCharts::QChartView* cv);
+
+    // Updates the plot
+    void updatePlot(QtCharts::QLineSeries* algoseries, QtCharts::QLineSeries* benchseries, QtCharts::QChartView* cv);
 };
 
 #endif /* interface_hpp */

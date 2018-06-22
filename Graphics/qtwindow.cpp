@@ -26,14 +26,14 @@
 
 QT_CHARTS_USE_NAMESPACE
 
-AlgoWindow::AlgoWindow(TradingInterface* i_trader, MainStrategy* i_strat, Benchmark* i_bench, GNUPlotter* i_gnuplot,
-                       string *i_startdateaddr, string *i_enddateaddr, double* i_initialcapitaladdr, int* showholdingsval,
+AlgoWindow::AlgoWindow(TradingInterface* i_trader, MainStrategy* i_strat, Benchmark* i_bench, QLineSeries *lineseries,
+                       QLineSeries *i_benchseries, string *i_startdateaddr, string *i_enddateaddr,
+                       double* i_initialcapitaladdr, int* showholdingsval,
                        QWidget *parent) : QWidget(parent) {
 
     interface = i_trader;
     strat = i_strat;
     bench = i_bench;
-    gnuplot = i_gnuplot;
     startdateaddr = i_startdateaddr;
     enddateaddr = i_enddateaddr;
     initialcapaddr = i_initialcapitaladdr;
@@ -102,16 +102,16 @@ AlgoWindow::AlgoWindow(TradingInterface* i_trader, MainStrategy* i_strat, Benchm
     alphalabel = new QLabel("", this);
 
     // Graph settings
-    series = new QLineSeries();
-    series->append(0, 6);
-    series->append(2, 4);
-    series->append(3, 1);
+    series = lineseries;
+    benchseries = i_benchseries;
 
     // Create the chart
     QChart *chart = new QChart();
     chart->legend()->hide();
     chart->addSeries(series);
+    chart->addSeries(benchseries);
     chart->setTitle("Equity Curve");
+    chart->createDefaultAxes();
     chart->setTitleBrush(QBrush(QColor("#FFFFFF")));
 
     // CHART CUSTOMIZATIONS
@@ -141,7 +141,7 @@ AlgoWindow::AlgoWindow(TradingInterface* i_trader, MainStrategy* i_strat, Benchm
     chart->setAxisY(axisY, series);
 
     // Create the chartview
-    auto *chartview = new QtCharts::QChartView(chart);
+    chartview = new QtCharts::QChartView(chart);
     chartview->setRenderHints(QPainter::Antialiasing);
     chartview->setFixedHeight(300);
 
@@ -299,11 +299,11 @@ void AlgoWindow::buttonClicked(bool checked) {
 
         axisX->setRange(startdateedit->dateTime(), enddateedit->dateTime());
 
-        gnuplot->initPlot();
+        //gnuplot->initPlot();
         m_button->setText("Run Backtest");
     } else {
         m_button->setText("Built Backtest");
-        interface->runbacktest(*strat, *bench, gnuplot);
+        interface->runbacktest(*strat, *bench, series, benchseries, chartview);
         performanceValues();
         m_button->setDisabled(true);
     }

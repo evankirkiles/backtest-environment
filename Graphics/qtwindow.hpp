@@ -26,7 +26,6 @@ class AlgoWindow : public QWidget {
     TradingInterface* interface;
     MainStrategy* strat;
     Benchmark* bench;
-    GNUPlotter* gnuplot;
 
     bool initialized;
 
@@ -37,8 +36,9 @@ class AlgoWindow : public QWidget {
 
     Q_OBJECT
 public:
-    explicit AlgoWindow(TradingInterface* trader, MainStrategy* strat, Benchmark* bench, GNUPlotter* gnuplot,
-                        string *startdate, string *enddate, double* initialcapitalval, int* showholds, QWidget *parent = 0);
+    explicit AlgoWindow(TradingInterface* trader, MainStrategy* strat, Benchmark* bench, QtCharts::QLineSeries *algoseries,
+                        QtCharts::QLineSeries *benchseries, string *startdate, string *enddate, double* initialcapitalval,
+                        int* showholds, QWidget *parent = 0);
 
     void performanceValues();
     QLabel *totalreturnlabel;
@@ -49,6 +49,8 @@ public:
     QLabel *alphalabel;
 
     QtCharts::QLineSeries *series;
+    QtCharts::QLineSeries *benchseries;
+    QtCharts::QChartView *chartview;
     QtCharts::QDateTimeAxis *axisX;
     QtCharts::QValueAxis *axisY;
 

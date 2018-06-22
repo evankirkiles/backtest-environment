@@ -31,7 +31,7 @@ TradingInterface::TradingInterface(vector<string>*i_symbol_list, vector<string>i
 }
 
 // Begins the backtest!
-void TradingInterface::runbacktest(MainStrategy strategy, Benchmark i_benchmark, GNUPlotter* plot) {
+void TradingInterface::runbacktest(MainStrategy strategy, Benchmark i_benchmark, QtCharts::QLineSeries* algoplot, QtCharts::QLineSeries* benchplot, QtCharts::QChartView* cv) {
     continue_backtest = 1;
     portfolio.format_portfolio();
     pipeline.format_csv_data();
@@ -106,7 +106,7 @@ void TradingInterface::runbacktest(MainStrategy strategy, Benchmark i_benchmark,
                 instcontinue = 0;
                 benchmarkportfolio.update_timeindex();
                 portfolio.update_timeindex();
-                plot->updatePlot();
+                updatePlot(algoplot, benchplot, cv);
                 break;
             }
 
@@ -114,7 +114,24 @@ void TradingInterface::runbacktest(MainStrategy strategy, Benchmark i_benchmark,
             benchmarkpipeline.update_bars();
             portfolio.update_timeindex();
             pipeline.update_bars();
-            plot->updatePlot();
+            updatePlot(algoplot, benchplot, cv);
         }
     }
+}
+
+
+// Appends the new data to the two line series
+void TradingInterface::updatePlot(QtCharts::QLineSeries *algoseries, QtCharts::QLineSeries *benchseries, QtCharts::QChartView* cv) {
+
+    // Get the date in milliseconds
+    //auto date = QDateTime::fromString(get_std_time(portfolio.bars->latestDates.back()), "yyyy-MM-dd").toMSecsSinceEpoch();
+    long long date = portfolio.bars->latestDates.back() * 1000;
+    double equitycurve = portfolio.all_holdings.rbegin().operator*().second["equitycurve"];
+    double benchequity = benchmarkportfolio.all_holdings.rbegin().operator*().second["equitycurve"];
+
+
+    cout << "going" << endl;
+
+    algoseries->append(date, equitycurve*100);
+    benchseries->append(date, benchequity*100);
 }

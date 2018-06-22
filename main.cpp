@@ -10,7 +10,6 @@
 #include <iostream>
 #include "DataHandling/YahooFinanceCSVReader.hpp"
 #include "Graphics/qtwindow.hpp"
-#include
 
 #include <QApplication>
 
@@ -24,18 +23,17 @@ int main(int argc, char **argv) {
     int showholdings = 0;
     vector<string> symbol_list = {string("SPY")};
     vector<string> symbol_list2 = {string("SPY")};
-    //QtCharts::QLineSeries *lineseries = new QtCharts::QLineSeries();
+    QtCharts::QLineSeries *lineseries = new QtCharts::QLineSeries();
+    QtCharts::QLineSeries *benchseries = new QtCharts::QLineSeries();
 
     TradingInterface interface = TradingInterface(&symbol_list, {string("SPY")}, &initialcapital, &startdate, &enddate);
     MainStrategy strat = MainStrategy(&interface.pipeline, &interface.events);
     Benchmark bench = Benchmark(&interface.benchmarkpipeline, &interface.events);
-    GNUPlotter gnuplot(&interface.portfolio,
-                       &interface.benchmarkportfolio, (char*)"/Users/samkirkiles/Desktop/algobacktester/Graphics/data.csv", (char*)"/Users/samkirkiles/Desktop/algobacktester/Graphics/positions.csv", &startdate, &enddate, &showholdings);
 
     // Run the backtest window
     QApplication app(argc, argv);
 
-    AlgoWindow window(&interface, &strat, &bench, &gnuplot, &startdate, &enddate, &initialcapital, &showholdings);
+    AlgoWindow window(&interface, &strat, &bench, lineseries, benchseries, &startdate, &enddate, &initialcapital, &showholdings);
     window.show();
     window.raise();
 
