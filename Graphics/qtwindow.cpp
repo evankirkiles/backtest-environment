@@ -105,14 +105,41 @@ AlgoWindow::AlgoWindow(TradingInterface* i_trader, MainStrategy* i_strat, Benchm
     // Graph settings
     series = lineseries;
     benchseries = i_benchseries;
+    baseline = new QLineSeries();
+    baseline->append(startdateedit->dateTime().toMSecsSinceEpoch(), 0);
+    baseline->append(enddateedit->dateTime().toMSecsSinceEpoch(), 0);
 
+    // Create the QCustomPlot
+    qcpplot = new QCustomPlot();
+    qcpplot->addGraph(); // blue line
+    qcpplot->graph(0)->setPen(QPen(QColor(40, 110, 255)));
+    qcpplot->addGraph(); // red line
+    qcpplot->graph(1)->setPen(QPen(QColor(255, 110, 40)));
+    qcpplot->setFixedHeight(300);
+
+    QSharedPointer<QCPAxisTickerTime> timeTicker(new QCPAxisTickerTime);
+    timeTicker->setTimeFormat("%h:%m:%s");
+    qcpplot->xAxis->setTicker(timeTicker);
+    qcpplot->axisRect()->setupFullAxesBox();
+    qcpplot->yAxis->setRange(-1.2, 1.2);
+
+    // make left and bottom axes transfer their ranges to right and top axes:
+    connect(qcpplot->xAxis, SIGNAL(rangeChanged(QCPRange)), qcpplot->xAxis2, SLOT(setRange(QCPRange)));
+    connect(qcpplot->yAxis, SIGNAL(rangeChanged(QCPRange)), qcpplot->yAxis2, SLOT(setRange(QCPRange)));
+
+// setup a timer that repeatedly calls MainWindow::realtimeDataSlot:
+    QTimer* dataTimer = new QTimer(this);
+    connect(dataTimer, SIGNAL(timeout()), this, SLOT(realtimeDataSlot()));
+    dataTimer->start(0); // Interval 0 means to refresh as fast as possible
+
+    /*
     // Create the chart
     chart = new QChart();
-    chart->legend()->hide();
+    //chart->legend()->hide();
+    chart->addSeries(baseline);
     chart->addSeries(series);
     chart->addSeries(benchseries);
     chart->setTitle("Equity Curve");
-    chart->createDefaultAxes();
     chart->setTitleBrush(QBrush(QColor("#FFFFFF")));
 
     // CHART CUSTOMIZATIONS
@@ -140,8 +167,10 @@ AlgoWindow::AlgoWindow(TradingInterface* i_trader, MainStrategy* i_strat, Benchm
     // Apply the axes to the chart
     chart->setAxisX(axisX, series);
     chart->setAxisX(axisX, benchseries);
+    chart->setAxisX(axisX, baseline);
     chart->setAxisY(axisY, series);
     chart->setAxisY(axisY, benchseries);
+    chart->setAxisY(axisY, baseline);
 
     // Create the chartview
     chartview = new QtCharts::QChartView(chart);
@@ -152,6 +181,7 @@ AlgoWindow::AlgoWindow(TradingInterface* i_trader, MainStrategy* i_strat, Benchm
     // Also set the background colors of both the chartview and the chart
     chart->setBackgroundBrush(QColor("#232323"));
     chartview->setBackgroundBrush(QColor("#232323"));
+    */
 
     // Create horizontal layouts for top layout
     startdatelayout->addWidget(startdate);
@@ -253,7 +283,8 @@ AlgoWindow::AlgoWindow(TradingInterface* i_trader, MainStrategy* i_strat, Benchm
 
     // Add sub-vertical layouts to main vert layout
     mainLayout->addLayout(topLayout);
-    mainLayout->addWidget(chartview);
+    //mainLayout->addWidget(chartview);
+    mainLayout->addWidget(qcpplot);
     mainLayout->addLayout(botLayout1);
     mainLayout->addLayout(botLayout2);
 
@@ -295,6 +326,11 @@ void AlgoWindow::buttonClicked(bool checked) {
         *startdateaddr = startdateedit->text().toStdString();
         *enddateaddr = enddateedit->text().toStdString();
         *initialcapaddr = (double)initialcapedit->text().toInt();
+        // Create the baseline for returns
+        baseline->clear();
+        baseline->append(startdateedit->dateTime().toMSecsSinceEpoch(), 0);
+        baseline->append(enddateedit->dateTime().toMSecsSinceEpoch(), 0);
+
         if(holdingsbool->checkState() == Qt::CheckState::Checked) {
             *showholds = 1;
         } else {
@@ -385,4 +421,33 @@ void AlgoWindow::performanceValues() {
     } else {
         alphalabel->setStyleSheet("color: #ddeaff");
     }
+}
+
+void AlgoWindow::realtimeDataSlot() {
+    static QTime time(QTime::currentTime());
+// calculate two new data points:
+    double key = time.elapsed() / 1000.0; // time elapsed since start of demo, in seconds
+
+// QVector<double> x(101); // initialize with entries 0..100
+// for (int i=0; i<101; ++i)
+// {
+// //x = data1 ;// x goes from -1 to 1
+// //y = x*x; // let's plot a quadratic function
+// }
+
+    static double lastPointKey = 0;
+    if (key - lastPointKey > 0.002) // at most add point every 2 ms
+    {
+// add data to lines:
+        qcpplot->graph(0)->addData(key, qSin(key) + qrand() / (double) RAND_MAX * 1 * qSin(key / 0.3843));
+        //qcpplot->graph(0)->setData(key,(**data1));
+        qcpplot->graph(1)->addData(key, qCos(key)+qrand()/(double)RAND_MAX*0.5*qSin(key/0.4364));
+// rescale value (vertical) axis to fit the current data:
+        qcpplot->graph(0)->rescaleValueAxis();
+        qcpplot->graph(1)->rescaleValueAxis(true);
+        lastPointKey = key;
+    }
+// make key axis range scroll with the data (at a constant range size of 8):
+    qcpplot->xAxis->setRange(key, 8, Qt::AlignRight);
+    qcpplot->replot();
 }

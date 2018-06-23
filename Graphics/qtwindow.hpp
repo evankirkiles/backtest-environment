@@ -13,6 +13,7 @@
 #ifndef TradingInterface
 #include "../Infrastructure/interface.hpp"
 #endif
+#include "Graphics/QCustomPlot/qcustomplot.h"
 
 // Window for displaying performance stats and start/stop button
 class QPushButton;
@@ -50,13 +51,17 @@ public:
 
     QtCharts::QLineSeries *series;
     QtCharts::QLineSeries *benchseries;
-    QtCharts::QChartView *chartview;
+    QtCharts::QLineSeries *baseline;
+    //QtCharts::QChartView *chartview;
     QtCharts::QChart *chart;
     QtCharts::QDateTimeAxis *axisX;
-    QtCharts::QValueAxis *axisY;
+    //QtCharts::QValueAxis *axisY;
+
+    QCustomPlot* qcpplot;
 
 private slots:
     void buttonClicked(bool checked);
+    void realtimeDataSlot();
     void varsChanged();
     void setMaxDate();
     void setMinDate();
