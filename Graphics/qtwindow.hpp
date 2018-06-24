@@ -21,6 +21,18 @@ class QLabel;
 class QDateEdit;
 class QLineEdit;
 class QCheckBox;
+
+// Custom chartview class to allow overriding functions
+class CustomChartView : public QtCharts::QChartView {
+public:
+    string* startdate;
+    string* enddate;
+    QtCharts::QChart* chart;
+
+    explicit CustomChartView(QtCharts::QChart* chart, string* i_startdate, string* i_enddate, QWidget *parent = 0);
+    void mouseReleaseEvent(QMouseEvent *e) override;
+};
+
 class AlgoWindow : public QWidget {
 
     // Backtesting variables
@@ -51,8 +63,12 @@ public:
 
     QtCharts::QLineSeries *series;
     QtCharts::QLineSeries *benchseries;
+<<<<<<< HEAD
     QtCharts::QLineSeries *baseline;
     //QtCharts::QChartView *chartview;
+=======
+    CustomChartView *chartview;
+>>>>>>> keepchanges
     QtCharts::QChart *chart;
     QtCharts::QDateTimeAxis *axisX;
     //QtCharts::QValueAxis *axisY;

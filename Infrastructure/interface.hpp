@@ -44,6 +44,10 @@ public:
     int continue_backtest;
     string *startdate;
     string *enddate;
+
+    // Variables for setting graph
+    qreal yMax = 10;
+    qreal yMin = -10;
     
     // Global events and execution handler
     boost::ptr_vector<Event> events;
@@ -69,10 +73,17 @@ public:
     TradingInterface() = default;
 
     // Executes the while loop for running the backtest
+<<<<<<< HEAD
     void runbacktest(MainStrategy strategy, Benchmark benchmark, QtCharts::QLineSeries* plot, QtCharts::QLineSeries* otherplot);
 
     // Updates the plot
     void updatePlot(QtCharts::QLineSeries* algoseries, QtCharts::QLineSeries* benchseries);
+=======
+    void runbacktest(MainStrategy strategy, Benchmark benchmark, QtCharts::QLineSeries* plot, QtCharts::QLineSeries* otherplot, QtCharts::QChart* cv);
+
+    // Updates the plot
+    void updatePlot(QtCharts::QLineSeries* algoseries, QtCharts::QLineSeries* benchseries, QtCharts::QChart* cv);
+>>>>>>> keepchanges
 };
 
 #endif /* interface_hpp */

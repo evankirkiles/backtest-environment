@@ -33,7 +33,11 @@ TradingInterface::TradingInterface(vector<string>*i_symbol_list, vector<string>i
 }
 
 // Begins the backtest!
+<<<<<<< HEAD
 void TradingInterface::runbacktest(MainStrategy strategy, Benchmark i_benchmark, QtCharts::QLineSeries* algoplot, QtCharts::QLineSeries* benchplot) {
+=======
+void TradingInterface::runbacktest(MainStrategy strategy, Benchmark i_benchmark, QtCharts::QLineSeries* algoplot, QtCharts::QLineSeries* benchplot, QtCharts::QChart* cv) {
+>>>>>>> keepchanges
     continue_backtest = 1;
     portfolio.format_portfolio();
     pipeline.format_csv_data();
@@ -123,7 +127,11 @@ void TradingInterface::runbacktest(MainStrategy strategy, Benchmark i_benchmark,
 
 
 // Appends the new data to the two line series
+<<<<<<< HEAD
 void TradingInterface::updatePlot(QtCharts::QLineSeries *algoseries, QtCharts::QLineSeries *benchseries) {
+=======
+void TradingInterface::updatePlot(QtCharts::QLineSeries *algoseries, QtCharts::QLineSeries *benchseries, QtCharts::QChart* cv) {
+>>>>>>> keepchanges
 
     // Get the date in milliseconds
     long long date = portfolio.bars->latestDates.back() * 1000;
@@ -132,4 +140,18 @@ void TradingInterface::updatePlot(QtCharts::QLineSeries *algoseries, QtCharts::Q
 
     algoseries->append(date, equitycurve*100);
     benchseries->append(date, benchequity*100);
+<<<<<<< HEAD
 }
+=======
+
+    // Reformat graph range
+    if (equitycurve*100 > yMax || equitycurve*100 < yMin) {
+        if (equitycurve*100 > yMax) {
+            yMax = equitycurve*100;
+        } else if (equitycurve*100 < yMin) {
+            yMin = equitycurve*100;
+        }
+        cv->axisY(algoseries)->setRange(yMin, yMax);
+    }
+}
+>>>>>>> keepchanges
