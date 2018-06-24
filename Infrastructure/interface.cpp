@@ -7,8 +7,6 @@
 //
 
 #include "interface.hpp"
-#include <thread>
-#include <chrono>
 
 using namespace std;
 
@@ -33,11 +31,7 @@ TradingInterface::TradingInterface(vector<string>*i_symbol_list, vector<string>i
 }
 
 // Begins the backtest!
-<<<<<<< HEAD
-void TradingInterface::runbacktest(MainStrategy strategy, Benchmark i_benchmark, QtCharts::QLineSeries* algoplot, QtCharts::QLineSeries* benchplot) {
-=======
 void TradingInterface::runbacktest(MainStrategy strategy, Benchmark i_benchmark, QtCharts::QLineSeries* algoplot, QtCharts::QLineSeries* benchplot, QtCharts::QChart* cv) {
->>>>>>> keepchanges
     continue_backtest = 1;
     portfolio.format_portfolio();
     pipeline.format_csv_data();
@@ -112,7 +106,7 @@ void TradingInterface::runbacktest(MainStrategy strategy, Benchmark i_benchmark,
                 instcontinue = 0;
                 benchmarkportfolio.update_timeindex();
                 portfolio.update_timeindex();
-                updatePlot(algoplot, benchplot);
+                updatePlot(algoplot, benchplot, cv);
                 break;
             }
 
@@ -120,29 +114,23 @@ void TradingInterface::runbacktest(MainStrategy strategy, Benchmark i_benchmark,
             benchmarkpipeline.update_bars();
             portfolio.update_timeindex();
             pipeline.update_bars();
-            updatePlot(algoplot, benchplot);
+            updatePlot(algoplot, benchplot, cv);
         }
     }
 }
 
 
 // Appends the new data to the two line series
-<<<<<<< HEAD
-void TradingInterface::updatePlot(QtCharts::QLineSeries *algoseries, QtCharts::QLineSeries *benchseries) {
-=======
 void TradingInterface::updatePlot(QtCharts::QLineSeries *algoseries, QtCharts::QLineSeries *benchseries, QtCharts::QChart* cv) {
->>>>>>> keepchanges
 
     // Get the date in milliseconds
+    //auto date = QDateTime::fromString(get_std_time(portfolio.bars->latestDates.back()), "yyyy-MM-dd").toMSecsSinceEpoch();
     long long date = portfolio.bars->latestDates.back() * 1000;
     double equitycurve = portfolio.all_holdings.rbegin().operator*().second["equitycurve"];
     double benchequity = benchmarkportfolio.all_holdings.rbegin().operator*().second["equitycurve"];
 
     algoseries->append(date, equitycurve*100);
     benchseries->append(date, benchequity*100);
-<<<<<<< HEAD
-}
-=======
 
     // Reformat graph range
     if (equitycurve*100 > yMax || equitycurve*100 < yMin) {
@@ -154,4 +142,3 @@ void TradingInterface::updatePlot(QtCharts::QLineSeries *algoseries, QtCharts::Q
         cv->axisY(algoseries)->setRange(yMin, yMax);
     }
 }
->>>>>>> keepchanges

@@ -23,8 +23,7 @@ add_executable(algobacktester
         DataHandling/YahooFinanceCSVReader.cpp
         Strategies/mainstrategy.cpp
         Strategies/benchmark.cpp
-        Graphics/qtwindow.cpp
-        Graphics/QCustomPlot/qcustomplot.cpp)
+        Graphics/qtwindow.cpp)
 
 find_package(Boost REQUIRED)
 IF (Boost_FOUND)
@@ -35,10 +34,10 @@ IF (CURL_FOUND)
     include_directories(${CURL_INCLUDE_DIRS})
     target_link_libraries(algobacktester ${CURL_LIBRARIES})
 endif()
-find_package(Qt5 REQUIRED COMPONENTS Core Gui Widgets Charts PrintSupport)
+find_package(Qt5 REQUIRED COMPONENTS Core Gui Widgets Charts)
 IF (Qt5_FOUND)
     include_directories(${Qt5_INCLUDE_DIRS})
-    target_link_libraries(algobacktester Qt5::Core Qt5::Gui Qt5::Widgets Qt5::Charts Qt5::PrintSupport)
+    target_link_libraries(algobacktester Qt5::Core Qt5::Gui Qt5::Widgets Qt5::Charts)
 endif()
 find_package(GSL REQUIRED)
 IF (GSL_FOUND)
