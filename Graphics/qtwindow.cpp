@@ -26,6 +26,21 @@
 
 QT_CHARTS_USE_NAMESPACE
 
+// Basic constructor
+CustomChartView::CustomChartView(QtCharts::QChart *i_chart, string* i_startdate, string* i_enddate, QWidget *parent) : QChartView(i_chart, parent) {
+    startdate = i_startdate;
+    enddate = i_enddate;
+    chart = i_chart;
+}
+
+void CustomChartView::mouseReleaseEvent(QMouseEvent *e) {
+    if (e->button() == Qt::RightButton) {
+        chart->axisX()->setRange(QDateTime::fromString(startdate->c_str(), "yyyy-MM-dd"), QDateTime::fromString(enddate->c_str(), "yyyy-MM-dd"));
+        return;
+    }
+    QChartView::mouseReleaseEvent(e);
+}
+
 AlgoWindow::AlgoWindow(TradingInterface* i_trader, MainStrategy* i_strat, Benchmark* i_bench, QLineSeries *lineseries,
                        QLineSeries *i_benchseries, string *i_startdateaddr, string *i_enddateaddr,
                        double* i_initialcapitaladdr, int* showholdingsval,
@@ -103,15 +118,21 @@ AlgoWindow::AlgoWindow(TradingInterface* i_trader, MainStrategy* i_strat, Benchm
 
     // Graph settings
     series = lineseries;
+    series->setName("ALGORITHM");
     benchseries = i_benchseries;
+    benchseries->setName("BENCHMARK");
+    auto *baseline = new QLineSeries();
+    baseline->append(QDateTime::fromString("2004-01-01", "yyyy-MM-dd").toMSecsSinceEpoch(), 0);
+    baseline->append(QDateTime::fromString("2005-01-01", "yyyy-MM-dd").toMSecsSinceEpoch(), 0);
+    baseline->setName("baseline");
 
     // Create the chart
-    QChart *chart = new QChart();
+    chart = new QChart();
     chart->legend()->hide();
+    chart->addSeries(baseline);
     chart->addSeries(series);
     chart->addSeries(benchseries);
     chart->setTitle("Equity Curve");
-    chart->createDefaultAxes();
     chart->setTitleBrush(QBrush(QColor("#FFFFFF")));
 
     // CHART CUSTOMIZATIONS
@@ -138,12 +159,17 @@ AlgoWindow::AlgoWindow(TradingInterface* i_trader, MainStrategy* i_strat, Benchm
 
     // Apply the axes to the chart
     chart->setAxisX(axisX, series);
+    chart->setAxisX(axisX, benchseries);
+    chart->setAxisX(axisX, baseline);
     chart->setAxisY(axisY, series);
+    chart->setAxisY(axisY, benchseries);
+    chart->setAxisY(axisY, baseline);
 
     // Create the chartview
-    chartview = new QtCharts::QChartView(chart);
+    chartview = new CustomChartView(chart, startdateaddr, enddateaddr);
     chartview->setRenderHints(QPainter::Antialiasing);
-    chartview->setFixedHeight(300);
+    chartview->setFixedHeight(400);
+    chartview->setRubberBand(QChartView::HorizontalRubberBand);
 
     // Also set the background colors of both the chartview and the chart
     chart->setBackgroundBrush(QColor("#232323"));
@@ -220,6 +246,7 @@ AlgoWindow::AlgoWindow(TradingInterface* i_trader, MainStrategy* i_strat, Benchm
     algoname->setAlignment(Qt::AlignmentFlag::AlignCenter);
     algonamedisplay->setObjectName("algonamedisplay");
     algonamedisplay->setAlignment(Qt::AlignmentFlag::AlignCenter);
+    algonamedisplay->setFixedHeight(25);
 
     // Set bot widget properties
     totalreturn->setFixedSize(125, 30);
@@ -303,7 +330,7 @@ void AlgoWindow::buttonClicked(bool checked) {
         m_button->setText("Run Backtest");
     } else {
         m_button->setText("Built Backtest");
-        interface->runbacktest(*strat, *bench, series, benchseries, chartview);
+        interface->runbacktest(*strat, *bench, series, benchseries, chart);
         performanceValues();
         m_button->setDisabled(true);
     }
