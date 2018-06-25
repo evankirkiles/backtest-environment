@@ -69,7 +69,10 @@ public:
     
     // Prints the values in the order
     void print_order() {
-        cout << "Order: Symbol=" << symbol << " Type=" << order_type << " Quantity=" << quantity << " Direction=" << direction << "Target=" << target << endl;
+        if (target == "BENCH") {
+            return;
+        }
+        cout << "Order: Symbol=" << symbol << " Type=" << order_type << " Quantity=" << quantity << " Direction=" << direction << endl;
     }
 };
 
@@ -81,7 +84,7 @@ public:
     string exchange;
     int quantity;
     string direction;
-    double fill_cost;
+    double slippage;
     double commission;
     
     // PARAMS:

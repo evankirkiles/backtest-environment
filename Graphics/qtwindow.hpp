@@ -16,6 +16,8 @@ class QLabel;
 class QDateEdit;
 class QLineEdit;
 class QCheckBox;
+class QListView;
+class QStringListModel;
 class AlgoWindow : public QWidget {
 
     // Backtesting variables

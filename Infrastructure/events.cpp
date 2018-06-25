@@ -45,7 +45,7 @@ FillEvent::FillEvent(long i_timeindex, string i_symbol, string i_exchange, int i
     exchange = i_exchange;
     quantity = i_quantity;
     direction = i_direction;
-    fill_cost = i_fill_cost;
+    slippage = i_fill_cost;
     target = i_target;
     
     // Calculate commission

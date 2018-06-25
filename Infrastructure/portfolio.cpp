@@ -64,6 +64,7 @@ map<long, map<string, double>> NaivePortfolio::construct_all_holdings() {
     }
     temp["heldcash"] = *initial_capital;
     temp["commission"] = 0.0;
+    temp["slippage"] = 0.0;
     temp["totalholdings"] = *initial_capital;
     
     // Equity curve data
@@ -89,6 +90,7 @@ map<string, double> NaivePortfolio::construct_current_holdings() {
     }
     temp["heldcash"] = *initial_capital;
     temp["commission"] = 0.0;
+    temp["slippage"] = 0.0;
     temp["totalholdings"] = *initial_capital;
     return temp;
 }
@@ -122,6 +124,7 @@ void NaivePortfolio::update_timeindex() {
     all_holdings[date]["totalholdings"] = current_holdings["heldcash"] + sumvalues;
     all_holdings[date]["heldcash"] = current_holdings["heldcash"];
     all_holdings[date]["commission"] = current_holdings["commission"];
+    all_holdings[date]["slippage"] = current_holdings["slippage"];
     
     // Equity curve and performance handling
     if (all_holdings.size() > 1) {
@@ -164,14 +167,16 @@ void NaivePortfolio::update_holdings_from_fill(FillEvent fill) {
     } else if (fill.direction == "SELL") {
         fill_dir = -1;
     }
-    
+
+    // Default slippage is 0
     // Update holdings list with calculated fill information
     double fill_cost = bars->get_latest_bars(fill.symbol, 1)["close"].rbegin()->second;
     double cost = fill_dir * fill_cost * fill.quantity;
     current_holdings[fill.symbol] += cost;
     current_holdings["commission"] += fill.commission;
-    current_holdings["heldcash"] -= (cost + fill.commission);
-    current_holdings["totalholdings"] -= fill.commission;
+    current_holdings["slippage"] += fill.slippage;
+    current_holdings["heldcash"] -= (cost + fill.commission + fill.slippage);
+    current_holdings["totalholdings"] -= (fill.commission + fill.slippage);
 }
 
 // Updates positions and holdings in case of fill event

@@ -21,11 +21,15 @@
 #ifndef Event
 #include "events.hpp"
 #endif
+#ifndef HistoricalCSVDataHandler
+#include "data.hpp"
+#endif
 
 // Base execution handler to which we can add features
 class ExecutionHandler {
 public:
     boost::ptr_vector<Event>* eventlist;
+    HistoricalCSVDataHandler* data;
     virtual void execute_order(OrderEvent event) = 0;
 };
 
@@ -34,13 +38,16 @@ public:
 class SimulatedExecutionHandler: ExecutionHandler {
 public:
     // Constructor
-    SimulatedExecutionHandler(boost::ptr_vector<Event>* events);
+    SimulatedExecutionHandler(boost::ptr_vector<Event>* events, HistoricalCSVDataHandler* data);
 
     // Placeholder constructor
     SimulatedExecutionHandler() = default;
     
     // Inherited order execution system
     void execute_order(OrderEvent event);
+
+    // Slippage calculations
+    std::pair<int, double> calculate_slippage(OrderEvent event);
 };
 
 #endif /* execution_hpp */

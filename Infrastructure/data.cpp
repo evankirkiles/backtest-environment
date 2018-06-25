@@ -63,7 +63,9 @@ void HistoricalCSVDataHandler::format_csv_data() {
     // Loop through symbols and load their data into a single frame
     for(int i=0;i<symbol_list->size();i++) {
         string symbol = (*symbol_list)[i];
-        
+
+        cout << string("Loading ") << symbol << string(".csv ...") << endl;
+
         // Get the data from Yahoo Finance
         // Access formula is symbol_data[SYMBOL].data[TYPE][DATE]
         MarketDataFrame moves = YahooFinanceCSVReader((char*)symbol.c_str(), get_epoch_time(*start_date),

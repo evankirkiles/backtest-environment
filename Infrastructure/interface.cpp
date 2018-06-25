@@ -11,7 +11,7 @@
 using namespace std;
 
 // Constructor that initializes the executor and replaces the empty portfolio and pipeline with functioning ones
-TradingInterface::TradingInterface(vector<string>*i_symbol_list, vector<string>i_benchmarksymbols, double* i_initial_cap, string *i_start_date, string *i_end_date) : executor(&events) {
+TradingInterface::TradingInterface(vector<string>*i_symbol_list, vector<string>i_benchmarksymbols, double* i_initial_cap, string *i_start_date, string *i_end_date) : executor(&events, &pipeline) {
     
     // Initialize variables inputted in constructor
     symbol_list = i_symbol_list;
@@ -83,10 +83,9 @@ void TradingInterface::runbacktest(MainStrategy strategy, Benchmark i_benchmark,
                 // In case of a FillEvent, the portfolio updates its information based on the fill information
                 // Determine who is target for the fill event
                 if (events[0].target == "ALGO") {
-                    cout << "FILLED " << fillevent->symbol << " FOR ALGO" << endl;
+                    cout << "Filled " << fillevent->symbol << " at " << get_std_time(fillevent->timeindex)<< endl;
                     portfolio.update_fill(*fillevent);
                 } else if (events[0].target == "BENCH") {
-                    cout << "FILLED " << fillevent->symbol << " FOR BENCH" << endl;
                     benchmarkportfolio.update_fill(*fillevent);
                 }
             }
