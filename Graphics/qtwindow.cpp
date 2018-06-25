@@ -185,7 +185,7 @@ AlgoWindow::AlgoWindow(TradingInterface* i_trader, MainStrategy* i_strat, Benchm
     setObjectName("main_window");
 
     // Set the style sheet
-    QFile File("/Users/samkirkiles/Desktop/algobacktester/Graphics/stylesheet.qss");
+    QFile File("./Graphics/stylesheet.qss");
     File.open(QFile::ReadOnly);
     QString StyleSheet = QLatin1String(File.readAll());
     setStyleSheet(StyleSheet);

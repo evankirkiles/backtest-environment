@@ -35,6 +35,7 @@ GNUPlotter::GNUPlotter(NaivePortfolio* i_portfolio, NaivePortfolio* i_benchmark,
                      string("set ytics textcolor linestyle 100 \n") +
                      string("set xlabel \"Date\" tc ls 3 \n") +
                      string("set ylabel \"Percent of Holdings\" tc ls 3 offset 0, -3 \n") +
+                     string("set label ls  \n") +
                      string("set key tc ls 3 \n") +
                      string("set key outside top right \n") +
                      string("set key title \"Legend\" tc ls 3 \n") +
