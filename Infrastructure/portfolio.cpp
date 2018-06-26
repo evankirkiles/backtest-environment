@@ -130,8 +130,9 @@ void NaivePortfolio::update_timeindex() {
     if (all_holdings.size() > 1) {
 
         // Equity curve updating
-        double returns = (all_holdings[date]["totalholdings"]/previoustotal) - 1;
+        double returns = (all_holdings[date]["totalholdings"] / previoustotal) - 1;
         all_holdings[date]["returns"] = returns;
+        returns_stream.push_back(returns);
         all_holdings[date]["equitycurve"] = (previouscurve + 1) * (returns + 1) - 1;
 
         // Update the performance values
@@ -139,6 +140,8 @@ void NaivePortfolio::update_timeindex() {
         update_Sharpe(date);
         update_HighWaterMark(date);
         update_Drawdowns(date);
+    } else {
+        returns_stream.push_back(1);
     }
 }
 

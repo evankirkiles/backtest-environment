@@ -52,6 +52,7 @@ public:
     map<string, double> current_positions;
     
     map<long, map<string, double>> all_holdings;
+    vector<double> returns_stream;
     map<string, double> current_holdings;
     
     // Performance map for all necessary evaluation statistics

@@ -23,9 +23,31 @@
 #ifndef QFrame
 #include <QFrame>
 #endif
+#include <random>
 #ifndef TradingInterface
 #include "../Infrastructure/interface.hpp"
 #endif
+
+// Actual Monte Carlo module
+class MonteCarlo {
+public:
+
+    TradingInterface* interface;
+    int* trials;
+    map<string, double> perfvalues;
+    fstream data;
+    char* dataFile;
+
+    // Constructor that instantiates instance pointer variables
+    MonteCarlo(TradingInterface* interface, int* trials, char* dataFile);
+
+    // Function to run the Monte Carlo analysis
+    void runMC();
+
+    // Function to close the gnuplot window
+    void closeMCWindow();
+
+};
 
 // Pop-up window for displaying Monte Carlo analysis
 class MCWindow : public QWidget {
@@ -33,6 +55,9 @@ public:
 
     // Backtesting variables
     TradingInterface* interface;
+    MonteCarlo* mc;
+
+    int trials;
 
     Q_OBJECT
 public:
@@ -44,7 +69,7 @@ public:
     QLabel *maxddperiodlabel;
 
 private slots:
-    //void buttonClicked();
+    void buttonClicked(bool checked);
 private:
 
     // Visualization widgets

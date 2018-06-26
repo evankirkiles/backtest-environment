@@ -9,6 +9,8 @@ MCWindow::MCWindow(TradingInterface *i_interface, QWidget *parent) : QWidget(par
 
     // Instance pointers
     interface = i_interface;
+    trials = 10;
+    mc = new MonteCarlo(interface, &trials, (char*)"./Graphics/montecarlo.csv");
 
     // Create the layouts
     auto mainLayout = new QVBoxLayout;
@@ -74,6 +76,9 @@ MCWindow::MCWindow(TradingInterface *i_interface, QWidget *parent) : QWidget(par
     mainLayout->addWidget(dividerline);
     mainLayout->addLayout(botLayout);
 
+    // Widget connections
+    connect(runmontecarlo, SIGNAL(clicked(bool)), this, SLOT(buttonClicked(bool)));
+
     // Window settings
     setFixedSize(250, 300);
     setLayout(mainLayout);
@@ -84,4 +89,104 @@ MCWindow::MCWindow(TradingInterface *i_interface, QWidget *parent) : QWidget(par
     File.open(QFile::ReadOnly);
     QString StyleSheet = QLatin1String(File.readAll());
     setStyleSheet(StyleSheet);
+}
+
+void MCWindow::buttonClicked(bool checked) {
+    mc->runMC();
+}
+
+// Monte Carlo module class
+// Constructor
+MonteCarlo::MonteCarlo(TradingInterface *i_interface, int *i_trials, char *i_dataFile) {
+
+    // Initializes instance pointer variables
+    interface = i_interface;
+    trials = i_trials;
+    dataFile = i_dataFile;
+
+    remove(dataFile);
+}
+
+// Logic behind the Monte Carlo system is here
+void MonteCarlo::runMC() {
+
+    double maxdd = 0;
+    double mindd = -1;
+    double hwm = 0;
+    double ddperiod;
+    vector<vector<double>> rand_returns;
+    vector<vector<double>> equitycurves;
+    vector<map<string, double>> perfvalues;
+
+    // Randomizer
+    std::random_device rd;
+    std::mt19937 g(rd());
+
+    // Get the initial returns stream
+    vector<double> r_stream = interface->portfolio.returns_stream;
+    // REMEMBER THAT THE FIRST RETURNS WILL ALWAYS BE 0!!!
+
+    // Randomizes all the returns
+    for (int i = 0; i < *trials; i++) {
+        vector<double> temp = r_stream;
+        vector<double> temp1 = {0};
+        map<string, double> temp2 = {};
+        temp2["hwm"] = 0;
+        temp2["ddperiod"] = 0;
+        temp2["drawdown"] = 0;
+        temp2["mindrawdown"] = -1;
+        std::shuffle(temp.begin(), temp.end(), g);
+        rand_returns.push_back(temp);
+        equitycurves.push_back(temp1);
+        perfvalues.push_back(temp2);
+    }
+
+    // Open the data file to write to
+    data.open(dataFile, ios::in | ios::out | ios::app);
+
+    // Cycles through every date and adds the equity curve to the file
+    for (int i = 0; i < interface->portfolio.all_holdings.size(); i++) {
+
+        // Puts the date in the first column of the .csv
+        data << get_std_time(interface->portfolio.bars->allDates[i]) << ", ";
+
+        // Puts the corresponding equity curve data in the other columns
+        for (int j = 0; j < rand_returns.size(); j++) {
+            if (i == 0) {
+                data << "0, ";
+            } else {
+                equitycurves[j][i] = ((equitycurves[j][i - 1] + 1) * (rand_returns[j][i] + 1)) - 1;
+                if (equitycurves[j][i] < perfvalues[j]["hwm"]) {
+                    perfvalues[j]["ddperiod"]++;
+                    perfvalues[j]["drawdown"] = perfvalues[j]["hwm"] - equitycurves[j][i];
+                    if (perfvalues[j]["drawdown"] < maxdd) {
+                        maxdd = perfvalues[j]["drawdown"];
+                    } else if (perfvalues[j]["drawdown"] > perfvalues[j]["mindrawdown"]) {
+                        perfvalues[j]["mindrawdown"] = perfvalues[j]["drawdown"];
+                        if (perfvalues[j]["mindrawdown"] > mindd) {
+                            mindd = perfvalues[j]["mindrawdown"];
+                        }
+                    }
+                } else {
+                    perfvalues[j]["ddperiod"] = 0;
+                    perfvalues[j]["drawdown"] = 0;
+                    if (equitycurves[j][i] > perfvalues[j]["hwm"]) {
+                        perfvalues[j]["hwm"] = equitycurves[j][i];
+                        if (perfvalues[j]["hwm"] > hwm) {
+                            hwm = perfvalues[j]["hwm"];
+                        }
+                    }
+                }
+
+                cout << "Trial " << j << " got equity curve " << to_string(equitycurves[j][i] * 100) << endl;
+                // Put the data into the .csv
+                data << to_string(equitycurves[j][i] * 100) << ", ";
+            }
+        }
+
+        cout << "All iterations done on date " <<  get_std_time(interface->portfolio.bars->allDates[i]) << endl;
+        // End the line in the .csv
+        data << " \n";
+    }
+    data.close();
 }

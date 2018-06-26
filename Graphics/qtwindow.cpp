@@ -133,7 +133,7 @@ AlgoWindow::AlgoWindow(TradingInterface* i_trader, MainStrategy* i_strat, Benchm
     m_button->setCheckable(true);
     montecarlo_button->setFixedSize(210, 30);
     montecarlo_button->setCheckable(true);
-    montecarlo_button->setDisabled(false);
+    montecarlo_button->setDisabled(true);
     startdate->setFixedSize(75, 10);
     startdateedit->setDisplayFormat("yyyy-MM-dd");
     startdateedit->setDate(QDate::fromString("2004-01-01", "yyyy-MM-dd"));

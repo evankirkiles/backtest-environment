@@ -29,7 +29,7 @@ GNUPlotter::GNUPlotter(NaivePortfolio* i_portfolio, NaivePortfolio* i_benchmark,
                      string("set style histogram rowstacked\n") +
                      string("set style fill solid 0.75 noborder\n") +
                      string("set boxwidth 1 relative\n") +
-                     string("set yrange [-100:100]\n") +
+                     string("set yrange [0:100]\n") +
                      string("set style line 100 lc rgb \"#5CDB95\" \n") +
                      string("set xtics textcolor rgb \"#232323\" \n") +
                      string("set ytics textcolor linestyle 100 \n") +
