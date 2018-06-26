@@ -145,7 +145,7 @@ void MonteCarlo::runMC() {
     data.open(dataFile, ios::in | ios::out | ios::app);
 
     // Cycles through every date and adds the equity curve to the file
-    for (int i = 0; i < interface->portfolio.all_holdings.size(); i++) {
+    for (int i = 0; i < interface->portfolio.all_holdings.size() - 1; i++) {
 
         // Puts the date in the first column of the .csv
         data << get_std_time(interface->portfolio.bars->allDates[i]) << ", ";
@@ -155,7 +155,9 @@ void MonteCarlo::runMC() {
             if (i == 0) {
                 data << "0, ";
             } else {
-                equitycurves[j][i] = ((equitycurves[j][i - 1] + 1) * (rand_returns[j][i] + 1)) - 1;
+                //cout << equity_curves[j].size() << " " << equitycurves[j][i - 1] * 100 << " " << rand_returns[j][i] * 100 << endl;
+                equitycurves[j].push_back(((equitycurves[j][i - 1] + 1) * (rand_returns[j][i] + 1)) - 1);
+
                 if (equitycurves[j][i] < perfvalues[j]["hwm"]) {
                     perfvalues[j]["ddperiod"]++;
                     perfvalues[j]["drawdown"] = perfvalues[j]["hwm"] - equitycurves[j][i];
@@ -177,14 +179,13 @@ void MonteCarlo::runMC() {
                         }
                     }
                 }
-
-                cout << "Trial " << j << " got equity curve " << to_string(equitycurves[j][i] * 100) << endl;
+                
                 // Put the data into the .csv
                 data << to_string(equitycurves[j][i] * 100) << ", ";
             }
         }
 
-        cout << "All iterations done on date " <<  get_std_time(interface->portfolio.bars->allDates[i]) << endl;
+        cout << endl << "All iterations done on date " <<  get_std_time(interface->portfolio.bars->allDates[i]) << endl;
         // End the line in the .csv
         data << " \n";
     }
