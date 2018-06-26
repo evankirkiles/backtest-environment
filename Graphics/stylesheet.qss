@@ -1,11 +1,21 @@
 #main_window {
 	background: #232323
 }
+#monte_window {
+	background: #232323
+}
+QPushButton:disabled {
+    background-color: #2b2e33;
+    color: #6b6b6b;
+    border: 1px solid gray;
+}
 QPushButton:pressed {
-    background-color: #2b2e33; border: 1px solid gray;
+    background-color: #2b2e33;
+    border: 1px solid gray;
 }
 QPushButton {
-     background-color: #313534; border: 1px solid white;
+     background-color: #313534;
+     border: 1px solid white;
 	border-radius: 3 px;
 	color: #FFFFFF;
 }

@@ -30,6 +30,9 @@ AlgoWindow::AlgoWindow(TradingInterface* i_trader, MainStrategy* i_strat, Benchm
     initialcapaddr = i_initialcapitaladdr;
     showholds = showholdingsval;
 
+    // INitialize the montecarlowindow
+    montecarlowindow = new MCWindow(interface);
+
     // Vertical layouts
     auto mainLayout = new QVBoxLayout;
     auto topLayout = new QVBoxLayout;
@@ -50,10 +53,11 @@ AlgoWindow::AlgoWindow(TradingInterface* i_trader, MainStrategy* i_strat, Benchm
     auto alphalayout = new QHBoxLayout;
 
     // Set size of the window
-    setFixedSize(250, 600);
+    setFixedSize(250, 700);
 
     // Create the widgets to add to vertical layout
     m_button = new QPushButton("Initialize Backtest", this);
+    montecarlo_button = new QPushButton("Monte Carlo Simulation", this);
     startdate = new QLabel("Start Date: ", this);
     startdateedit = new QDateEdit(this);
     enddate = new QLabel("End Date: ", this);
@@ -113,6 +117,7 @@ AlgoWindow::AlgoWindow(TradingInterface* i_trader, MainStrategy* i_strat, Benchm
     topLayout->addLayout(enddatelayout);
     topLayout->addLayout(initialcap);
     topLayout->addLayout(holdingslay);
+    topLayout->addWidget(montecarlo_button);
 
     // Add widgets to bot layout
     botLayout->addLayout(alphalayout);
@@ -125,6 +130,9 @@ AlgoWindow::AlgoWindow(TradingInterface* i_trader, MainStrategy* i_strat, Benchm
     // Set top widget properties
     m_button->setFixedSize(210, 100);
     m_button->setCheckable(true);
+    montecarlo_button->setFixedSize(210, 30);
+    montecarlo_button->setCheckable(true);
+    montecarlo_button->setDisabled(true);
     startdate->setFixedSize(75, 10);
     startdateedit->setDisplayFormat("yyyy-MM-dd");
     startdateedit->setDate(QDate::fromString("2004-01-01", "yyyy-MM-dd"));
@@ -179,6 +187,9 @@ AlgoWindow::AlgoWindow(TradingInterface* i_trader, MainStrategy* i_strat, Benchm
     connect(startdateedit, SIGNAL(dateChanged(QDate)), this, SLOT(setMinDate()));
     connect(enddateedit, SIGNAL(dateChanged(QDate)), this, SLOT(setMaxDate()));
 
+    // Create window for Monte Carlo analysis when the button is clicked
+    connect(montecarlo_button, SIGNAL(clicked(bool)), this, SLOT(showMonteCarlo()));
+
     // Set window options
     setLayout(mainLayout);
     setWindowTitle(tr("Backtest Control"));
@@ -189,6 +200,11 @@ AlgoWindow::AlgoWindow(TradingInterface* i_trader, MainStrategy* i_strat, Benchm
     File.open(QFile::ReadOnly);
     QString StyleSheet = QLatin1String(File.readAll());
     setStyleSheet(StyleSheet);
+}
+
+// Private slot that shows the monte carlo window
+void AlgoWindow::showMonteCarlo() {
+    montecarlowindow->show();
 }
 
 // Private slot that changes the init variables when text is changed
@@ -211,11 +227,14 @@ void AlgoWindow::buttonClicked(bool checked) {
         }
         gnuplot->initPlot();
         m_button->setText("Run Backtest");
+        montecarlo_button->setDisabled(true);
+        montecarlowindow->hide();
     } else {
         m_button->setText("Built Backtest");
         interface->runbacktest(*strat, *bench, gnuplot);
         performanceValues();
         m_button->setDisabled(true);
+        montecarlo_button->setDisabled(false);
     }
 }
 

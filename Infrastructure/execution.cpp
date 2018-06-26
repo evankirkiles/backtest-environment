@@ -35,7 +35,7 @@ void SimulatedExecutionHandler::execute_order(OrderEvent event) {
         slippage = pair.second;
     }
 
-    eventlist->push_back(new FillEvent(long(chrono::duration_cast<std::chrono::seconds>(chrono::system_clock::now().time_since_epoch()).count()), event.symbol, "NYSE", quantity, event.direction, slippage, -1, event.target));
+    eventlist->push_back(new FillEvent(data->latestDates.back(), event.symbol, "NYSE", quantity, event.direction, slippage, -1, event.target));
 }
 
 // Calculates slippage based on certain parameters (read more at https://www.quantopian.com/help#ide-slippage)

@@ -9,6 +9,7 @@
 #ifndef TradingInterface
 #include "../Infrastructure/interface.hpp"
 #endif
+#include "montecarlo.h"
 
 // Window for displaying performance stats and start/stop button
 class QPushButton;
@@ -25,6 +26,7 @@ class AlgoWindow : public QWidget {
     MainStrategy* strat;
     Benchmark* bench;
     GNUPlotter* gnuplot;
+    MCWindow* montecarlowindow;
 
     bool initialized;
 
@@ -48,6 +50,7 @@ public:
 
 private slots:
     void buttonClicked(bool checked);
+    void showMonteCarlo();
     void varsChanged();
     void setMaxDate();
     void setMinDate();
@@ -55,6 +58,7 @@ private:
 
     // Visualization widgets
     QPushButton *m_button;
+    QPushButton *montecarlo_button;
     QLabel *startdate;
     QDateEdit *startdateedit;
     QLabel *enddate;
