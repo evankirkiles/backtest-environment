@@ -23,7 +23,7 @@ add_executable(algobacktester
         DataHandling/YahooFinanceCSVReader.cpp
         Strategies/mainstrategy.cpp
         Strategies/benchmark.cpp
-        Graphics/qtwindow.cpp Graphics/montecarlo.cpp Graphics/montecarlo.h)
+        Graphics/qtwindow.cpp Graphics/montecarlo.cpp Graphics/montecarlo.hpp)
 
 find_package(Boost REQUIRED)
 IF (Boost_FOUND)

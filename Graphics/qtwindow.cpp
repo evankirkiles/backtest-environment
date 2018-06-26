@@ -2,7 +2,6 @@
 // Created by Evan Kirkiles on 6/15/18.
 //
 
-#include "qtwindow.hpp"
 #include <QPushButton>
 #ifndef QLabel
 #include <QLabel>
@@ -16,6 +15,8 @@
 #include <QCheckBox>
 #include <iomanip>
 #include <sstream>
+
+#include "qtwindow.hpp"
 
 AlgoWindow::AlgoWindow(TradingInterface* i_trader, MainStrategy* i_strat, Benchmark* i_bench, GNUPlotter* i_gnuplot,
                        string *i_startdateaddr, string *i_enddateaddr, double* i_initialcapitaladdr, int* showholdingsval,
@@ -132,7 +133,7 @@ AlgoWindow::AlgoWindow(TradingInterface* i_trader, MainStrategy* i_strat, Benchm
     m_button->setCheckable(true);
     montecarlo_button->setFixedSize(210, 30);
     montecarlo_button->setCheckable(true);
-    montecarlo_button->setDisabled(true);
+    montecarlo_button->setDisabled(false);
     startdate->setFixedSize(75, 10);
     startdateedit->setDisplayFormat("yyyy-MM-dd");
     startdateedit->setDate(QDate::fromString("2004-01-01", "yyyy-MM-dd"));

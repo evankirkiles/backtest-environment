@@ -9,7 +9,7 @@
 #ifndef TradingInterface
 #include "../Infrastructure/interface.hpp"
 #endif
-#include "montecarlo.h"
+#include "montecarlo.hpp"
 
 // Window for displaying performance stats and start/stop button
 class QPushButton;
@@ -67,13 +67,17 @@ private:
     QLineEdit *initialcapedit;
     QLabel *showholdings;
     QCheckBox *holdingsbool;
+
+    // Below divider
+    QFrame *dividerline;
+
     QLabel *totalreturn;
     QLabel *sharpe;
     QLabel *hwm;
     QLabel *drawdown;
     QLabel *beta;
     QLabel *alpha;
-    QFrame *dividerline;
+
 };
 
 #endif //ALGOBACKTESTER_QTWINDOW_HPP

@@ -19,6 +19,11 @@ QPushButton {
 	border-radius: 3 px;
 	color: #FFFFFF;
 }
+QSpinBox {
+    background-color: #202020;
+    color: #FFFFFF;
+    border: 1px solid #202020;
+}
 QLabel {
 	color: #FFFFFF;
 }
