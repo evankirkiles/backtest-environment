@@ -5,12 +5,14 @@
 #include "montecarlo.hpp"
 
 // Constructor for building Monte Carlo Qt window
-MCWindow::MCWindow(TradingInterface *i_interface, QWidget *parent) : QWidget(parent) {
+MCWindow::MCWindow(TradingInterface *i_interface, string* i_start, string* i_end, QWidget *parent) : QWidget(parent) {
 
     // Instance pointers
     interface = i_interface;
     trials = 10;
-    mc = new MonteCarlo(interface, &trials, (char*)"./Graphics/montecarlo.csv");
+    start = i_start;
+    end = i_end;
+    mc = new MonteCarlo(interface, &trials, start, end, (char*)"./Graphics/montecarlo.csv");
 
     // Create the layouts
     auto mainLayout = new QVBoxLayout;
@@ -78,6 +80,7 @@ MCWindow::MCWindow(TradingInterface *i_interface, QWidget *parent) : QWidget(par
 
     // Widget connections
     connect(runmontecarlo, SIGNAL(clicked(bool)), this, SLOT(buttonClicked(bool)));
+    connect(numtrialsedit, SIGNAL(valueChanged(int)), this, SLOT(trialsChanged(int)));
 
     // Window settings
     setFixedSize(250, 300);
@@ -91,19 +94,37 @@ MCWindow::MCWindow(TradingInterface *i_interface, QWidget *parent) : QWidget(par
     setStyleSheet(StyleSheet);
 }
 
+// Run whenever the button is clicked to run the Monte Carlo
 void MCWindow::buttonClicked(bool checked) {
+    mc->resetMC();
     mc->runMC();
+    runmontecarlo->setDisabled(true);
+    runmontecarlo->setText("Built Monte Carlo");
+}
+
+// Run whenever the number of trials is changed
+void MCWindow::trialsChanged(int newvalue) {
+    trials = newvalue;
+    runmontecarlo->setDisabled(false);
+    runmontecarlo->setText("Run Monte Carlo");
 }
 
 // Monte Carlo module class
 // Constructor
-MonteCarlo::MonteCarlo(TradingInterface *i_interface, int *i_trials, char *i_dataFile) {
+MonteCarlo::MonteCarlo(TradingInterface *i_interface, int *i_trials, string* i_start, string* i_end, char *i_dataFile) {
 
     // Initializes instance pointer variables
     interface = i_interface;
     trials = i_trials;
     dataFile = i_dataFile;
+    start = i_start;
+    end = i_end;
 
+    resetMC();
+}
+
+// Resets the Monte Carlo simulation
+void MonteCarlo::resetMC() {
     remove(dataFile);
 }
 
@@ -124,7 +145,6 @@ void MonteCarlo::runMC() {
 
     // Get the initial returns stream
     vector<double> r_stream = interface->portfolio.returns_stream;
-    // REMEMBER THAT THE FIRST RETURNS WILL ALWAYS BE 0!!!
 
     // Randomizes all the returns
     for (int i = 0; i < *trials; i++) {
@@ -160,7 +180,7 @@ void MonteCarlo::runMC() {
 
                 if (equitycurves[j][i] < perfvalues[j]["hwm"]) {
                     perfvalues[j]["ddperiod"]++;
-                    perfvalues[j]["drawdown"] = perfvalues[j]["hwm"] - equitycurves[j][i];
+                    perfvalues[j]["drawdown"] = equitycurves[j][i] - perfvalues[j]["hwm"];
                     if (perfvalues[j]["drawdown"] < maxdd) {
                         maxdd = perfvalues[j]["drawdown"];
                     } else if (perfvalues[j]["drawdown"] > perfvalues[j]["mindrawdown"]) {
@@ -170,6 +190,9 @@ void MonteCarlo::runMC() {
                         }
                     }
                 } else {
+                    if (perfvalues[j]["ddperiod"] > ddperiod) {
+                        ddperiod = perfvalues[j]["ddperiod"];
+                    }
                     perfvalues[j]["ddperiod"] = 0;
                     perfvalues[j]["drawdown"] = 0;
                     if (equitycurves[j][i] > perfvalues[j]["hwm"]) {
@@ -179,15 +202,46 @@ void MonteCarlo::runMC() {
                         }
                     }
                 }
-                
+
                 // Put the data into the .csv
                 data << to_string(equitycurves[j][i] * 100) << ", ";
             }
         }
 
-        cout << endl << "All iterations done on date " <<  get_std_time(interface->portfolio.bars->allDates[i]) << endl;
         // End the line in the .csv
         data << " \n";
     }
+
+    cout << "Max Drawdown: " << maxdd << " Min Drawdown: " << mindd << " DD period: " << ddperiod << " Max HWM: " << hwm << endl;
     data.close();
+
+    // Plot the simulated equity curves with GNUplot
+
+}
+
+// Returns the string for the Monte Carlo gnuplot format
+string MonteCarlo::getMCFormat() {
+    return string(" set terminal x11 0 background \"#232323\" size 2000, 400 title \"Equity Curve\" \n") +
+           string("set xdata time\n") +
+           string("set style data lines\n") +
+           string("set timefmt \"%Y-%m-%d\"\n") +
+           string("set format x \"%Y/%m/%d\"\n") +
+           string("set format y '%4.2f%%' \n") +
+           string("set autoscale y \n") +
+           string("set xrange[\"") + *start + "\":\"" + *end + "\"] \n" +
+           string("set style line 1 lt 1 lc rgb \"#5CDB95\" \n") +
+           string("set style line 2 lt 2 lc rgb \"#C3073F\" pt 6 \n") +
+           string("set style line 3 lc rgb \"#FFFFFF\" \n") +
+           string("set style line 4 lt 0 lc rgb \"#6d6d6d\" \n") +
+           string("set xtics textcolor linestyle 3 \n") +
+           string("set ytics textcolor linestyle 1 \n") +
+           string("set xlabel \"Date\" tc ls 3 \n") +
+           string("set ylabel \"Total Holdings\" tc ls 3 offset 0, -3 \n") +
+           string("set key tc ls 3 \n") +
+           string("set key outside top right \n") +
+           string("set key title \"Legend\" tc ls 3 \n") +
+           string("set key Left \n") +
+           string("set grid ls 4 \n") +
+           string("set title \"Equity Curve\" tc ls 3 \n") +
+           string("set border linewidth 1 linestyle 3 \n");
 }

@@ -33,20 +33,23 @@ class MonteCarlo {
 public:
 
     TradingInterface* interface;
+    string* start;
+    string* end;
     int* trials;
     map<string, double> perfvalues;
     fstream data;
     char* dataFile;
 
     // Constructor that instantiates instance pointer variables
-    MonteCarlo(TradingInterface* interface, int* trials, char* dataFile);
+    MonteCarlo(TradingInterface* interface, int* trials, string* start, string* end, char* dataFile);
 
     // Function to run the Monte Carlo analysis
     void runMC();
+    void resetMC();
 
-    // Function to close the gnuplot window
+    // GNUplot related functions
     void closeMCWindow();
-
+    string getMCFormat();
 };
 
 // Pop-up window for displaying Monte Carlo analysis
@@ -57,11 +60,14 @@ public:
     TradingInterface* interface;
     MonteCarlo* mc;
 
+    string* start;
+    string* end;
+
     int trials;
 
     Q_OBJECT
 public:
-    explicit MCWindow(TradingInterface* interface, QWidget* parent = 0);
+    explicit MCWindow(TradingInterface* interface, string* start, string* end, QWidget* parent = 0);
 
     // Editable labels for Monte Carlo performance reporting
     QLabel *maxdrawdownlabel;
@@ -70,6 +76,7 @@ public:
 
 private slots:
     void buttonClicked(bool checked);
+    void trialsChanged(int newvalue);
 private:
 
     // Visualization widgets

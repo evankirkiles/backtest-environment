@@ -32,7 +32,7 @@ AlgoWindow::AlgoWindow(TradingInterface* i_trader, MainStrategy* i_strat, Benchm
     showholds = showholdingsval;
 
     // INitialize the montecarlowindow
-    montecarlowindow = new MCWindow(interface);
+    montecarlowindow = new MCWindow(interface, startdateaddr, enddateaddr);
 
     // Vertical layouts
     auto mainLayout = new QVBoxLayout;
