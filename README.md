@@ -9,5 +9,3 @@ Runs an event-driven loop that continuously checks an Event queue for market dat
 <img src="/screenshot1.png" alt="Screenshot of interface"/>
 
 It is split into several windows because I prefer using GNUplot for realtime updates to the graph rather than going to great lengths to set up multithreading in Qt for a single window application.
-
-Also, I understand that this Monte Carlo graph is not how a Monte Carlo stress test is supposed to look. For some reason it only works every so often, a bug I will get around to fixing as soon as I have the time. In the meantime, enjoy the pretty lines.
