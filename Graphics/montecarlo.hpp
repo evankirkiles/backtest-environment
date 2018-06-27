@@ -40,6 +40,14 @@ public:
     fstream data;
     char* dataFile;
 
+    FILE* plotPipe;
+    bool windowOpen = false;
+
+    double maxdd;
+    double mindd;
+    double hwm;
+    int ddperiod;
+
     // Constructor that instantiates instance pointer variables
     MonteCarlo(TradingInterface* interface, int* trials, string* start, string* end, char* dataFile);
 
@@ -68,11 +76,12 @@ public:
     Q_OBJECT
 public:
     explicit MCWindow(TradingInterface* interface, string* start, string* end, QWidget* parent = 0);
+    void displayMCStats();
 
     // Editable labels for Monte Carlo performance reporting
     QLabel *maxdrawdownlabel;
-    QLabel *mindrawdownlabel;
     QLabel *maxddperiodlabel;
+    QLabel *maxhwmlabel;
 
 private slots:
     void buttonClicked(bool checked);
@@ -88,8 +97,8 @@ private:
     QFrame *dividerline;
 
     QLabel *maxdrawdown;
-    QLabel *mindrawdown;
     QLabel *maxddperiod;
+    QLabel *maxhwm;
 };
 
 #endif //ALGOBACKTESTER_MONTECARLO_H

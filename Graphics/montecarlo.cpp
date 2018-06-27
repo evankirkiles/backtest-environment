@@ -24,6 +24,7 @@ MCWindow::MCWindow(TradingInterface *i_interface, string* i_start, string* i_end
     auto maxdrawdownLayout = new QHBoxLayout;
     auto mindrawdownLayout = new QHBoxLayout;
     auto maxddperiodLayout = new QHBoxLayout;
+    auto maxhwmLayout = new QHBoxLayout;
 
     // Create the widgets to add to the layouts
     // Top layout widgets
@@ -55,23 +56,28 @@ MCWindow::MCWindow(TradingInterface *i_interface, string* i_start, string* i_end
     // Bottom layout widgets
     maxdrawdown = new QLabel("Max Drawdown: ", this);
     maxdrawdownlabel = new QLabel("", this);
-    mindrawdown = new QLabel("Min Drawdown", this);
-    mindrawdownlabel = new QLabel("", this);
-    maxddperiod = new QLabel("Max Drawdown Period: ", this);
+    maxddperiod = new QLabel("Max DD Period: ", this);
     maxddperiodlabel = new QLabel("", this);
+    maxhwm = new QLabel("Max HWM: ", this);
+    maxhwmlabel = new QLabel("", this);
+
+    // Set bottom widget properties
+    maxdrawdownlabel->setObjectName("mediumstatisticlabel");
+    maxddperiodlabel->setObjectName("mediumstatisticlabel");
+    maxhwmlabel->setObjectName("mediumstatisticlabel");
 
     // Add bottom widgets to their horizontal layouts
     maxdrawdownLayout->addWidget(maxdrawdown);
     maxdrawdownLayout->addWidget(maxdrawdownlabel);
-    mindrawdownLayout->addWidget(mindrawdown);
-    mindrawdownLayout->addWidget(mindrawdownlabel);
     maxddperiodLayout->addWidget(maxddperiod);
     maxddperiodLayout->addWidget(maxddperiodlabel);
+    maxhwmLayout->addWidget(maxhwm);
+    maxhwmLayout->addWidget(maxhwmlabel);
 
     // Add horizontal layouts to bottom layout
     botLayout->addLayout(maxdrawdownLayout);
-    botLayout->addLayout(mindrawdownLayout);
     botLayout->addLayout(maxddperiodLayout);
+    botLayout->addLayout(maxhwmLayout);
 
     // Add all layouts to the main layout
     mainLayout->addLayout(topLayout);
@@ -94,10 +100,24 @@ MCWindow::MCWindow(TradingInterface *i_interface, string* i_start, string* i_end
     setStyleSheet(StyleSheet);
 }
 
+// Sets the labels for the performance values
+void MCWindow::displayMCStats() {
+
+    // Set label values
+    std::stringstream stream;
+    stream << std::fixed << std::setprecision(2) << mc->maxdd * 100;
+    maxdrawdownlabel->setText(QString(stream.str().append("%").c_str()));
+    stream.str("");
+    stream << std::fixed << std::setprecision(2) << mc->hwm * 100;
+    maxhwmlabel->setText(QString(stream.str().append("%").c_str()));
+    maxddperiodlabel->setText(QString(to_string(mc->ddperiod).c_str()));
+}
+
 // Run whenever the button is clicked to run the Monte Carlo
 void MCWindow::buttonClicked(bool checked) {
     mc->resetMC();
     mc->runMC();
+    displayMCStats();
     runmontecarlo->setDisabled(true);
     runmontecarlo->setText("Built Monte Carlo");
 }
@@ -126,15 +146,19 @@ MonteCarlo::MonteCarlo(TradingInterface *i_interface, int *i_trials, string* i_s
 // Resets the Monte Carlo simulation
 void MonteCarlo::resetMC() {
     remove(dataFile);
+    if (windowOpen) {
+        closeMCWindow();
+        windowOpen = false;
+    }
 }
 
 // Logic behind the Monte Carlo system is here
 void MonteCarlo::runMC() {
 
-    double maxdd = 0;
-    double mindd = -1;
-    double hwm = 0;
-    double ddperiod;
+    maxdd = 0;
+    mindd = -1;
+    hwm = 0;
+    ddperiod = 0;
     vector<vector<double>> rand_returns;
     vector<vector<double>> equitycurves;
     vector<map<string, double>> perfvalues;
@@ -215,13 +239,50 @@ void MonteCarlo::runMC() {
     cout << "Max Drawdown: " << maxdd << " Min Drawdown: " << mindd << " DD period: " << ddperiod << " Max HWM: " << hwm << endl;
     data.close();
 
-    // Plot the simulated equity curves with GNUplot
+    // Open the plotting pipe and set the settings for the Monte Carlo plot
+    plotPipe = popen("/usr/local/bin/gnuplot", "w");
+    fprintf(plotPipe, "%s", getMCFormat().c_str());
+    fflush(plotPipe);
 
+
+    // Create the plot instructions for plotting in GNUplot
+    string plotInstructions;
+
+    for (int i = 0; i < *trials; i++) {
+        string toAppend;
+
+        // The initial plot requires a different string
+        if (i == 0) {
+            toAppend = string("plot \"") + string(dataFile) + string("\" using 1:2 with lines notitle");
+        }  else {
+            toAppend = string(", \"\" using 1:") + to_string(i+2) + string(" with lines notitle");
+        }
+
+        // Add each trial to the string
+        plotInstructions.append(toAppend);
+    }
+
+
+    // Finish the string off with a baseline
+    plotInstructions.append(", 0 with lines title \"baseline\" \n");
+
+    // Print the trials
+    fprintf(plotPipe, "%s", plotInstructions.c_str());
+    fflush(plotPipe);
+
+    windowOpen = true;
+}
+
+// Closes the GNUPlot window
+void MonteCarlo::closeMCWindow() {
+
+    fprintf(plotPipe, "set terminal x11 3 close \n");
+    fflush(plotPipe);
 }
 
 // Returns the string for the Monte Carlo gnuplot format
 string MonteCarlo::getMCFormat() {
-    return string(" set terminal x11 0 background \"#232323\" size 2000, 400 title \"Equity Curve\" \n") +
+    return string(" set terminal x11 3 background \"#232323\" size 2000, 400 title \"Monte Carlo\" \n") +
            string("set xdata time\n") +
            string("set style data lines\n") +
            string("set timefmt \"%Y-%m-%d\"\n") +
@@ -241,7 +302,8 @@ string MonteCarlo::getMCFormat() {
            string("set key outside top right \n") +
            string("set key title \"Legend\" tc ls 3 \n") +
            string("set key Left \n") +
+           string("set datafile separator \",\" \n") +
            string("set grid ls 4 \n") +
-           string("set title \"Equity Curve\" tc ls 3 \n") +
+           string("set title \"Monte Carlo\" tc ls 3 \n") +
            string("set border linewidth 1 linestyle 3 \n");
 }
