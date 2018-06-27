@@ -215,7 +215,7 @@ void MonteCarlo::runMC() {
                     }
                 } else {
                     if (perfvalues[j]["ddperiod"] > ddperiod) {
-                        ddperiod = perfvalues[j]["ddperiod"];
+                        ddperiod = (int) perfvalues[j]["ddperiod"];
                     }
                     perfvalues[j]["ddperiod"] = 0;
                     perfvalues[j]["drawdown"] = 0;
