@@ -163,12 +163,11 @@ void MonteCarlo::runMC() {
     vector<vector<double>> equitycurves;
     vector<map<string, double>> perfvalues;
 
-    // Randomizer
-    std::random_device rd;
-    std::mt19937 g(rd());
-
     // Get the initial returns stream
     vector<double> r_stream = interface->portfolio.returns_stream;
+
+    // Randomizer
+    auto rng = std::default_random_engine {};
 
     // Randomizes all the returns
     for (int i = 0; i < *trials; i++) {
@@ -179,7 +178,7 @@ void MonteCarlo::runMC() {
         temp2["ddperiod"] = 0;
         temp2["drawdown"] = 0;
         temp2["mindrawdown"] = -1;
-        std::shuffle(temp.begin(), temp.end(), g);
+        std::shuffle(temp.begin(), temp.end(), rng);
         rand_returns.push_back(temp);
         equitycurves.push_back(temp1);
         perfvalues.push_back(temp2);
