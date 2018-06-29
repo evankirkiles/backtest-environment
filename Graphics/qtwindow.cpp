@@ -193,6 +193,7 @@ AlgoWindow::AlgoWindow(TradingInterface* i_trader, MainStrategy* i_strat, Benchm
 
     // Set window options
     setLayout(mainLayout);
+    setAttribute(Qt::WA_QuitOnClose);
     setWindowTitle(tr("Backtest Control"));
     setObjectName("main_window");
 
@@ -201,6 +202,14 @@ AlgoWindow::AlgoWindow(TradingInterface* i_trader, MainStrategy* i_strat, Benchm
     File.open(QFile::ReadOnly);
     QString StyleSheet = QLatin1String(File.readAll());
     setStyleSheet(StyleSheet);
+}
+
+// Override close event
+void AlgoWindow::closeEvent(QCloseEvent *event) {
+
+    // Close the MCWindow
+    montecarlowindow->close();
+    QWidget::closeEvent(event);
 }
 
 // Private slot that shows the monte carlo window

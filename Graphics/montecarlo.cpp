@@ -36,7 +36,7 @@ MCWindow::MCWindow(TradingInterface *i_interface, string* i_start, string* i_end
     runmontecarlo->setFixedSize(210, 50);
     numtrials->setFixedSize(125, 10);
     numtrialsedit->setMinimum(10);
-    numtrialsedit->setMaximum(200);
+    numtrialsedit->setMaximum(500);
     numtrialsedit->setSingleStep(10);
     numtrialsedit->setValue(10);
 
@@ -270,6 +270,14 @@ void MonteCarlo::runMC() {
     fflush(plotPipe);
 
     windowOpen = true;
+}
+
+// Called when the window is closed
+void MCWindow::closeEvent(QCloseEvent *event) {
+
+    // Closes gnuplot window first and then exits
+    mc->closeMCWindow();
+    QWidget::closeEvent(event);
 }
 
 // Closes the GNUPlot window

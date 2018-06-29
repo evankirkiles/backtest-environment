@@ -41,6 +41,10 @@ public:
                         string *startdate, string *enddate, double* initialcapitalval, int* showholds, QWidget *parent = 0);
 
     void performanceValues();
+
+    // Override window close event so gnuplot closes when this window closes
+    void closeEvent(QCloseEvent *event) override;
+
     QLabel *totalreturnlabel;
     QLabel *sharpelabel;
     QLabel *hwmlabel;

@@ -78,6 +78,9 @@ public:
     explicit MCWindow(TradingInterface* interface, string* start, string* end, QWidget* parent = 0);
     void displayMCStats();
 
+    // Override window close event so gnuplot closes when this window closes
+    void closeEvent(QCloseEvent *event) override;
+
     // Editable labels for Monte Carlo performance reporting
     QLabel *maxdrawdownlabel;
     QLabel *maxddperiodlabel;
